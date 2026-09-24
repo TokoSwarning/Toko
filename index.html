@@ -1382,6 +1382,10 @@ ensureCat();
 
 const memSales = {};
 function localSales(d) {
+  if (window.__swSync && window.__swSync.on) return window.__swSync.salesFor(d);
+  return localSalesOnly(d);
+}
+function localSalesOnly(d) {
   const arr = LS.get(K.sales(d), null) ?? memSales[d] ?? [];
   return arr.map(v => ({ ...v, _path: null })).sort((a, b) => String(b.at).localeCompare(String(a.at)));
 }
@@ -1517,6 +1521,7 @@ function flattenSales(docs) {
 const pending = new Map();
 let pendingSeq = 0;
 function cloudWrite(id, p) {
+  syncQueue('p:' + id, p ? { op: 'putProduct', id, p: body(p) } : { op: 'delProduct', id });
   const v = ++pendingSeq;
   pending.set(id, { v, p });
   return dbReady.then(d => {
@@ -1557,6 +1562,7 @@ function deleteProducts(ids) {
 function saveCats() {
   LS.set(K.cats, state.cats);
   const list = state.cats.map(c => ({ id: c.id, name: c.name, hint: c.hint, units: c.units }));
+  syncQueue('cats', { op: 'cats', list });
   dbReady.then(d => {
     if (!d || state.mode === 'local') return;
     return queueWrite('settings/categories', () => withRetry(() => d.doc('settings/categories').set({ list, updatedAt: new Date().toISOString() })));
@@ -1634,6 +1640,14 @@ function renderHeader() {
   el.todaySum.textContent = `Hari ini ${rp(sum)} · ${sales.length} transaksi`;
 }
 function renderStatus() {
+  const sy = window.__swSync;
+  if (sy && sy.on) {
+    const n = sy.outbox.length;
+    el.statusText.textContent = sy.state === 'err' ? `Google Sheets: gagal tersambung${n ? ` · ${n} perubahan menunggu` : ''}`
+      : n ? `Google Sheets: mengirim ${n} perubahan…` : 'Tersinkron Google Sheets';
+    el.statusDot.className = 'dot ' + (sy.state === 'err' ? 'local' : n ? 'connecting' : 'cloud');
+    return;
+  }
   const t = { connecting: 'Menghubungkan…', cloud: 'Tersinkron online', local: 'Tersimpan di perangkat ini' }[state.mode];
   el.statusText.textContent = t;
   el.statusDot.className = 'dot ' + state.mode;
@@ -1897,6 +1911,7 @@ function closeCart() {
 
 /* ================= Transaksi ================= */
 async function recordSale(sale) {
+  syncQueue('sale:' + sale.id, { op: 'sale', sale: { ...sale, device: DEVICE } });
   const d = await dbReady;
   if (d && state.mode !== 'local') {
     const path = `sales/${sale.date}_${DEVICE}`;
@@ -1915,6 +1930,7 @@ async function recordSale(sale) {
   if (dlgHistory.open) renderHistory();
 }
 async function deleteSale(sale) {
+  syncQueue('delsale:' + sale.id, { op: 'delSale', id: sale.id });
   const d = await dbReady;
   if (d && sale._path && state.mode !== 'local') {
     return queueWrite(sale._path, () => withRetry(async () => {
@@ -2012,6 +2028,9 @@ function loadHistory() {
   if (cloudOn()) {
     hist.sales = 'loading'; renderHistory();
     hist.unsub = db.collection('sales').where('date', '==', hist.date).onSnapshot(snap => { hist.sales = flattenSales(snap.docs); renderHistory(); }, () => { hist.sales = []; renderHistory(); });
+  } else if (window.__swSync && window.__swSync.on) {
+    hist.sales = 'loading'; renderHistory();
+    window.__swSync.fetchSales(hist.date).then(() => { hist.sales = localSales(hist.date); renderHistory(); });
   } else { hist.sales = localSales(hist.date); renderHistory(); }
 }
 function currentHistSales() { return hist.date === state.today ? state.todaySales : (Array.isArray(hist.sales) ? hist.sales : []); }
@@ -2359,6 +2378,7 @@ $('#form-store').addEventListener('submit', e => {
   e.preventDefault();
   const v = $('#f-store').value.trim(); if (!v) { $('#f-store').focus(); return; }
   state.storeName = v; LS.set(K.name, v); renderHeader(); dlgStore.close(); toast('Nama toko disimpan.');
+  syncQueue('store', { op: 'store', name: v });
   dbReady.then(d => { if (d && state.mode !== 'local') return queueWrite('settings/store', () => withRetry(() => d.doc('settings/store').set({ name: v }))); }).catch(onWriteError);
 });
 
@@ -2476,6 +2496,168 @@ const CAN = {
 };
 function printerUsable() { return settings.printer !== 'none' && !!CAN[settings.printer]; }
 
+/* ================= Sinkron Google Sheets (untuk banyak perangkat) =================
+   Semua perubahan (barang, harga, barcode, foto, kategori, nama toko, penjualan) masuk "kotak keluar"
+   yang disimpan di perangkat, lalu dikirim ke Apps Script. Kalau internet putus, antrean tetap
+   tersimpan dan dikirim ulang otomatis — data tidak hilang. */
+function syncQueue(key, op) { if (window.__swSync && window.__swSync.on) window.__swSync.queue(key, op); }
+(() => {
+  const K_OUT = 'swarning.outbox.v1', K_TIME = 'swarning.synctime.v1', K_SALES = 'swarning.srvsales.v1';
+  const S = {
+    get on() { return !IN_CLAUDE && !!settings.apiUrl && !!settings.apiPin; },
+    outbox: LS.get(K_OUT, []) || [],
+    state: 'idle', err: '', since: Number(LS.get(K_TIME, 0)) || 0,
+    srvSales: LS.get(K_SALES, {}) || {},   // tanggal -> daftar penjualan dari server (semua perangkat)
+    flushing: false, pulling: false, lastOk: 0,
+  };
+  window.__swSync = S;
+  const saveOut = () => LS.set(K_OUT, S.outbox);
+  const pendingKey = k => S.outbox.some(o => o.key === k);
+
+  async function api(method, payload) {
+    const url = String(settings.apiUrl).trim();
+    let res;
+    if (method === 'GET') {
+      const q = new URLSearchParams({ ...payload, pin: settings.apiPin }).toString();
+      res = await fetch(url + (url.includes('?') ? '&' : '?') + q, { method: 'GET', redirect: 'follow' });
+    } else {
+      // Tanpa header khusus supaya tidak ada "preflight" (Apps Script tidak menjawab preflight).
+      res = await fetch(url, { method: 'POST', redirect: 'follow', body: JSON.stringify({ ...payload, pin: settings.apiPin }) });
+    }
+    const txt = await res.text();
+    let j; try { j = JSON.parse(txt); } catch (e) { throw new Error('Jawaban Apps Script bukan JSON — cek URL /exec & akses "Siapa saja".'); }
+    if (!j.ok) throw new Error(j.error || 'Gagal');
+    return j;
+  }
+  function setState(st, err) {
+    S.state = st; S.err = err || ''; renderStatus();
+    const a = document.activeElement;
+    if (!(a && a.tagName === 'INPUT' && a.closest('#st-body'))) renderSettings();
+  }
+
+  S.queue = (key, op) => {
+    S.outbox = S.outbox.filter(o => o.key !== key);
+    S.outbox.push({ key, t: Date.now(), ...op });
+    saveOut(); renderStatus();
+    clearTimeout(S._ft); S._ft = setTimeout(flush, 600);
+  };
+
+  async function flush() {
+    if (!S.on || S.flushing || !S.outbox.length) return;
+    S.flushing = true;
+    try {
+      while (S.outbox.length) {
+        // Foto dikirim satu per satu (ukurannya besar); sisanya dikelompokkan.
+        const first = S.outbox[0];
+        const group = first.op === 'img' ? [first] : S.outbox.filter(o => o.op !== 'img').slice(0, 150);
+        const sent = group.map(o => ({ key: o.key, t: o.t }));
+        const j = await api('POST', { action: 'batch', ops: group });
+        S.outbox = S.outbox.filter(o => !sent.some(s => s.key === o.key && s.t === o.t));
+        // Foto yang sudah tersimpan di Drive: pakai alamat Drive-nya (sama dengan perangkat lain).
+        for (const [pid, url] of Object.entries(j.images || {})) {
+          if (pendingKey('img:' + pid)) continue;
+          setImageLocal(pid, url || null);
+          (url ? IDB.put(pid, url) : IDB.del(pid)).catch(() => {});
+        }
+        saveOut(); renderStatus();
+      }
+      setState('ok');
+      S.lastOk = Date.now();
+    } catch (e) {
+      setState('err', e.message);
+    } finally { S.flushing = false; }
+  }
+
+  function applyProducts(rows, full, count) {
+    const byId = new Map(state.products.map(p => [p.id, p]));
+    const seen = new Set();
+    let changed = false;
+    for (const r of rows) {
+      seen.add(r.id);
+      if (pendingKey('p:' + r.id)) continue;
+      if (!pendingKey('img:' + r.id)) {
+        const cur = images.get(r.id) || '';
+        if (r.img !== cur) {
+          if (!r.img && /^data:/.test(cur)) {
+            // Foto yang diambil sebelum tersambung belum pernah terkirim: kirim, jangan dihapus.
+            S.outbox.push({ key: 'img:' + r.id, t: Date.now(), op: 'img', pid: r.id, data: cur }); saveOut();
+          } else {
+            setImageLocal(r.id, r.img || null);
+            (r.img ? IDB.put(r.id, r.img) : IDB.del(r.id)).catch(() => {});
+            changed = true;
+          }
+        }
+      }
+      if (r.deleted) { if (byId.delete(r.id)) changed = true; continue; }
+      const units = (Array.isArray(r.units) ? r.units : []).map(u => ({ n: String(u.n || 'Satuan'), p: Number(u.p) || 0, ...(u.b ? { b: String(u.b) } : {}) })).filter(u => u.n);
+      if (!units.length || !r.name) continue;
+      byId.set(r.id, { id: r.id, cat: r.cat || 'lain', name: r.name, units });
+      changed = true;
+    }
+    // Tarikan penuh: barang yang tidak ada di server (dan bukan perubahan yang belum terkirim) dibuang.
+    if (full && count > 0) {
+      for (const id of [...byId.keys()]) if (!seen.has(id) && !pendingKey('p:' + id)) { byId.delete(id); changed = true; }
+    }
+    if (changed) { state.products = [...byId.values()]; reindex(); LS.set(K.products, state.products); }
+    return changed;
+  }
+
+  async function pull(full) {
+    if (!S.on || S.pulling) return;
+    S.pulling = true;
+    try {
+      const since = full ? 0 : S.since;
+      const j = await api('GET', { action: 'pull', since: String(since), today: state.today });
+      // Sheet baru & kosong: unggah seluruh daftar barang, kategori, dan nama toko dari perangkat ini.
+      if (j.full && j.count === 0 && state.products.length && !S.outbox.some(o => o.op === 'putProduct')) {
+        state.products.forEach(p => S.outbox.push({ key: 'p:' + p.id, t: Date.now(), op: 'putProduct', id: p.id, p: body(p) }));
+        S.outbox.push({ key: 'cats', t: Date.now(), op: 'cats', list: state.cats });
+        S.outbox.push({ key: 'store', t: Date.now(), op: 'store', name: state.storeName });
+        for (const [pid, data] of images) if (/^data:/.test(data)) S.outbox.push({ key: 'img:' + pid, t: Date.now(), op: 'img', pid, data });
+        saveOut();
+        toast(`Mengunggah ${state.products.length} barang ke Google Sheets…`);
+      } else {
+        let changed = applyProducts(j.products || [], j.full, j.count);
+        if (j.cats && !pendingKey('cats')) { const list = cleanCats(j.cats); if (list) { state.cats = list; LS.set(K.cats, list); ensureCat(); changed = true; } }
+        if (j.store && !pendingKey('store') && j.store !== state.storeName) { state.storeName = j.store; LS.set(K.name, j.store); renderHeader(); }
+        if (changed) { renderChips(); renderList(); renderCart(); if (dlgProd.open) renderProfile(); }
+      }
+      S.srvSales[state.today] = j.salesToday || [];
+      // simpan penjualan server hanya untuk 3 hari terakhir supaya penyimpanan HP tidak penuh
+      Object.keys(S.srvSales).sort().slice(0, -3).forEach(d => delete S.srvSales[d]);
+      LS.set(K_SALES, S.srvSales);
+      state.todaySales = localSales(state.today); renderHeader();
+      if (dlgHistory.open && hist.date === state.today) renderHistory();
+      S.since = j.now; LS.set(K_TIME, S.since);
+      setState(S.outbox.length ? S.state : 'ok');
+      S.lastOk = Date.now();
+    } catch (e) {
+      setState('err', e.message);
+    } finally { S.pulling = false; }
+    flush();
+  }
+
+  S.salesFor = d => {
+    const map = new Map();
+    for (const v of (S.srvSales[d] || [])) if (v && v.id) map.set(v.id, { ...v, _path: null });
+    for (const v of localSalesOnly(d)) map.set(v.id, v);
+    for (const o of S.outbox) if (o.op === 'delSale') map.delete(o.id);
+    return [...map.values()].sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  };
+  S.fetchSales = async d => {
+    try { const j = await api('GET', { action: 'sales', date: d }); S.srvSales[d] = j.sales || []; }
+    catch (e) { setState('err', e.message); }
+  };
+  S.test = async () => { await api('GET', { action: 'ping' }); };
+  S.pull = pull; S.flush = flush;
+  S.reset = () => { S.since = 0; LS.set(K_TIME, 0); };
+
+  setInterval(() => { if (S.on) { flush(); pull(false); } }, 20000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && S.on) pull(false); });
+  window.addEventListener('online', () => { if (S.on) { flush(); pull(false); } });
+  if (S.on) setTimeout(() => pull(true), 300);
+})();
+
 /* ================= Foto barang ================= */
 const images = new Map();     // pid -> dataURL (JPEG kecil)
 const thumbCache = new Map(); // pid -> blob URL (supaya HTML daftar tetap ringan)
@@ -2519,6 +2701,7 @@ function setImageLocal(pid, data) {
 }
 function thumbUrl(pid) {
   const d = images.get(pid); if (!d) return null;
+  if (/^https?:/.test(d)) return d;
   let u = thumbCache.get(pid);
   if (!u) { try { u = URL.createObjectURL(dataUrlToBlob(d)); } catch (e) { u = d; } thumbCache.set(pid, u); }
   return u;
@@ -2537,6 +2720,7 @@ async function fileToPhoto(file, max = 320, q = 0.72) {
 }
 function saveImage(pid, data) {
   setImageLocal(pid, data);
+  syncQueue('img:' + pid, { op: 'img', pid, data: data || '' });
   pendingImg.add(pid);
   IDB[data ? 'put' : 'del'](pid, data).catch(() => {});
   dbReady.then(d => {
@@ -2995,6 +3179,19 @@ function renderSettings() {
     <label class="check-row"><input type="checkbox" id="st-beep" ${settings.beep ? 'checked' : ''}><span>Bunyi “bip” saat barcode terbaca</span></label>
     <p class="note">Alat scanner USB/Bluetooth: colokkan/pasangkan, lalu scan kapan saja saat aplikasi terbuka.</p>
   </section>`;
+  if (!IN_CLAUDE) {
+    const sy = window.__swSync;
+    const n = sy ? sy.outbox.length : 0;
+    h += `<section class="set-sec"><h3 class="sub-title">Sinkron Google Sheets</h3>
+      <p class="note">Supaya barang, harga, barcode, <b>foto</b>, dan penjualan tersimpan aman dan sama di semua HP/tablet/laptop yang membuka link ini. Foto disimpan di Google Drive.</p>`;
+    if (sy && sy.on) {
+      h += `<div class="prn-status"><span class="dot${sy.state === 'err' ? '' : ' ok'}"></span>${sy.state === 'err' ? 'Gagal: ' + esc(sy.err) : sy.state === 'ok' ? 'Tersambung' : 'Menyambung…'}${n ? ` · ${n} perubahan menunggu dikirim` : ''}</div>`;
+    }
+    h += `<label class="field" for="st-api">URL web app Apps Script (berakhiran /exec)<input id="st-api" autocomplete="off" placeholder="https://script.google.com/macros/s/…/exec" value="${esc(settings.apiUrl || '')}"></label>
+      <label class="field" for="st-pin">PIN (sama dengan di Code.gs)<input id="st-pin" autocomplete="off" value="${esc(settings.apiPin || '')}"></label>
+      <div class="row-btns"><button type="button" class="btn primary sm" id="st-sync">${sy && sy.on ? 'Sinkron sekarang' : 'Sambungkan'}</button>${sy && sy.on ? '<button type="button" class="btn ghost sm" id="st-unsync">Putuskan</button>' : ''}</div>
+    </section>`;
+  }
   h += `<section class="set-sec"><h3 class="sub-title">Toko</h3><div class="row-btns"><button type="button" class="btn ghost sm" id="st-store">Ganti nama toko</button></div></section>`;
   $('#st-body').innerHTML = h;
 }
@@ -3024,6 +3221,27 @@ $('#st-body').addEventListener('click', async e => {
   const w = e.target.closest('[data-w]');
   if (w) { settings.width = Number(w.dataset.w); saveSettings(); renderSettings(); return; }
   const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'st-sync') {
+    const url = $('#st-api').value.trim(), pin = $('#st-pin').value.trim();
+    if (!/^https:\/\/script\.google(usercontent)?\.com\/.+/.test(url)) { toast('URL harus dari script.google.com dan berakhiran /exec.', 'err'); return; }
+    if (!pin) { toast('Isi PIN dulu.', 'err'); return; }
+    const first = url !== settings.apiUrl || pin !== settings.apiPin;
+    settings.apiUrl = url; settings.apiPin = pin; saveSettings();
+    b.disabled = true; b.textContent = 'Menyambung…';
+    try {
+      await window.__swSync.test();
+      if (first) window.__swSync.reset();
+      await window.__swSync.pull(true);
+      toast('Tersambung ke Google Sheets.');
+    } catch (err) { toast('Tidak tersambung: ' + err.message, 'err'); }
+    renderSettings(); renderStatus();
+    return;
+  }
+  if (b.id === 'st-unsync') {
+    settings.apiUrl = ''; settings.apiPin = ''; saveSettings();
+    renderSettings(); renderStatus(); toast('Sinkron Google Sheets diputuskan. Data tetap ada di perangkat ini.');
+    return;
+  }
   if (b.id === 'st-test') printTest();
   else if (b.id === 'st-store') { dlgSettings.close(); $('#mb-store').click(); }
   else if (b.id === 'st-connect') {
