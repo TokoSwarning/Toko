@@ -1994,7 +1994,7 @@ function showReceipt(sale, fromHistory) {
   nb.className = fromHistory ? 'btn ghost' : 'btn go';
   resetCopyBtn();
   receiptSale = sale;
-  $('#r-print').hidden = !printerUsable();
+  $('#r-print').hidden = IN_CLAUDE;
   dlgReceipt.showModal();
   setTimeout(() => nb.focus(), 20);
 }
@@ -2054,7 +2054,7 @@ function saleHTML(s) {
       <div class="sale-line"><small class="num">Tunai ${rp(s.paid)} · Kembali ${rp(s.change)}</small></div>
       <div class="sale-actions">
         <button type="button" class="btn ghost sm" data-hact="receipt" data-sid="${esc(s.id)}">Lihat struk</button>
-        ${printerUsable() ? `<button type="button" class="btn ghost sm" data-hact="print" data-sid="${esc(s.id)}">${ICON.printer}Cetak</button>` : ''}
+        ${!IN_CLAUDE ? `<button type="button" class="btn ghost sm" data-hact="print" data-sid="${esc(s.id)}">${ICON.printer}Cetak</button>` : ''}
         <button type="button" class="btn danger sm" data-hact="del" data-sid="${esc(s.id)}">Hapus transaksi</button>
       </div>
     </div></details>`;
@@ -2466,6 +2466,7 @@ const settings = Object.assign({
   beep: true,
 }, LS.get(K_SET, {}) || {});
 function saveSettings() { LS.set(K_SET, settings); }
+const IS_ANDROID = /Android/i.test(navigator.userAgent);
 const CAN = {
   ble: !IN_CLAUDE && !!navigator.bluetooth,
   serial: !IN_CLAUDE && !!navigator.serial,
@@ -2904,8 +2905,15 @@ function browserPrint(text) {
   window.print();
   setTimeout(done, 1500);
 }
+let pendingPrint = null; // struk yang menunggu dicetak selagi printer diatur
 async function printLines(lines, plainText) {
-  if (!printerUsable()) { toast('Printer belum diatur. Buka Setelan → Printer.', 'err'); return false; }
+  if (!printerUsable()) {
+    // Belum ada printer: buka pengaturan printer, lalu struk ini langsung dicetak setelah printer tersambung.
+    pendingPrint = { lines, plainText };
+    if (!dlgSettings.open) dlgSettings.showModal();
+    renderSettings();
+    return false;
+  }
   if (settings.printer === 'browser') { browserPrint(plainText); return true; }
   try {
     await sendBytes(escposBytes(lines, Number(settings.width) || 32), true);
@@ -2945,7 +2953,7 @@ $('#r-print').addEventListener('click', () => { if (receiptSale) printSale(recei
 
 /* ================= Jendela Setelan ================= */
 const PRN_OPTS = [
-  ['ble', 'Bluetooth (BLE)', 'Printer thermal Bluetooth. Chrome di HP Android atau laptop.', 'Butuh Google Chrome/Edge dan halaman HTTPS (GitHub Pages).'],
+  ['ble', 'Bluetooth', 'Printer struk kecil Bluetooth. Paling cocok untuk tablet/HP Android (pakai Chrome). Nyalakan Bluetooth & izinkan “Perangkat sekitar”/Lokasi saat diminta.','Butuh Google Chrome/Edge dan halaman HTTPS (GitHub Pages).'],
   ['serial', 'USB / kabel (atau Bluetooth yang sudah di-pair di Windows)', 'Printer dicolok ke laptop. Chrome/Edge di Windows.', 'Butuh Chrome/Edge di laptop dan halaman HTTPS.'],
   ['browser', 'Printer Windows (lewat jendela Cetak)', 'Pakai printer yang sudah terpasang drivernya. Pilih printer kasir di jendela Cetak.', 'Tidak tersedia di tampilan ini.'],
   ['rawbt', 'Aplikasi RawBT (Android)', 'Untuk printer Bluetooth lama yang tidak terdeteksi. Pasang aplikasi RawBT dari Play Store.', 'Hanya untuk HP Android.'],
@@ -2960,6 +2968,7 @@ function renderSettings() {
   if (!dlgSettings.open) return;
   const t = settings.printer;
   let h = '';
+  if (pendingPrint && !IN_CLAUDE) h += `<div class="warn-box"><b>Struk menunggu dicetak.</b> Pilih jenis printer di bawah${IS_ANDROID ? ' (tablet/HP Android: pilih <b>Bluetooth</b>)' : ''}, nyalakan printer, lalu tekan <b>Hubungkan printer</b> — struk langsung tercetak.</div>`;
   if (IN_CLAUDE) h += `<div class="warn-box"><b>Printer & kamera langsung tidak bisa dipakai di tampilan Claude ini.</b> Buka versi <b>index.html</b> di GitHub Pages lewat Google Chrome (HP Android atau laptop) untuk mencetak. Foto barang, scanner barcode USB/Bluetooth, dan “Foto barcode” tetap bisa dipakai di sini.</div>`;
   h += `<section class="set-sec"><h3 class="sub-title">${ICON.printer} Printer kasir</h3>`;
   if (t !== 'none' && CAN[t]) {
@@ -2974,7 +2983,7 @@ function renderSettings() {
   if (t !== 'none') {
     h += `<div class="field"><span>Lebar kertas</span><div class="seg"><button type="button" data-w="32" aria-pressed="${settings.width == 32}">58 mm</button><button type="button" data-w="48" aria-pressed="${settings.width == 48}">80 mm</button></div></div>`;
     h += `<div class="row-btns">`;
-    if (t === 'ble' || t === 'serial') h += `<button type="button" class="btn primary sm" id="st-connect">${prnConnected() ? 'Ganti printer' : 'Hubungkan printer'}</button>`;
+    if (t === 'ble' || t === 'serial') h += `<button type="button" class="btn primary sm" id="st-connect">${pendingPrint ? 'Hubungkan & cetak' : prnConnected() ? 'Ganti printer' : 'Hubungkan printer'}</button>`;
     h += `<button type="button" class="btn ghost sm" id="st-test">${ICON.printer}Cetak tes</button></div>`;
     if (t === 'serial') h += `<label class="field" for="st-baud">Kecepatan (baud) — biarkan 9600 kalau ragu<input id="st-baud" inputmode="numeric" value="${esc(settings.baud)}"></label>`;
     h += `<label class="check-row"><input type="checkbox" id="st-auto" ${settings.autoPrint ? 'checked' : ''}><span>Cetak otomatis setiap transaksi selesai<small>Kalau mati, tekan “Cetak” di jendela struk.</small></span></label>`;
@@ -2989,10 +2998,22 @@ function renderSettings() {
   h += `<section class="set-sec"><h3 class="sub-title">Toko</h3><div class="row-btns"><button type="button" class="btn ghost sm" id="st-store">Ganti nama toko</button></div></section>`;
   $('#st-body').innerHTML = h;
 }
-$('#btn-settings').addEventListener('click', () => { dlgSettings.showModal(); renderSettings(); });
+async function flushPending() {
+  const job = pendingPrint; pendingPrint = null;
+  if (!job) return;
+  const ok = await printLines(job.lines, job.plainText);
+  if (ok && dlgSettings.open) dlgSettings.close();
+}
+$('#btn-settings').addEventListener('click', () => { pendingPrint = null; dlgSettings.showModal(); renderSettings(); });
+dlgSettings.addEventListener('close', () => { pendingPrint = null; });
 $('#st-body').addEventListener('change', e => {
   const t = e.target;
-  if (t.name === 'prn') { settings.printer = t.value; prn.ch = null; saveSettings(); renderSettings(); }
+  if (t.name === 'prn') {
+    settings.printer = t.value; prn.ch = null; saveSettings(); renderSettings();
+    // RawBT & jendela Cetak tidak perlu "Hubungkan": struk yang menunggu langsung dicetak.
+    if (pendingPrint && (t.value === 'rawbt' || t.value === 'browser')) flushPending();
+    if (t.value === 'none') pendingPrint = null;
+  }
   else if (t.id === 'st-auto') { settings.autoPrint = t.checked; saveSettings(); }
   else if (t.id === 'st-scanadd') { settings.scanAdd = t.checked; saveSettings(); }
   else if (t.id === 'st-beep') { settings.beep = t.checked; saveSettings(); if (t.checked) beep(); }
@@ -3010,6 +3031,7 @@ $('#st-body').addEventListener('click', async e => {
       if (settings.printer === 'ble') { prn.dev = null; prn.ch = null; await connectBle(true); }
       else { prn.port = null; await connectSerial(true); }
       toast(`Printer tersambung: ${prn.name}.`);
+      if (pendingPrint) await flushPending();
     } catch (err) {
       const m = String(err && (err.message || err.name) || '');
       if (!/cancel|NotFoundError|No port selected/i.test(m + (err && err.name))) toast('Printer tidak tersambung: ' + m, 'err');
