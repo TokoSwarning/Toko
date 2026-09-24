@@ -1,0 +1,3037 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F3C22E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Kasir Toko Swarning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+:root{
+  --ground:#EEF1F6; --surface:#FFFFFF; --surface-2:#E6EAF2;
+  --ink:#131C33; --ink-2:#4C5670; --ink-3:#7A849B; --line:#D8DEE9;
+  --sign:#F3C22E; --sign-ink:#1A2340; --sign-btn:rgb(255 255 255 / .55); --sign-line:rgb(26 35 64 / .22); --dot-ok:#2E7D1E;
+  --door:#1D4FB0; --door-ink:#FFFFFF; --door-soft:#E2EAFA;
+  --lpg:#4A8A1F; --lpg-ink:#FFFFFF; --lpg-soft:#E4F0D8;
+  --danger:#B83227; --danger-soft:#FBE6E3; --danger-ink:#FFFFFF;
+  --tag:#FFF6D1; --tag-line:#D9B437; --tag-ink:#3A2E00;
+  --roof-a:#AEB6C3; --roof-b:#8E97A6;
+  --scrim:rgb(8 12 22 / .5);
+  --shadow:0 1px 2px rgb(19 28 51 / .06), 0 10px 28px rgb(19 28 51 / .10);
+  --gutter:16px;
+  --f-display:"Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;
+  --f-body:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0D121E; --surface:#151C2C; --surface-2:#1F283B;
+    --ink:#ECF0F8; --ink-2:#A6B0C6; --ink-3:#77829A; --line:#28324A;
+    --sign:#E3B226; --sign-ink:#171D33;
+    --door:#6B95FF; --door-ink:#0A1330; --door-soft:#1B2847;
+    --lpg:#8CC756; --lpg-ink:#0E1A06; --lpg-soft:#1C2D14;
+    --danger:#FF8A7A; --danger-soft:#3A1A17; --danger-ink:#2A0F0B;
+    --tag:#2B2613; --tag-line:#8A7224; --tag-ink:#F6D867;
+    --roof-a:#3A4254; --roof-b:#2A3140;
+    --shadow:0 1px 2px rgb(0 0 0 / .3), 0 10px 28px rgb(0 0 0 / .4);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0D121E; --surface:#151C2C; --surface-2:#1F283B;
+  --ink:#ECF0F8; --ink-2:#A6B0C6; --ink-3:#77829A; --line:#28324A;
+  --sign:#E3B226; --sign-ink:#171D33;
+  --door:#6B95FF; --door-ink:#0A1330; --door-soft:#1B2847;
+  --lpg:#8CC756; --lpg-ink:#0E1A06; --lpg-soft:#1C2D14;
+  --danger:#FF8A7A; --danger-soft:#3A1A17; --danger-ink:#2A0F0B;
+  --tag:#2B2613; --tag-line:#8A7224; --tag-ink:#F6D867;
+  --roof-a:#3A4254; --roof-b:#2A3140;
+  --shadow:0 1px 2px rgb(0 0 0 / .3), 0 10px 28px rgb(0 0 0 / .4);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;margin:0;-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled{cursor:default}
+:focus-visible{outline:3px solid var(--door);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+
+/* ——— Papan toko ——— */
+.roof{height:10px;background:repeating-linear-gradient(90deg,var(--roof-a) 0 9px,var(--roof-b) 9px 12px)}
+.sign{background:var(--sign);color:var(--sign-ink);border-bottom:5px solid var(--door);padding-inline:var(--gutter)}
+.sign-inner{max-width:1320px;margin-inline:auto;padding-block:14px 12px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 16px}
+.brand h1{font-family:var(--f-display);font-weight:800;font-size:clamp(32px,8.5vw,48px);line-height:.92;letter-spacing:.01em;text-transform:uppercase;margin:0;text-wrap:balance}
+.brand .sub{margin:6px 0 0;font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.78}
+.head-actions{display:flex;gap:8px}
+.sign-btn{display:inline-flex;align-items:center;gap:7px;height:42px;padding:0 14px;border-radius:12px;border:1.5px solid var(--sign-line);background:var(--sign-btn);color:var(--sign-ink);font-weight:700;font-size:15px}
+.sign-btn[aria-pressed="true"]{background:var(--sign-ink);color:var(--sign);border-color:var(--sign-ink)}
+.sign-btn:focus-visible{outline-color:var(--sign-ink)}
+.status{width:100%;margin:0;display:flex;flex-wrap:wrap;gap:2px 16px;font-size:13px;font-weight:600;border-top:1.5px dashed var(--sign-line);padding-top:8px}
+.status > span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:9px;height:9px;border-radius:50%;border:2px solid var(--sign-ink);display:inline-block}
+.dot.cloud{background:var(--dot-ok);border-color:var(--dot-ok)}
+.dot.connecting{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+
+/* ——— Tata letak ——— */
+.layout{max-width:1320px;margin-inline:auto;padding-inline:var(--gutter);padding-block:0 128px}
+.catalog{container-type:inline-size;min-width:0}
+@media (min-width:1000px){
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:24px;align-items:start;padding-block:0 48px}
+}
+
+.toolbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--ground);margin-inline:calc(-1 * var(--gutter));padding:12px var(--gutter) 10px;border-bottom:1px solid var(--line)}
+@media (min-width:1000px){.toolbar{margin-inline:0;padding-inline:0}}
+.search{position:relative}
+.search > svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-3);pointer-events:none}
+.search input{width:100%;height:48px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);padding:0 46px;font-size:16px}
+.search input::placeholder{color:var(--ink-3)}
+.search input:focus{border-color:var(--door);outline:none;box-shadow:0 0 0 3px var(--door-soft)}
+.search .clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:10px;border:0;background:transparent;color:var(--ink-2);display:grid;place-items:center}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-top:10px;scrollbar-width:none;margin-inline:calc(-1 * var(--gutter));padding-inline:var(--gutter);scroll-padding-inline:var(--gutter)}
+.chips::-webkit-scrollbar{display:none}
+@media (pointer:fine){
+  .chips{scrollbar-width:thin;padding-bottom:6px}
+  .chips::-webkit-scrollbar{display:block;height:6px}
+  .chips::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
+}
+@media (min-width:1000px){.chips{margin-inline:0;padding-inline:0}}
+.chip{flex:none;height:40px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.chip-n{font-size:12px;font-weight:700;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"]{background:var(--door);border-color:var(--door);color:var(--door-ink)}
+.chip[aria-pressed="true"] .chip-n{color:inherit;opacity:.75}
+.chip.add{border-style:dashed;border-color:var(--door);color:var(--door);background:transparent}
+
+#banners,#manage-bar{margin-top:14px}
+#banners{display:grid;gap:10px}
+#banners:empty{display:none}
+.banner{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:12px 14px;border-radius:14px;font-size:14px;line-height:1.5}
+.banner p{margin:0;flex:1 1 260px}
+.banner.tagged{background:var(--tag);border:1px solid var(--tag-line);color:var(--tag-ink)}
+.banner.info{background:var(--door-soft);border:1px solid var(--door);color:var(--ink)}
+.row-btns{display:flex;flex-wrap:wrap;gap:8px}
+
+/* ——— Tombol umum ——— */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:12px;font-weight:700;font-size:15px;border:1.5px solid transparent;background:transparent;text-decoration:none;white-space:nowrap}
+.btn.sm{min-height:36px;padding:0 12px;font-size:14px;border-radius:10px}
+.btn.primary{background:var(--door);color:var(--door-ink)}
+.btn.go{background:var(--lpg);color:var(--lpg-ink)}
+.btn.ghost{border-color:var(--line);color:var(--ink);background:var(--surface)}
+.banner .btn.ghost{background:transparent;border-color:currentColor;color:inherit}
+.btn.danger{border-color:var(--danger);color:var(--danger)}
+.btn.danger[data-armed="1"]{background:var(--danger);color:var(--surface)}
+.icon-btn{width:42px;height:42px;flex:none;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink)}
+.icon-btn:disabled{opacity:.35}
+
+/* ——— Daftar barang ——— */
+#list{scroll-margin-top:132px;padding-top:18px;display:grid;gap:14px}
+.list-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 12px}
+.list-head > div{display:grid;gap:4px;min-width:0}
+.cat-title{font-family:var(--f-display);font-weight:800;font-size:32px;text-transform:uppercase;letter-spacing:.01em;line-height:1;margin:0}
+.cat-hint{margin:0;color:var(--ink-2);font-size:14px}
+.group-title{font-family:var(--f-display);font-weight:700;font-size:20px;text-transform:uppercase;margin:6px 0 -4px;color:var(--ink-2);letter-spacing:.03em}
+.items{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.item{padding:14px 14px 10px;display:grid;gap:6px}
+.item + .item{border-top:1px solid var(--line)}
+.item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.item-name{margin:0;font-size:17px;font-weight:700;line-height:1.3;text-wrap:balance}
+.units{display:grid;gap:4px}
+.unit-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:4px 4px 4px 8px;margin-inline:-8px -4px;border-radius:12px;transition:background-color .15s}
+.unit-row.on{background:var(--door-soft)}
+.unit-name{font-size:14px;color:var(--ink-2);font-weight:600;line-height:1.25}
+.tag{display:inline-flex;align-items:baseline;gap:3px;min-height:40px;padding:4px 10px;border-radius:9px;border:1.5px dashed var(--tag-line);background:var(--tag);color:var(--tag-ink);font-family:var(--f-display);font-weight:700;font-size:21px;font-variant-numeric:tabular-nums;line-height:1.4;white-space:nowrap}
+.tag .rp{font-size:14px;font-weight:600;opacity:.75}
+.tag svg{align-self:center;opacity:.55;margin-left:3px}
+.tag:hover{border-style:solid}
+.tag-mini{min-height:0;padding:0 6px;font-size:16px;vertical-align:baseline}
+.tag-input{width:124px;height:40px;border-radius:9px;border:2px solid var(--door);background:var(--surface);color:var(--ink);font-family:var(--f-display);font-weight:700;font-size:21px;text-align:right;padding:0 10px;font-variant-numeric:tabular-nums;outline:none;box-shadow:0 0 0 3px var(--door-soft)}
+.stepper{display:flex;align-items:center;gap:4px}
+.step{width:44px;height:44px;border-radius:12px;border:0;display:grid;place-items:center;transition:transform .08s}
+.step.minus{background:var(--surface-2);color:var(--ink)}
+.step.plus{background:var(--door);color:var(--door-ink)}
+.step:disabled{opacity:.35}
+.step:active:not(:disabled){transform:scale(.93)}
+.qty{width:46px;height:44px;text-align:center;border:1.5px solid transparent;background:transparent;border-radius:10px;font-family:var(--f-display);font-weight:700;font-size:22px;font-variant-numeric:tabular-nums;color:var(--ink-3);padding:0}
+.unit-row.on .qty{color:var(--door);font-weight:800}
+
+/* ——— Mode atur: pilih banyak barang ——— */
+.item.managing{cursor:pointer;transition:background-color .12s}
+.item.managing .unit-row{grid-template-columns:minmax(0,1fr) auto;padding-left:46px}
+.item.sel{background:var(--door-soft)}
+.pick{display:flex;align-items:flex-start;gap:12px;flex:1 1 auto;min-width:0;border:0;background:transparent;padding:0;margin:0;text-align:left;color:inherit;cursor:pointer}
+.pick .box{flex:none;width:26px;height:26px;margin-top:-1px;border-radius:8px;border:2px solid var(--ink-3);background:var(--surface);color:transparent;display:grid;place-items:center;transition:background-color .12s,border-color .12s}
+.item.sel .pick .box{background:var(--door);border-color:var(--door);color:var(--door-ink)}
+.pick .item-name{display:block}
+.pick:focus-visible{outline:none}
+.pick:focus-visible .box{outline:3px solid var(--door);outline-offset:2px}
+.selbar{position:sticky;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:25;margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 12px;padding:12px 14px;border-radius:16px;background:var(--ink);color:var(--surface);box-shadow:var(--shadow)}
+.selbar-info{display:grid;gap:1px;min-width:0;flex:1 1 170px}
+.selbar-info b{font-size:16px}
+.selbar-info span{font-size:13px;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.selbar-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.selbar .btn.ghost{background:transparent;border-color:currentColor;color:inherit}
+.selbar .icon-btn{background:transparent;border-color:currentColor;color:inherit;width:36px;height:36px;border-radius:10px}
+.btn.danger-fill{background:var(--danger);border-color:var(--danger);color:var(--danger-ink)}
+.btn:disabled{opacity:.45;cursor:default}
+.bulk-list{margin:0;padding:0 0 0 18px;display:grid;gap:4px;font-size:15px}
+.bulk-list li::marker{color:var(--ink-3)}
+.bulk-more{list-style:none;margin-left:-18px;color:var(--ink-2);font-weight:600}
+.qty:focus{outline:none;border-color:var(--door);background:var(--surface);color:var(--ink)}
+.mini-btn{display:inline-flex;align-items:center;gap:5px;height:34px;padding:0 10px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);font-size:13px;font-weight:700;color:var(--door);flex:none}
+.add-row{width:100%;min-height:54px;border:1.5px dashed var(--door);border-radius:14px;background:transparent;color:var(--door);font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 14px}
+.empty{padding:28px 12px;text-align:center;color:var(--ink-2);display:grid;gap:12px;justify-items:center}
+.empty p{margin:0}
+
+@media (max-width:400px){
+  .item{padding-inline:12px}
+  .unit-row{gap:8px;margin-inline:-6px -4px;padding-left:6px}
+  .step{width:40px;height:40px}
+  .qty{width:38px}
+  .tag{font-size:19px;padding-inline:8px}
+  .tag svg{display:none}
+}
+@container (min-width:720px){
+  .item{grid-template-columns:minmax(0,1fr) minmax(0,430px);gap:16px;align-items:start;padding:12px 16px}
+  .item-head{padding-top:10px}
+  .item.managing .unit-row{padding-left:8px}
+}
+
+/* ——— Keranjang ——— */
+.cart{background:var(--surface);display:flex;flex-direction:column;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.cart-top{position:sticky;top:0;z-index:3;background:var(--surface);border-bottom:1px solid var(--line)}
+.grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:10px auto 0}
+.cart-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 12px}
+.cart-title{font-family:var(--f-display);font-weight:800;font-size:28px;text-transform:uppercase;margin:0;line-height:1}
+.cart-count{font-size:14px;color:var(--ink-2);font-weight:600;margin-top:2px}
+.cart-actions{display:flex;gap:8px;align-items:center}
+.lines{padding:0 16px;flex:none}
+.line{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:start;padding:11px 0;border-bottom:1px dashed var(--line)}
+.line:last-child{border-bottom:0}
+.line-name{font-weight:700;font-size:15px;line-height:1.3}
+.line-meta{font-size:13px;color:var(--ink-2);margin-top:2px}
+.line-right{display:grid;justify-items:end;gap:6px}
+.line-sub{font-family:var(--f-display);font-weight:700;font-size:21px;text-align:right;font-variant-numeric:tabular-nums;line-height:1.1}
+.stepper.sm .step{width:36px;height:36px;border-radius:10px}
+.stepper.sm .step.rm{background:var(--danger-soft);color:var(--danger)}
+.stepper.sm .n{min-width:32px;text-align:center;font-family:var(--f-display);font-weight:700;font-size:20px;font-variant-numeric:tabular-nums}
+.pay{border-top:1px solid var(--line);padding:14px 16px 12px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px;flex:none}
+.cart-foot{position:sticky;bottom:0;z-index:3;background:var(--surface);border-top:1px solid var(--line);padding:12px 16px 14px;flex:none}
+.cart-foot .finish{width:100%}
+.total-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.label{font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.07em;font-size:12.5px}
+.total-val{font-family:var(--f-display);font-weight:800;font-size:42px;line-height:1;font-variant-numeric:tabular-nums}
+.paid-field{display:grid;gap:7px}
+.money{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:12px;background:var(--ground);height:50px;padding:0 12px}
+.money > span{font-weight:700;color:var(--ink-2);margin-right:6px}
+.money input{flex:1;min-width:0;width:100%;border:0;background:transparent;font-family:var(--f-display);font-weight:700;font-size:24px;text-align:right;outline:none;font-variant-numeric:tabular-nums;padding:0}
+.money:focus-within{border-color:var(--door);box-shadow:0 0 0 3px var(--door-soft)}
+.money.sm{height:46px}
+.money.sm input{font-size:21px}
+.quick{display:flex;flex-wrap:wrap;gap:6px}
+.quick button{height:36px;padding:0 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.quick button[aria-pressed="true"]{border-color:var(--door);color:var(--door);background:var(--door-soft)}
+.change{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 12px;border-radius:12px;background:var(--surface-2)}
+.change-val{font-family:var(--f-display);font-weight:800;font-size:28px;font-variant-numeric:tabular-nums;line-height:1.1}
+.change.ok{background:var(--lpg-soft)} .change.ok .change-val{color:var(--lpg)}
+.change.bad{background:var(--danger-soft)} .change.bad .change-val{color:var(--danger)}
+.finish{height:58px;font-family:var(--f-display);font-weight:800;font-size:23px;text-transform:uppercase;letter-spacing:.04em;border-radius:14px;border:0;background:var(--lpg);color:var(--lpg-ink);display:flex;align-items:center;justify-content:center;gap:10px}
+.finish:disabled{opacity:.4}
+
+@media (min-width:1000px){
+  .cart{position:sticky;top:16px;margin-top:16px;max-height:calc(100dvh - 32px);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+  .grab,.cart-close{display:none}
+  .cartbar{display:none !important}
+  .scrim{display:none}
+}
+@media (max-width:999.98px){
+  .cart{position:fixed;left:0;right:0;bottom:0;z-index:60;max-height:92dvh;border-radius:20px 20px 0 0;box-shadow:0 -12px 40px rgb(0 0 0 / .28);transform:translateY(105%);visibility:hidden;transition:transform .28s ease,visibility 0s linear .28s}
+  .cart.open{transform:none;visibility:visible;transition:transform .28s ease}
+  .cart-top{border-radius:20px 20px 0 0}
+  .cart-foot{padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+}
+.cartbar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:30;height:64px;border-radius:16px;border:0;background:var(--door);color:var(--door-ink);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 14px 0 18px;box-shadow:var(--shadow);font-weight:700}
+.cartbar-left{display:flex;align-items:center;gap:10px;font-size:16px}
+.cartbar-total{font-family:var(--f-display);font-weight:800;font-size:27px;display:flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums}
+.cartbar.bump{animation:bump .22s ease}
+@keyframes bump{50%{transform:scale(1.025)}}
+.scrim{position:fixed;inset:0;background:var(--scrim);z-index:55;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.show{opacity:1;pointer-events:auto}
+
+/* ——— Dialog ——— */
+dialog.sheet{border:0;padding:0;width:min(580px,calc(100% - 32px));max-width:none;max-height:min(88dvh,820px);border-radius:20px;background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+dialog.sheet[open]{display:flex;flex-direction:column}
+dialog.sheet::backdrop{background:var(--scrim)}
+.sheet-form{display:flex;flex-direction:column;min-height:0;flex:1 1 auto;margin:0}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.sheet-title{font-family:var(--f-display);font-weight:800;font-size:27px;text-transform:uppercase;margin:0;line-height:1}
+.sheet-body{overflow:auto;padding:16px 18px 18px;display:grid;gap:16px;flex:1 1 auto;min-height:0;align-content:start}
+.sheet-foot{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;padding:14px 18px;border-top:1px solid var(--line)}
+.sheet-foot .btn{white-space:normal;text-align:center;min-height:44px;padding-block:6px}
+@media (max-width:640px){
+  dialog.sheet{width:100%;margin:auto 0 0;border-radius:20px 20px 0 0;max-height:94dvh;padding-bottom:env(safe-area-inset-bottom,0px)}
+}
+.field{display:grid;gap:7px;font-weight:700;font-size:14px}
+.field input:not(.bare),.field select{height:48px;border-radius:12px;border:1.5px solid var(--line);background:var(--ground);padding:0 12px;font-weight:500;font-size:16px;width:100%}
+.field input:focus,.field select:focus{border-color:var(--door);outline:none;box-shadow:0 0 0 3px var(--door-soft)}
+.hint{font-weight:500;color:var(--ink-2);font-size:13px}
+.unit-list{display:grid;gap:8px}
+.unit-edit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,150px) 42px;gap:8px;align-items:center}
+.form-err{margin:0;color:var(--danger);font-weight:700;font-size:14px}
+.form-err:empty{display:none}
+
+.date-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.date-row input{height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--ground);padding:0 12px;flex:1 1 160px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.stat{background:var(--surface-2);border-radius:12px;padding:10px 12px;display:grid;gap:2px}
+.stat.big{grid-column:1 / -1;background:var(--lpg-soft)}
+.stat b{font-family:var(--f-display);font-weight:800;font-size:26px;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat.big b{font-size:36px;color:var(--lpg)}
+.note{margin:0;font-size:13px;color:var(--ink-2)}
+.sub-title{font-family:var(--f-display);font-weight:700;font-size:19px;text-transform:uppercase;letter-spacing:.03em;margin:0 0 6px;color:var(--ink-2)}
+.top-list{margin:0;padding:0;list-style:none;display:grid;gap:4px;counter-reset:t}
+.top-list li{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.top-list li:last-child{border-bottom:0}
+.sales{display:grid;gap:8px}
+.sale{border:1px solid var(--line);border-radius:12px}
+.sale summary{list-style:none;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px;cursor:pointer}
+.sale summary::-webkit-details-marker{display:none}
+.sale[open] summary{border-bottom:1px dashed var(--line)}
+.sale-time{font-family:var(--f-display);font-weight:700;font-size:18px;color:var(--door);font-variant-numeric:tabular-nums}
+.sale-sum{font-size:14px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sale-total{font-family:var(--f-display);font-weight:700;font-size:20px;font-variant-numeric:tabular-nums}
+.sale-body{padding:10px 12px 12px;display:grid;gap:8px;font-size:14px}
+.sale-line{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.sale-line small{color:var(--ink-2)}
+.sale-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;padding-top:4px}
+
+.r-change{display:grid;justify-items:center;gap:2px;padding:14px;border-radius:14px;background:var(--lpg-soft);text-align:center}
+.r-change b{font-family:var(--f-display);font-weight:800;font-size:44px;line-height:1.05;color:var(--lpg);font-variant-numeric:tabular-nums}
+.r-meta{font-size:14px;color:var(--ink-2)}
+.receipt{width:100%;min-height:280px;font-family:var(--f-mono);font-size:13px;line-height:1.5;background:var(--ground);color:var(--ink);border:1.5px dashed var(--line);border-radius:12px;padding:14px;resize:vertical;white-space:pre;overflow:auto}
+
+/* ——— Foto barang, profil, barcode, setelan ——— */
+.search-row{display:flex;gap:8px;align-items:center}
+.search-row .search{flex:1 1 auto;min-width:0}
+.scan-btn{width:48px;height:48px;border-radius:14px;border:1.5px solid var(--door);background:var(--surface);color:var(--door);display:grid;place-items:center;flex:none}
+.thumb{width:44px;height:44px;border-radius:10px;object-fit:cover;flex:none;background:var(--surface-2);border:1px solid var(--line);display:block}
+.name-btn{display:flex;align-items:center;gap:10px;border:0;background:transparent;padding:0;margin:0;text-align:left;color:inherit;cursor:pointer;min-width:0;flex:1 1 auto}
+.name-btn:hover .item-name{text-decoration:underline;text-underline-offset:3px}
+.pick .thumb{margin-top:-6px}
+.p-photo-wrap{display:grid;gap:10px;justify-items:center}
+.p-photo{width:100%;max-width:260px;aspect-ratio:1;border-radius:16px;object-fit:cover;background:var(--surface-2);border:1px solid var(--line);display:block}
+.p-nophoto{width:100%;max-width:260px;aspect-ratio:1;border-radius:16px;border:2px dashed var(--line);display:grid;place-items:center;align-content:center;gap:6px;color:var(--ink-3);font-weight:600;font-size:14px;text-align:center;padding:12px}
+.p-meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;justify-content:center;color:var(--ink-2);font-size:14px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:var(--surface-2);font-size:13px;font-weight:700;color:var(--ink-2)}
+.p-units{display:grid;gap:8px}
+.p-unit{border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:grid;gap:8px}
+.p-unit.hl{border-color:var(--door);box-shadow:0 0 0 3px var(--door-soft)}
+.p-unit-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.p-unit-name{font-weight:700}
+.p-price{font-family:var(--f-display);font-weight:800;font-size:24px;font-variant-numeric:tabular-nums}
+.p-code{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--ink-2)}
+.code{font-family:var(--f-mono);font-size:13px;color:var(--ink);letter-spacing:.02em}
+.linkbar{margin-top:14px}
+.scan-video{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:14px;background:#000;display:block}
+.scan-status{margin:0;font-weight:600;font-size:14px;color:var(--ink-2)}
+.scan-result{border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:10px}
+.manual-row{display:flex;gap:8px}
+.manual-row input{flex:1 1 auto;min-width:0;height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--ground);padding:0 12px;font-family:var(--f-mono)}
+.unit-edit{grid-template-columns:minmax(0,1fr) minmax(0,150px) 42px}
+.unit-edit .bc{grid-column:1 / 3;display:flex;gap:8px;align-items:center}
+.unit-edit .bc input{flex:1 1 auto;min-width:0;height:40px;border-radius:10px;border:1.5px dashed var(--line);background:var(--surface);padding:0 10px;font-family:var(--f-mono);font-size:14px}
+.unit-edit .bc .icon-btn{width:40px;height:40px}
+.unit-edit + .unit-edit{border-top:1px dashed var(--line);padding-top:8px}
+.set-sec{display:grid;gap:10px}
+.set-sec + .set-sec{border-top:1px solid var(--line);padding-top:14px}
+.opt-list{display:grid;gap:8px}
+.opt{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;align-items:start;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}
+.opt input{margin-top:3px;width:18px;height:18px;accent-color:var(--door)}
+.opt b{font-size:15px}
+.opt small{grid-column:2;color:var(--ink-2);font-size:13px;line-height:1.4}
+.opt.off{opacity:.55;cursor:default}
+.opt:has(input:checked){border-color:var(--door);background:var(--door-soft)}
+.check-row{display:flex;gap:10px;align-items:flex-start;font-size:15px;font-weight:600;cursor:pointer}
+.check-row input{width:20px;height:20px;margin-top:1px;accent-color:var(--door);flex:none}
+.check-row small{display:block;font-weight:500;color:var(--ink-2);font-size:13px}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:8px 14px;font-weight:700;font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--door);color:var(--door-ink)}
+.prn-status{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
+.prn-status .dot{border-color:var(--ink-3)}
+.prn-status .dot.ok{background:var(--lpg);border-color:var(--lpg)}
+.warn-box{background:var(--tag);border:1px solid var(--tag-line);color:var(--tag-ink);border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5}
+#print-area{display:none}
+@media print{
+  @page{size:58mm auto;margin:0}
+  html.printing body > *:not(#print-area){display:none !important}
+  html.printing #print-area{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.35;white-space:pre;color:#000;background:#fff;padding:2mm}
+}
+
+/* ——— Toast ——— */
+.toast{position:fixed;inset:auto auto calc(92px + env(safe-area-inset-bottom,0px)) 50%;transform:translateX(-50%);margin:0;border:0;background:var(--ink);color:var(--surface);padding:12px 16px;border-radius:12px;font-weight:600;font-size:14px;z-index:100;max-width:calc(100% - 32px);width:max-content;box-shadow:var(--shadow);display:none;overflow:visible}
+.toast.show{display:flex;align-items:center;gap:14px;animation:toastIn .2s ease}
+.toast-act{flex:none;border:0;background:transparent;color:inherit;font:inherit;font-weight:800;text-decoration:underline;text-underline-offset:3px;padding:6px 2px;cursor:pointer}
+.toast.err{background:var(--danger);color:var(--surface)}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,12px)}}
+@media (min-width:1000px){.toast{bottom:24px}}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{transition:none !important;animation:none !important}
+}
+</style>
+
+</head>
+<body>
+<div class="roof" aria-hidden="true"></div>
+<header class="sign">
+  <div class="sign-inner">
+    <div class="brand">
+      <h1 id="store-name">Toko Swarning</h1>
+      <p class="sub">Sembako · Rokok · Gas LPG · Es Batu</p>
+    </div>
+    <div class="head-actions">
+      <button type="button" class="sign-btn" id="btn-history" data-icon="clock">Riwayat</button>
+      <button type="button" class="sign-btn" id="btn-manage" data-icon="sliders" aria-pressed="false">Atur</button>
+      <button type="button" class="sign-btn" id="btn-settings" data-icon="gear">Setelan</button>
+    </div>
+    <p class="status">
+      <span><span class="dot connecting" id="status-dot"></span><span id="status-text">Menghubungkan…</span></span>
+      <span id="today-sum" class="num">Hari ini Rp 0 · 0 transaksi</span>
+    </p>
+  </div>
+</header>
+
+<div class="layout">
+  <main class="catalog">
+    <div class="toolbar">
+      <div class="search-row">
+        <div class="search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="q" type="text" enterkeyhint="search" placeholder="Cari barang atau kode barcode…" autocomplete="off" aria-label="Cari barang atau kode barcode">
+          <button type="button" class="clear" id="q-clear" hidden aria-label="Hapus pencarian" data-icon="x"></button>
+        </div>
+        <button type="button" class="scan-btn" id="btn-scan" aria-label="Scan barcode" title="Scan barcode" data-icon="barcode"></button>
+      </div>
+      <div class="chips" id="chips" aria-label="Kategori barang"></div>
+    </div>
+    <div id="banners"></div>
+    <div id="link-bar" class="banner info linkbar" hidden>
+      <p id="link-text"></p>
+      <div class="row-btns"><button type="button" class="btn ghost sm" id="link-cancel">Batal</button></div>
+    </div>
+    <div id="manage-bar" class="banner info" hidden>
+      <p><b>Mode atur barang.</b> Ketuk barang untuk memilihnya (boleh banyak), lalu tekan <b>Hapus</b> di bawah. Ketuk “Ubah” untuk mengganti nama, kategori, atau satuan.</p>
+      <div class="row-btns">
+        <button type="button" class="btn primary sm" id="mb-add">+ Tambah barang</button>
+        <button type="button" class="btn ghost sm" id="mb-cat">+ Kategori</button>
+        <button type="button" class="btn ghost sm" id="mb-store">Nama toko</button>
+        <button type="button" class="btn ghost sm" id="mb-done">Selesai</button>
+      </div>
+    </div>
+    <section id="list" aria-label="Daftar barang"></section>
+    <div class="selbar" id="selbar" hidden role="region" aria-label="Barang yang dipilih">
+      <div class="selbar-info" aria-live="polite"><b id="sel-count">Belum ada yang dipilih</b><span id="sel-hint">Ketuk barang untuk memilih, lalu tekan Hapus.</span></div>
+      <div class="selbar-actions">
+        <button type="button" class="icon-btn" id="sel-clear" aria-label="Batalkan semua pilihan" data-icon="x" hidden></button>
+        <button type="button" class="btn ghost sm" id="sel-all">Pilih semua</button>
+        <button type="button" class="btn danger-fill sm" id="sel-del" disabled>Hapus</button>
+      </div>
+    </div>
+  </main>
+
+  <aside class="cart" id="cart" aria-label="Keranjang belanja">
+    <div class="cart-top">
+      <div class="grab" aria-hidden="true"></div>
+      <div class="cart-head">
+        <div>
+          <h2 class="cart-title">Keranjang</h2>
+          <div class="cart-count" id="cart-count">Kosong</div>
+        </div>
+        <div class="cart-actions">
+          <button type="button" class="btn ghost sm" id="cart-clear" hidden>Kosongkan</button>
+          <button type="button" class="icon-btn cart-close" id="cart-close" aria-label="Tutup keranjang" data-icon="x"></button>
+        </div>
+      </div>
+    </div>
+    <div class="lines" id="lines"></div>
+    <div class="pay">
+      <div class="total-row"><span class="label">Total</span><span class="total-val" id="total">Rp 0</span></div>
+      <div class="paid-field">
+        <label for="paid" class="label">Uang diterima</label>
+        <div class="money"><span>Rp</span><input id="paid" inputmode="numeric" autocomplete="off" placeholder="0" aria-describedby="paid-hint"></div>
+        <div class="quick" id="quick"></div>
+        <span class="hint" id="paid-hint">Kosongkan kalau pembeli bayar uang pas.</span>
+      </div>
+      <div class="change" id="change"><span class="label" id="change-label">Kembalian</span><span class="change-val" id="change-val">–</span></div>
+    </div>
+    <div class="cart-foot">
+      <button type="button" class="finish" id="finish" disabled>Selesai · Simpan</button>
+    </div>
+  </aside>
+</div>
+
+<button type="button" class="cartbar" id="cartbar" hidden aria-controls="cart">
+  <span class="cartbar-left"><span data-icon="cart"></span><span id="cb-count">0 barang</span></span>
+  <span class="cartbar-total"><span id="cb-total">Rp 0</span><span data-icon="chev"></span></span>
+</button>
+<div class="scrim" id="scrim"></div>
+
+<dialog id="dlg-history" class="sheet" aria-labelledby="h-title">
+  <div class="sheet-head"><h2 class="sheet-title" id="h-title">Riwayat Penjualan</h2><button type="button" class="icon-btn" data-close aria-label="Tutup" data-icon="x"></button></div>
+  <div class="sheet-body">
+    <div class="date-row">
+      <label for="h-date" class="label">Tanggal</label>
+      <input type="date" id="h-date">
+      <button type="button" class="btn ghost sm" id="h-today">Hari ini</button>
+    </div>
+    <div id="h-content" class="sheet-body" style="padding:0;overflow:visible"></div>
+  </div>
+</dialog>
+
+<dialog id="dlg-edit" class="sheet" aria-labelledby="edit-title">
+  <form id="form-edit" class="sheet-form" novalidate>
+    <div class="sheet-head"><h2 class="sheet-title" id="edit-title">Ubah barang</h2><button type="button" class="icon-btn" data-close aria-label="Tutup" data-icon="x"></button></div>
+    <div class="sheet-body">
+      <label class="field" for="f-name">Nama barang
+        <input id="f-name" autocomplete="off" placeholder="mis. Gudang Garam Surya 12">
+      </label>
+      <label class="field" for="f-cat">Kategori
+        <select id="f-cat"></select>
+      </label>
+      <div class="field">
+        <span>Satuan &amp; harga jual</span>
+        <div id="f-units" class="unit-list"></div>
+        <button type="button" class="btn ghost sm" id="f-add-unit" style="justify-self:start">+ Tambah satuan</button>
+        <span class="hint">Contoh satuan: Bungkus, Batang, Slop · Kg, Karung · Sachet, Renceng · Botol, Dus</span>
+      </div>
+      <p class="form-err" id="f-err" role="alert"></p>
+    </div>
+    <div class="sheet-foot">
+      <button type="button" class="btn danger" id="f-delete">Hapus barang</button>
+      <button type="submit" class="btn primary">Simpan</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-cat" class="sheet" aria-labelledby="c-title">
+  <form id="form-cat" class="sheet-form" novalidate>
+    <div class="sheet-head"><h2 class="sheet-title" id="c-title">Tambah kategori</h2><button type="button" class="icon-btn" data-close aria-label="Tutup" data-icon="x"></button></div>
+    <div class="sheet-body">
+      <label class="field" for="c-name">Nama kategori
+        <input id="c-name" maxlength="30" autocomplete="off" placeholder="mis. Pulsa & Token, Obat-obatan, Alat Tulis">
+      </label>
+      <label class="field" for="c-hint">Keterangan singkat <span class="hint">(boleh kosong)</span>
+        <input id="c-hint" maxlength="80" autocomplete="off" placeholder="mis. Voucher pulsa, token listrik, paket data">
+      </label>
+      <label class="field" for="c-unit">Satuan awal untuk barang baru <span class="hint">(pisahkan dengan koma)</span>
+        <input id="c-unit" maxlength="80" autocomplete="off" placeholder="mis. Pcs, Lusin">
+      </label>
+      <label class="field" for="c-pos">Letak di deretan kategori
+        <select id="c-pos"></select>
+      </label>
+      <p class="form-err" id="c-err" role="alert"></p>
+    </div>
+    <div class="sheet-foot">
+      <button type="button" class="btn danger" id="c-delete">Hapus kategori</button>
+      <button type="submit" class="btn primary" id="c-save">Simpan kategori</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-bulk" class="sheet" aria-labelledby="b-title">
+  <div class="sheet-head"><h2 class="sheet-title" id="b-title">Hapus barang?</h2><button type="button" class="icon-btn" data-close aria-label="Tutup" data-icon="x"></button></div>
+  <div class="sheet-body">
+    <p id="b-text" style="margin:0"></p>
+    <ul class="bulk-list" id="b-list"></ul>
+    <p class="note" id="b-note"></p>
+  </div>
+  <div class="sheet-foot">
+    <button type="button" class="btn ghost" data-close>Batal</button>
+    <button type="button" class="btn danger-fill" id="b-confirm">Hapus</button>
+  </div>
+</dialog>
+
+<dialog id="dlg-prod" class="sheet" aria-labelledby="p-title">
+  <div class="sheet-head"><h2 class="sheet-title" id="p-title">Barang</h2><button type="button" class="icon-btn" data-close aria-label="Tutup" data-icon="x"></button></div>
+  <div class="sheet-body" id="p-body"></div>
+  <div class="sheet-foot">
+    <button type="button" class="btn ghost" id="p-edit" data-icon="pencil">Ubah barang</button>
+    <button type="button" class="btn primary" data-close>Selesai</button>
+  </div>
+</dialog>
+<input type="file" id="photo-cam" accept="image/*" capture="environment" hidden>
+<input type="file" id="photo-gal" accept="image/*" hidden>
+<input type="file" id="scan-photo" accept="image/*" capture="environment" hidden>
+
+<dialog id="dlg-scan" class="sheet" aria-labelledby="sc-title">
+  <div class="sheet-head"><h2 class="sheet-title" id="sc-title">Scan barcode</h2><button type="button" class="icon-btn" data-close aria-label="Tutup" data-icon="x"></button></div>
+  <div class="sheet-body">
+    <video class="scan-video" id="sc-video" playsinline muted hidden></video>
+    <p class="scan-status" id="sc-status" aria-live="polite"></p>
+    <div id="sc-result"></div>
+    <div class="row-btns">
+      <button type="button" class="btn primary" id="sc-cam" data-icon="camera">Buka kamera</button>
+      <button type="button" class="btn ghost" id="sc-photo" data-icon="camera">Foto barcode</button>
+    </div>
+    <div class="field">
+      <label for="sc-manual">Atau ketik kode barcode</label>
+      <div class="manual-row"><input id="sc-manual" inputmode="numeric" autocomplete="off" placeholder="mis. 8998866200301"><button type="button" class="btn ghost" id="sc-manual-go">Cari</button></div>
+    </div>
+    <p class="note">Punya alat scanner barcode (USB/Bluetooth)? Tidak perlu buka jendela ini — scan saja langsung saat aplikasi terbuka.</p>
+  </div>
+</dialog>
+
+<dialog id="dlg-settings" class="sheet" aria-labelledby="st-title">
+  <div class="sheet-head"><h2 class="sheet-title" id="st-title">Setelan</h2><button type="button" class="icon-btn" data-close aria-label="Tutup" data-icon="x"></button></div>
+  <div class="sheet-body" id="st-body"></div>
+  <div class="sheet-foot"><span></span><button type="button" class="btn primary" data-close>Selesai</button></div>
+</dialog>
+
+<dialog id="dlg-store" class="sheet" aria-labelledby="s-title">
+  <form id="form-store" class="sheet-form" novalidate>
+    <div class="sheet-head"><h2 class="sheet-title" id="s-title">Nama toko</h2><button type="button" class="icon-btn" data-close aria-label="Tutup" data-icon="x"></button></div>
+    <div class="sheet-body">
+      <label class="field" for="f-store">Tampil di papan atas dan di struk
+        <input id="f-store" maxlength="40" autocomplete="off">
+      </label>
+    </div>
+    <div class="sheet-foot"><span></span><button type="submit" class="btn primary">Simpan</button></div>
+  </form>
+</dialog>
+
+<dialog id="dlg-receipt" class="sheet" aria-labelledby="r-title">
+  <div class="sheet-head"><h2 class="sheet-title" id="r-title">Transaksi tersimpan</h2><button type="button" class="icon-btn" data-close aria-label="Tutup" data-icon="x"></button></div>
+  <div class="sheet-body">
+    <div class="r-change"><span class="label">Kembalian</span><b id="r-change">Rp 0</b><span class="r-meta num" id="r-meta"></span></div>
+    <label class="label" for="r-text">Struk — bisa disalin ke WhatsApp</label>
+    <textarea id="r-text" class="receipt" readonly rows="14"></textarea>
+  </div>
+  <div class="sheet-foot">
+    <button type="button" class="btn ghost" id="r-copy" data-icon="copy">Salin struk</button>
+    <button type="button" class="btn ghost" id="r-print" data-icon="printer">Cetak</button>
+    <button type="button" class="btn go" id="r-new" data-close>Transaksi baru</button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" popover="manual" role="status" aria-live="polite"></div>
+<div id="print-area" aria-hidden="true"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ================= Data dasar ================= */
+const DEFAULT_CATS = [
+  { id:'rokok',    name:'Rokok',                 hint:'Per bungkus, per batang (ketengan), atau per slop. Tarif cukai 2026 sama dengan 2025.', units:[] },
+  { id:'sembako',  name:'Sembako',               hint:'Beras, gula, minyak goreng, telur, tepung, bawang.', units:[] },
+  { id:'bahankue', name:'Bahan Kue',             hint:'Gula halus, tepung ketan & maizena, pengembang, vanili, agar-agar.', units:[] },
+  { id:'mie',      name:'Mie Instan',            hint:'Per bungkus atau per dus.', units:[] },
+  { id:'bumbu',    name:'Bumbu Dapur',           hint:'Kecap, saus, penyedap, garam, santan, margarin.', units:[] },
+  { id:'kalengan', name:'Lauk Kaleng',           hint:'Sarden, kornet, sosis siap makan.', units:[] },
+  { id:'minuman',  name:'Minuman',               hint:'Air mineral, galon, teh botol, minuman sachet.', units:[] },
+  { id:'kopi',     name:'Kopi & Teh',            hint:'Sachet eceran atau per renceng.', units:[] },
+  { id:'susu',     name:'Susu & Sereal',         hint:'Susu kental manis, susu bubuk sachet, susu kotak.', units:[] },
+  { id:'jajan',    name:'Jajan & Snack',         hint:'Keripik, cokelat, jeli, permen.', units:[] },
+  { id:'biskuit',  name:'Biskuit & Wafer',       hint:'Biskuit, wafer, roti.', units:[] },
+  { id:'eskrim',   name:'Es Krim',               hint:'Harga per batang atau cup.', units:[] },
+  { id:'sabun',    name:'Sabun & Mandi',         hint:'Sabun mandi, sampo, pasta gigi, sikat gigi.', units:[] },
+  { id:'kosmetik', name:'Perawatan Diri',        hint:'Lotion, deodoran, cologne, cotton bud, alat cukur.', units:[] },
+  { id:'deterjen', name:'Deterjen & Kebersihan', hint:'Deterjen, pewangi, sabun cuci piring, pembersih lantai.', units:[] },
+  { id:'bayi',     name:'Bayi & Wanita',         hint:'Popok, minyak telon, pembalut.', units:[] },
+  { id:'obat',     name:'Obat & P3K',            hint:'Obat bebas warung: sakit kepala, flu, maag, masuk angin, koyo.', units:[] },
+  { id:'gas',      name:'Gas LPG & Es',          hint:'LPG 3 kg mengikuti HET NTB. Bright Gas, es batu.', units:[] },
+  { id:'plastik',  name:'Plastik & Kemasan',     hint:'Kresek, plastik gula/es per pak, gelas plastik, sedotan, karet, rafia.', units:[] },
+  { id:'atk',      name:'Alat Tulis',            hint:'Buku tulis, pulpen, pensil, lakban, kertas, materai.', units:[] },
+  { id:'lain',     name:'Lain-lain',             hint:'Obat nyamuk, baterai, lilin, tisu, lampu, alat kebersihan.', units:[] },
+];
+// Kategori versi 2 — untuk memperbarui keterangan kategori yang belum pernah diubah.
+const V2_CAT_HINTS = { biskuit: 'Biskuit, wafer, kue kering kemasan.', lain: 'Obat nyamuk, baterai, lilin, tisu, kresek, korek.' };
+// Kategori versi 1 — untuk memperbarui nama kategori yang belum pernah diubah.
+const V1_CATS = [
+  ['rokok','Rokok','Jual per bungkus, per batang (ketengan), atau per slop.'],
+  ['sembako','Sembako','Beras, gula, minyak goreng, telur, tepung.'],
+  ['mie','Mie & Bumbu','Mie instan per bungkus atau per dus, bumbu dapur.'],
+  ['minuman','Minuman','Air mineral, galon, minuman botol dan kotak.'],
+  ['kopi','Kopi, Teh & Susu','Sachet eceran atau per renceng.'],
+  ['jajan','Jajan & Snack','Snack, biskuit, wafer, permen.'],
+  ['sabun','Sabun & Perawatan','Sabun, sampo, pasta gigi, deterjen.'],
+  ['gas','Gas LPG & Es','LPG 3 kg mengikuti HET pangkalan. Es batu per kantong.'],
+  ['lain','Lain-lain','Obat nyamuk, baterai, lilin, tisu, kresek.'],
+];
+const DEFAULT_UNITS = { rokok:['Bungkus','Batang'], sembako:['Kg'], bahankue:['Bungkus'], eskrim:['Pcs'], kosmetik:['Pcs'], plastik:['Pak'], atk:['Pcs'], mie:['Bungkus','Dus (40)'], bumbu:['Botol'], kalengan:['Kaleng'], minuman:['Botol'], kopi:['Sachet','Renceng (10)'], susu:['Sachet','Renceng (10)'], jajan:['Bungkus'], biskuit:['Bungkus'], sabun:['Pcs'], deterjen:['Bungkus'], bayi:['Pak'], obat:['Strip'], gas:['Tabung'], lain:['Pcs'] };
+
+// Daftar barang hasil riset harga September 2026 (minimarket, harga pangan NTB, HET). Harga eceran warung, dibulatkan.
+const CATALOG = [
+  // ——— Rokok ———
+  ['rokok','Gudang Garam Surya 12',[['Bungkus',29000],['Batang',2500],['Slop (10 bks)',285000]]],
+  ['rokok','Gudang Garam Surya 16',[['Bungkus',38000],['Batang',2500],['Slop (10 bks)',375000]]],
+  ['rokok','Gudang Garam Filter International 12',[['Bungkus',27500],['Batang',2500]]],
+  ['rokok','Gudang Garam Merah 12',[['Bungkus',17500],['Batang',1500]]],
+  ['rokok','Gudang Garam Signature 12',[['Bungkus',26500],['Batang',2500]]],
+  ['rokok','Surya Pro Mild 16',[['Bungkus',31500],['Batang',2000]]],
+  ['rokok','Sampoerna A Mild 16',[['Bungkus',38000],['Batang',2500],['Slop (10 bks)',375000]]],
+  ['rokok','Sampoerna A Mild 12',[['Bungkus',28000],['Batang',2500]]],
+  ['rokok','Sampoerna Kretek 12',[['Bungkus',17000],['Batang',1500]]],
+  ['rokok','Sampoerna Legit Nira 12',[['Bungkus',14000],['Batang',1500]]],
+  ['rokok','Dji Sam Soe Kretek 12',[['Bungkus',22000],['Batang',2000]]],
+  ['rokok','Dji Sam Soe Magnum Filter 12',[['Bungkus',28500],['Batang',2500]]],
+  ['rokok','Dji Sam Soe Super Premium 12',[['Bungkus',23500],['Batang',2000]]],
+  ['rokok','Djarum Super 12',[['Bungkus',25500],['Batang',2500]]],
+  ['rokok','Djarum Super 16',[['Bungkus',35500],['Batang',2500]]],
+  ['rokok','Djarum Coklat 12',[['Bungkus',17000],['Batang',1500]]],
+  ['rokok','Djarum 76 Mangga 12',[['Bungkus',16500],['Batang',1500]]],
+  ['rokok','Djarum Black 16',[['Bungkus',37000],['Batang',2500]]],
+  ['rokok','LA Bold 16',[['Bungkus',33500],['Batang',2500]]],
+  ['rokok','LA Lights 16',[['Bungkus',37500],['Batang',2500]]],
+  ['rokok','Class Mild 16',[['Bungkus',32000],['Batang',2000]]],
+  ['rokok','U Mild 16',[['Bungkus',30500],['Batang',2000]]],
+  ['rokok','Marlboro Merah 20',[['Bungkus',55000],['Batang',3000]]],
+  ['rokok','Marlboro Filter Black 20',[['Bungkus',43500],['Batang',2500]]],
+  ['rokok','Esse Change 20',[['Bungkus',45000],['Batang',2500]]],
+  ['rokok','Dunhill Fine Cut Mild 20',[['Bungkus',42500],['Batang',2500]]],
+  ['rokok','Tembakau Iris Lombok',[['Ons',15000],['1/4 Kg',35000]]],
+  ['rokok','Kertas Papir Linting',[['Pak',2000]]],
+  ['rokok','Korek Api Gas',[['Pcs',3000]]],
+  ['rokok','Gudang Garam Surya Coklat 12',[['Bungkus',28000],['Batang',2500]]],
+  ['rokok','Gudang Garam Mild Shiver 16',[['Bungkus',33500],['Batang',2500]]],
+  ['rokok','Gudang Garam Professional 16',[['Bungkus',33000],['Batang',2500]]],
+  ['rokok','Gudang Garam Signature Mild Blue 16',[['Bungkus',33500],['Batang',2500]]],
+  ['rokok','Gudang Garam Deluxe 12',[['Bungkus',17000],['Batang',1500]]],
+  ['rokok','Sampoerna Mild Menthol Burst 16',[['Bungkus',39000],['Batang',2500]]],
+  ['rokok','Sampoerna A Ultra Mild 16',[['Bungkus',33500],['Batang',2500]]],
+  ['rokok','Sampoerna Splash Tropical 16',[['Bungkus',34000],['Batang',2500]]],
+  ['rokok','Sampoerna Avolution 20',[['Bungkus',47500],['Batang',2500]]],
+  ['rokok','Dji Sam Soe Magnum Kretek 12',[['Bungkus',18500],['Batang',2000]]],
+  ['rokok','Dji Sam Soe Magnum Coklat 12',[['Bungkus',14500],['Batang',1500]]],
+  ['rokok','Dji Sam Soe Super Premium 16',[['Bungkus',28500],['Batang',2000]]],
+  ['rokok','Djarum Super Espresso 12',[['Bungkus',19000],['Batang',2000]]],
+  ['rokok','Djarum Super Mild Black 12',[['Bungkus',25000],['Batang',2500]]],
+  ['rokok','Djarum Coklat Extra 12',[['Bungkus',17000],['Batang',1500]]],
+  ['rokok','Djarum 76 Madu Hitam 12',[['Bungkus',15500],['Batang',1500]]],
+  ['rokok','Djarum 76 Apel 12',[['Bungkus',15000],['Batang',1500]]],
+  ['rokok','Djarum Black Cappuccino 16',[['Bungkus',37500],['Batang',2500]]],
+  ['rokok','LA Ice 16',[['Bungkus',37000],['Batang',2500]]],
+  ['rokok','LA Bold 20',[['Bungkus',42000],['Batang',2500]]],
+  ['rokok','Class Mild 12',[['Bungkus',24000],['Batang',2000]]],
+  ['rokok','Marlboro Filter Black 12',[['Bungkus',26500],['Batang',2500]]],
+  ['rokok','Marlboro Filter Black 16',[['Bungkus',35000],['Batang',2500]]],
+  ['rokok','Marlboro Lights 20',[['Bungkus',54500],['Batang',3000]]],
+  ['rokok','Marlboro Ice Burst 20',[['Bungkus',54500],['Batang',3000]]],
+  ['rokok','Marlboro Crafted Kretek 12',[['Bungkus',13000],['Batang',1500]]],
+  ['rokok','Esse Change Grape 20',[['Bungkus',45000],['Batang',2500]]],
+  ['rokok','Esse Blue Change 20',[['Bungkus',44000],['Batang',2500]]],
+  ['rokok','Esse Berry Pop 16',[['Bungkus',37500],['Batang',2500]]],
+  ['rokok','Dunhill Mild 16',[['Bungkus',31500],['Batang',2000]]],
+  ['rokok','Dunhill Fine Cut Filter 12',[['Bungkus',24500],['Batang',2500]]],
+  ['rokok','Camel Yellow 20',[['Bungkus',31000],['Batang',2000]]],
+  ['rokok','Camel Mild Option Purple 12',[['Bungkus',21000],['Batang',2000]]],
+  ['rokok','Lucky Strike Filter 20',[['Bungkus',32500],['Batang',2000]]],
+  ['rokok','Wismilak Diplomat 12',[['Bungkus',27000],['Batang',2500]]],
+  ['rokok','Aroma Bold 16',[['Bungkus',24500],['Batang',2000]]],
+  ['rokok','Envio Mild 16',[['Bungkus',26000],['Batang',2000]]],
+  ['rokok','Juara Teh Manis 12',[['Bungkus',15500],['Batang',1500]]],
+  ['rokok','HS Kretek 12',[['Bungkus',10500],['Batang',1000]]],
+  ['rokok','Win Kretek Berry 12',[['Bungkus',11000],['Batang',1000]]],
+  ['rokok','Bentoel Sejati 12',[['Bungkus',10000],['Batang',1000]]],
+  ['rokok','Korek Api Cricket',[['Pcs',5000]]],
+
+  // ——— Sembako ———
+  ['sembako','Beras Premium',[['Kg',15000],['Karung 5 kg',74000],['Karung 25 kg',365000]]],
+  ['sembako','Beras Medium',[['Kg',13500],['Karung 25 kg',330000]]],
+  ['sembako','Beras SPHP Bulog 5 kg',[['Karung',62500]]],
+  ['sembako','Gula Pasir',[['Kg',18500],['1/2 Kg',9500]]],
+  ['sembako','Gulaku Premium 1 kg',[['Bungkus',19000]]],
+  ['sembako','Minyakita 1 L',[['Pouch',15700],['Dus (12)',186000]]],
+  ['sembako','Minyak Goreng Bimoli 2 L',[['Pouch',46000]]],
+  ['sembako','Minyak Goreng Fortune 2 L',[['Pouch',43000]]],
+  ['sembako','Minyak Goreng Curah',[['Kg',20000],['1/2 Kg',10500]]],
+  ['sembako','Telur Ayam',[['Butir',2000],['Rak (30 butir)',57000]]],
+  ['sembako','Tepung Terigu Segitiga Biru 1 kg',[['Bungkus',14000]]],
+  ['sembako','Tepung Terigu Curah',[['Kg',10500]]],
+  ['sembako','Tepung Beras Rose Brand 500 g',[['Bungkus',8000]]],
+  ['sembako','Tepung Tapioka Rose Brand 500 g',[['Bungkus',7500]]],
+  ['sembako','Kacang Hijau',[['Kg',28000],['1/4 Kg',7000]]],
+  ['sembako','Bawang Merah',[['Ons',4000],['Kg',36000]]],
+  ['sembako','Bawang Putih',[['Ons',4500],['Kg',40000]]],
+  ['sembako','Beras Ketan Putih',[['Kg',18000],['1/2 Kg',9000]]],
+  ['sembako','Gula Merah',[['Ons',2500],['Kg',22000]]],
+  ['sembako','Kacang Tanah',[['1/4 Kg',8000],['Kg',32000]]],
+  ['sembako','Kedelai',[['Kg',13000]]],
+  ['sembako','Telur Bebek',[['Butir',3500]]],
+  ['sembako','Minyak Goreng Sania 2 L',[['Pouch',43500]]],
+  ['sembako','Minyak Goreng Filma 2 L',[['Pouch',44000]]],
+  ['sembako','Minyak Goreng Sunco 2 L',[['Pouch',47500]]],
+  ['sembako','Minyak Goreng Tropical 2 L',[['Botol',47000]]],
+  ['sembako','Minyak Goreng Bimoli 1 L',[['Pouch',24000]]],
+  ['sembako','Tepung Terigu Cakra Kembar 1 kg',[['Bungkus',15500]]],
+  ['sembako','Tepung Terigu Kunci Biru 1 kg',[['Bungkus',13500]]],
+  ['sembako','Bawang Bombay',[['Ons',3500],['Kg',32000]]],
+  ['sembako','Cabai Rawit',[['Ons',5000],['Kg',48000]]],
+  ['sembako','Cabai Merah Keriting',[['Ons',4500],['Kg',45000]]],
+
+  // ——— Bahan Kue ———
+  ['bahankue','Gula Halus Rose Brand 500 g',[['Bungkus',14000]]],
+  ['bahankue','Tepung Ketan Rose Brand 500 g',[['Bungkus',9500]]],
+  ['bahankue','Tepung Maizena 150 g',[['Bungkus',7000]]],
+  ['bahankue','Baking Powder Koepoe 45 g',[['Pcs',7500]]],
+  ['bahankue','Soda Kue Koepoe 81 g',[['Pcs',6000]]],
+  ['bahankue','SP Koepoe 30 g',[['Pcs',10000]]],
+  ['bahankue','Ovalet Koepoe 30 g',[['Pcs',9000]]],
+  ['bahankue','Perisa Vanili Koepoe 20 g',[['Botol',8000]]],
+  ['bahankue','Vanili Bubuk Sachet',[['Sachet',1000]]],
+  ['bahankue','Fermipan 11 g',[['Sachet',3000]]],
+  ['bahankue','Pewarna Makanan Koepoe',[['Botol',5000]]],
+  ['bahankue','Nutrijell',[['Bungkus',5000]]],
+  ['bahankue','Agar-agar Swallow',[['Bungkus',4500]]],
+  ['bahankue','Meses Cokelat Ceres 90 g',[['Bungkus',11000]]],
+  ['bahankue','Keju Parut Emina 160 g',[['Bungkus',14500]]],
+  ['bahankue','Mentega Palmia 200 g',[['Sachet',8500]]],
+
+  // ——— Mie Instan ———
+  ['mie','Indomie Goreng',[['Bungkus',3500],['Dus (40)',135000]]],
+  ['mie','Indomie Goreng Jumbo',[['Bungkus',4500]]],
+  ['mie','Indomie Soto',[['Bungkus',3500],['Dus (40)',120000]]],
+  ['mie','Indomie Ayam Bawang',[['Bungkus',3500],['Dus (40)',120000]]],
+  ['mie','Indomie Kari Ayam',[['Bungkus',3500],['Dus (40)',124000]]],
+  ['mie','Mie Sedaap Goreng',[['Bungkus',3500],['Dus (40)',120000]]],
+  ['mie','Mie Sedaap Soto',[['Bungkus',3500],['Dus (40)',115000]]],
+  ['mie','Mie Sedaap Kari Spesial',[['Bungkus',3500],['Dus (40)',120000]]],
+  ['mie','Sarimi Isi 2 Ayam Kecap',[['Bungkus',4500]]],
+  ['mie','Pop Mie Rasa Ayam',[['Cup',6500]]],
+  ['mie','Mie Sedaap Cup Soto',[['Cup',6000]]],
+  ['mie','Indomie Goreng Rendang',[['Bungkus',4000]]],
+  ['mie','Indomie Goreng Aceh',[['Bungkus',4000]]],
+  ['mie','Indomie Goreng Cabe Ijo',[['Bungkus',4000]]],
+  ['mie','Indomie Soto Lamongan',[['Bungkus',3500]]],
+  ['mie','Indomie Kaldu Ayam',[['Bungkus',3500]]],
+  ['mie','Indomie Ayam Spesial',[['Bungkus',3500]]],
+  ['mie','Mie Sedaap Ayam Bawang',[['Bungkus',3500]]],
+  ['mie','Mie Sedaap Baso Spesial',[['Bungkus',3500]]],
+  ['mie','Mie Sedaap Korean Spicy',[['Bungkus',4500]]],
+  ['mie','Supermi Ayam Bawang',[['Bungkus',3000]]],
+  ['mie','Sarimi Ayam Bawang',[['Bungkus',3000]]],
+  ['mie','Sukses Isi 2 Ayam Kecap',[['Bungkus',4500]]],
+  ['mie','Gaga 100 Mie Goreng Jalapeno',[['Bungkus',4000]]],
+  ['mie','Pop Mie Rasa Baso',[['Cup',6500]]],
+  ['mie','Samyang Buldak Hot Chicken',[['Bungkus',26000]]],
+  ['mie','Nongshim Shin Ramyun',[['Bungkus',15000]]],
+  ['mie','Mie Telur Cap 3 Ayam 200 g',[['Bungkus',8000]]],
+  ['mie','Bihun Jagung 175 g',[['Bungkus',6500]]],
+
+  // ——— Bumbu Dapur ———
+  ['bumbu','Kecap Manis Bango 220 ml',[['Pouch',11500]]],
+  ['bumbu','Kecap Manis Sedaap 550 ml',[['Pouch',19000]]],
+  ['bumbu','Saus Sambal ABC 135 ml',[['Botol',9500]]],
+  ['bumbu','Saus Tomat Del Monte 135 ml',[['Botol',7000]]],
+  ['bumbu','Royco Kaldu Ayam',[['Sachet',500],['Renceng (12)',6000]]],
+  ['bumbu','Masako Ayam',[['Sachet',500],['Renceng (12)',6000]]],
+  ['bumbu','Ajinomoto 50 g',[['Bungkus',4000]]],
+  ['bumbu','Garam Dapur 250 g',[['Bungkus',3000]]],
+  ['bumbu','Blue Band Serbaguna 200 g',[['Sachet',10000]]],
+  ['bumbu','Santan Kara 65 ml',[['Pcs',3500]]],
+  ['bumbu','Bumbu Racik Indofood',[['Sachet',2500]]],
+  ['bumbu','Merica Bubuk Ladaku',[['Sachet',1000]]],
+  ['bumbu','Kecap Manis ABC 520 ml',[['Pouch',20000]]],
+  ['bumbu','Kecap Manis Bango 520 ml',[['Pouch',22500]]],
+  ['bumbu','Kecap Bango Sachet',[['Sachet',1000]]],
+  ['bumbu','Saus Sambal ABC 335 ml',[['Botol',18000]]],
+  ['bumbu','Saus Sambal Dua Belibis 135 ml',[['Botol',11000]]],
+  ['bumbu','Saus Sambal Sachet',[['Sachet',500]]],
+  ['bumbu','Mayones Maestro 100 g',[['Pouch',6000]]],
+  ['bumbu','Ajinomoto 250 g',[['Bungkus',17000]]],
+  ['bumbu','Ajinomoto Sachet',[['Sachet',500]]],
+  ['bumbu','Royco Kaldu Sapi',[['Sachet',500],['Renceng (12)',6000]]],
+  ['bumbu','Masako Sapi',[['Sachet',500],['Renceng (12)',6000]]],
+  ['bumbu','Garam Refina 500 g',[['Bungkus',6000]]],
+  ['bumbu','Terasi Sachet',[['Sachet',1000]]],
+  ['bumbu','Bumbu Nasi Goreng Sajiku',[['Sachet',2500]]],
+  ['bumbu','Bumbu Bamboe Rendang',[['Sachet',6500]]],
+  ['bumbu','Tepung Bumbu Sajiku 80 g',[['Bungkus',4000]]],
+  ['bumbu','Tepung Bumbu Kobe 75 g',[['Bungkus',4000]]],
+  ['bumbu','Santan Sasa 200 ml',[['Kotak',18500]]],
+  ['bumbu','Cuka Makan Dixi',[['Botol',4000]]],
+  ['bumbu','Ketumbar Bubuk Desaku',[['Sachet',1000]]],
+  ['bumbu','Kunyit Bubuk Desaku',[['Sachet',1000]]],
+
+  // ——— Lauk Kaleng ———
+  ['kalengan','Sarden ABC 425 g',[['Kaleng',29500]]],
+  ['kalengan','Sarden ABC 155 g',[['Kaleng',12000]]],
+  ['kalengan','Sarden Maya 155 g',[['Kaleng',12500]]],
+  ['kalengan','Kornet Pronas 198 g',[['Kaleng',25000]]],
+  ['kalengan','Sosis So Nice',[['Pcs',2000]]],
+  ['kalengan','Sarden Maya 425 g',[['Kaleng',28500]]],
+  ['kalengan','Sarden Fiesta Cabai 155 g',[['Kaleng',11500]]],
+  ['kalengan','Sarden Botan 155 g',[['Kaleng',13000]]],
+  ['kalengan','Kornet Cip 198 g',[['Kaleng',22000]]],
+  ['kalengan','Sosis Kanzler Singles',[['Pcs',8500]]],
+  ['kalengan','Sosis Fiesta Ready To Go',[['Pcs',9500]]],
+  ['kalengan','Bubur Ayam Instan Sedaap',[['Cup',6000]]],
+
+  // ——— Minuman ———
+  ['minuman','Le Minerale 600 ml',[['Botol',3500],['Dus (24)',58000]]],
+  ['minuman','Aqua 600 ml',[['Botol',4000],['Dus (24)',64000]]],
+  ['minuman','Aqua 1500 ml',[['Botol',7000],['Dus (12)',68000]]],
+  ['minuman','Crystalline 600 ml',[['Botol',3500]]],
+  ['minuman','Le Minerale Galon 15 L',[['Galon',23000]]],
+  ['minuman','Aqua Galon 19 L (Isi Ulang)',[['Galon',23000]]],
+  ['minuman','Coca-Cola 390 ml',[['Botol',6500]]],
+  ['minuman','Sprite 390 ml',[['Botol',6500]]],
+  ['minuman','Teh Pucuk Harum 350 ml',[['Botol',4500],['Dus (24)',90000]]],
+  ['minuman','Teh Botol Sosro Kotak 250 ml',[['Kotak',4000]]],
+  ['minuman','Ichi Ocha 350 ml',[['Botol',4000]]],
+  ['minuman','Floridina Orange 350 ml',[['Botol',3500]]],
+  ['minuman','Mizone 500 ml',[['Botol',6000]]],
+  ['minuman','Pocari Sweat 350 ml',[['Botol',7500]]],
+  ['minuman','Good Day Cappuccino Botol 250 ml',[['Botol',7000]]],
+  ['minuman','Larutan Cap Kaki Tiga 320 ml',[['Botol',7500]]],
+  ['minuman','Kratingdaeng 150 ml',[['Botol',6000]]],
+  ['minuman','Extra Joss',[['Sachet',1500],['Renceng (12)',16000]]],
+  ['minuman','Nutrisari',[['Sachet',2000],['Renceng (10)',18000]]],
+  ['minuman','Marimas',[['Sachet',500],['Renceng (10)',4500]]],
+  ['minuman','Coca-Cola Botol Kaca 193 ml',[['Botol',4500]]],
+  ['minuman','Fanta Botol Kaca 193 ml',[['Botol',4500]]],
+  ['minuman','Sprite Botol Kaca 193 ml',[['Botol',4500]]],
+  ['minuman','Coca-Cola 1,5 L',[['Botol',16000]]],
+  ['minuman','Fanta Stroberi 390 ml',[['Botol',6500]]],
+  ['minuman','Big Cola 535 ml',[['Botol',5000]]],
+  ['minuman','Aqua 330 ml',[['Botol',3000]]],
+  ['minuman','Le Minerale 1,5 L',[['Botol',6500]]],
+  ['minuman','Club 600 ml',[['Botol',3000]]],
+  ['minuman','Teh Gelas Cup',[['Cup',1500]]],
+  ['minuman','Ale-Ale 200 ml',[['Cup',1500]]],
+  ['minuman','S-Tee 350 ml',[['Botol',3500]]],
+  ['minuman','Nu Green Tea 450 ml',[['Botol',6500]]],
+  ['minuman','Teh Botol Sosro 450 ml',[['Botol',6000]]],
+  ['minuman','Teh Kotak Ultra 300 ml',[['Kotak',4500]]],
+  ['minuman','Okky Jelly Drink',[['Pcs',1500]]],
+  ['minuman','Hydro Coco 250 ml',[['Botol',8000]]],
+  ['minuman','Kopi Kenangan 220 ml',[['Botol',8000]]],
+  ['minuman','Nescafé Kaleng Original 240 ml',[['Kaleng',7500]]],
+  ['minuman','M-150 150 ml',[['Botol',6000]]],
+  ['minuman','Kuku Bima Ener-G',[['Sachet',1500],['Renceng (6)',8500]]],
+  ['minuman','Hemaviton Energy Drink',[['Sachet',1500]]],
+  ['minuman','Pop Ice',[['Sachet',1000],['Renceng (10)',9500]]],
+  ['minuman','Jasjus',[['Sachet',500],['Renceng (10)',4500]]],
+
+  // ——— Kopi & Teh ———
+  ['kopi','Kapal Api Special Mix',[['Sachet',2000],['Renceng (10)',19000]]],
+  ['kopi','Kopi ABC Susu',[['Sachet',2000],['Renceng (10)',19000]]],
+  ['kopi','Nescafé Original 3in1',[['Sachet',2000],['Renceng (10)',19500]]],
+  ['kopi','Good Day Cappuccino',[['Sachet',2500],['Renceng (10)',23500]]],
+  ['kopi','Luwak White Koffie',[['Sachet',2000],['Renceng (10)',19000]]],
+  ['kopi','Torabika Creamy Latte',[['Sachet',2000],['Renceng (10)',19000]]],
+  ['kopi','Top Kopi Susu',[['Sachet',1500],['Renceng (10)',14000]]],
+  ['kopi','Kopi Bubuk Kapal Api 165 g',[['Bungkus',28000]]],
+  ['kopi','Teh Celup Sariwangi (25)',[['Kotak',7500]]],
+  ['kopi','Kopi Bubuk Kapal Api Special 250 g',[['Bungkus',43000]]],
+  ['kopi','Kopi ABC Mocca',[['Sachet',2000],['Renceng (10)',19000]]],
+  ['kopi','Good Day Mocacinno',[['Sachet',2500],['Renceng (10)',23500]]],
+  ['kopi','Indocafe Coffeemix',[['Sachet',2000],['Renceng (10)',19000]]],
+  ['kopi','Torabika Cappuccino',[['Sachet',2500],['Renceng (10)',23000]]],
+  ['kopi','Nescafé Classic Sachet 2 g',[['Sachet',1500]]],
+  ['kopi','Max Tea Teh Tarik',[['Sachet',2000],['Renceng (10)',19000]]],
+  ['kopi','Teh Celup Sosro (25)',[['Kotak',7500]]],
+  ['kopi','Teh Celup Tong Tji (25)',[['Kotak',8000]]],
+
+  // ——— Susu & Sereal ———
+  ['susu','SKM Frisian Flag Sachet',[['Sachet',1500],['Renceng (6)',9000]]],
+  ['susu','SKM Frisian Flag Kaleng 370 g',[['Kaleng',13500]]],
+  ['susu','SKM Frisian Flag Pouch 545 g',[['Pouch',20000]]],
+  ['susu','Dancow Fortigro Sachet',[['Sachet',3500],['Renceng (10)',32000]]],
+  ['susu','Energen Cokelat',[['Sachet',2500],['Renceng (10)',22000]]],
+  ['susu','Chocolatos Drink',[['Sachet',3000],['Renceng (10)',28000]]],
+  ['susu','Ultra Milk Cokelat 200 ml',[['Kotak',6500]]],
+  ['susu','Ultra Milk Cokelat 1 L',[['Kotak',22000]]],
+  ['susu','Indomilk Kids 115 ml',[['Kotak',3500]]],
+  ['susu','Susu Bear Brand 189 ml',[['Kaleng',11500]]],
+  ['susu','SKM Indomilk Sachet',[['Sachet',1500],['Renceng (6)',8500]]],
+  ['susu','SKM Indomilk Kaleng 370 g',[['Kaleng',12000]]],
+  ['susu','Frisian Flag UHT 225 ml',[['Kotak',7000]]],
+  ['susu','Frisian Flag UHT 946 ml',[['Kotak',21000]]],
+  ['susu','Ultra Milk Full Cream 250 ml',[['Kotak',8500]]],
+  ['susu','Ultra Milk Full Cream 1 L',[['Kotak',22000]]],
+  ['susu','Indomilk UHT 190 ml',[['Kotak',5500]]],
+  ['susu','Cimory Fresh Milk 225 ml',[['Botol',7500]]],
+  ['susu','Yakult (isi 5)',[['Pak',11500]]],
+  ['susu','Milo Sachet 22 g',[['Sachet',2500]]],
+  ['susu','Energen Vanila',[['Sachet',2500],['Renceng (10)',22000]]],
+  ['susu','Vidoran Xmart 1+ Madu 700 g',[['Kotak',59000]]],
+  ['susu','Lactogrow 1+ Madu 350 g',[['Kotak',60000]]],
+  ['susu','SGM Eksplor 1+ Madu 1050 g',[['Kotak',97000]]],
+
+  // ——— Jajan & Snack ———
+  ['jajan','Chiki Balls Cokelat',[['Bungkus',2000]]],
+  ['jajan','Garuda Rosta',[['Bungkus',2000]]],
+  ['jajan','Kacang Garuda Kulit 70 g',[['Bungkus',6000]]],
+  ['jajan','Beng-Beng',[['Pcs',2500],['Kotak (20)',46000]]],
+  ['jajan','Taro Net Seaweed',[['Bungkus',6000]]],
+  ['jajan','Qtela Singkong Balado',[['Bungkus',6500]]],
+  ['jajan','Piattos Sapi Panggang',[['Bungkus',6000]]],
+  ['jajan','Twistko Jagung Bakar 40 g',[['Bungkus',4500]]],
+  ['jajan','Chocolatos Wafer Roll',[['Pcs',1000]]],
+  ['jajan','Mini Jelly Inaco (isi 15)',[['Bungkus',12500]]],
+  ['jajan','Permen Kopiko',[['3 Pcs',1000],['Bungkus (50)',15000]]],
+  ['jajan','Chitato Sapi Panggang 68 g',[['Bungkus',11500]]],
+  ['jajan','Chitato Mini',[['Bungkus',2000]]],
+  ['jajan','Qtela Tempe 55 g',[['Bungkus',6500]]],
+  ['jajan','Chiki Twist 75 g',[['Bungkus',7000]]],
+  ['jajan','Piattos Sapi Panggang 115 g',[['Bungkus',16000]]],
+  ['jajan','Mr. Hottest Tortilla Chips 120 g',[['Bungkus',12000]]],
+  ['jajan','Garuda Pilus Pedas 80 g',[['Bungkus',7000]]],
+  ['jajan','Kacang Atom Garuda 100 g',[['Bungkus',8500]]],
+  ['jajan','Momogi',[['Pcs',1000]]],
+  ['jajan','SilverQueen Fruit & Nut 52 g',[['Pcs',20500]]],
+  ['jajan','Delfi Top 3in1',[['Pcs',2000]]],
+  ['jajan','Beng-Beng Maxx',[['Pcs',3500]]],
+  ['jajan','Choki-Choki',[['Pcs',1500]]],
+  ['jajan','Kopiko Candy Blister 32 g',[['Pcs',9000]]],
+  ['jajan','Mentos Chewy Roll',[['Pcs',5000]]],
+  ['jajan','Yupi Gummy',[['Bungkus',2000]]],
+
+  // ——— Biskuit, Wafer & Roti ———
+  ['biskuit','Roma Kelapa 300 g',[['Bungkus',12500]]],
+  ['biskuit','Tango Wafer Cokelat',[['Bungkus',9500]]],
+  ['biskuit','Oreo Vanilla',[['Bungkus',2500]]],
+  ['biskuit','Nextar Brownies',[['Bungkus',2500]]],
+  ['biskuit','Richeese Nabati Wafer',[['Bungkus',2000]]],
+  ['biskuit','Biskuat Cokelat',[['Bungkus',2000]]],
+  ['biskuit','Good Time Cookies 72 g',[['Bungkus',10000]]],
+  ['biskuit','Better Sandwich 100 g',[['Bungkus',10500]]],
+  ['biskuit','Oreo Vanilla 119,6 g',[['Bungkus',10000]]],
+  ['biskuit','Roma Malkist Crackers',[['Bungkus',7500]]],
+  ['biskuit','Roma Sari Gandum',[['Bungkus',9000]]],
+  ['biskuit','Biskuat Golden 105 g',[['Bungkus',7000]]],
+  ['biskuit','Gery Saluut Malkist',[['Bungkus',2000]]],
+  ['biskuit','Superstar Wafer',[['Pcs',1000]]],
+  ['biskuit','Roti Aoka',[['Pcs',3000]]],
+  ['biskuit','Roti Sobek Mr. Bread',[['Bungkus',11000]]],
+  ['biskuit','Sari Roti Tawar Kupas',[['Bungkus',17500]]],
+
+  // ——— Es Krim ———
+  ['eskrim','Aice Semangka',[['Pcs',3000]]],
+  ['eskrim','Aice Nanas',[['Pcs',3000]]],
+  ['eskrim','Aice Mochi',[['Pcs',4000]]],
+  ['eskrim','Aice Jagung',[['Pcs',5000]]],
+  ['eskrim','Aice Cone Choco Melt',[['Pcs',5000]]],
+  ['eskrim','Aice Mangga',[['Pcs',5500]]],
+  ['eskrim','Aice Durian',[['Pcs',6500]]],
+  ['eskrim','Walls Paddle Pop Rainbow',[['Pcs',5000]]],
+  ['eskrim','Walls Cornetto Classic',[['Pcs',12000]]],
+  ['eskrim','Walls Magnum Classic',[['Pcs',20000]]],
+  ['eskrim','Campina Hula-Hula',[['Pcs',4000]]],
+  ['eskrim','Campina Concerto',[['Pcs',6000]]],
+
+  // ——— Sabun & Mandi ———
+  ['sabun','Pepsodent 190 g',[['Tube',18000]]],
+  ['sabun','Pepsodent 75 g',[['Tube',7500]]],
+  ['sabun','Close Up 110 g',[['Tube',15500]]],
+  ['sabun','Sikat Gigi Formula',[['Pcs',5000]]],
+  ['sabun','Lifebuoy Sabun Batang 75 g',[['Pcs',4500]]],
+  ['sabun','Giv Sabun Batang 76 g',[['Pcs',3500]]],
+  ['sabun','Clear Men Sampo Sachet',[['Sachet',1000],['Renceng (12)',11000]]],
+  ['sabun','Sunsilk Sampo Sachet',[['Sachet',1000],['Renceng (12)',11000]]],
+  ['sabun','Emeron Sampo 170 ml',[['Botol',22000]]],
+  ['sabun','Lux Sabun Batang 76 g',[['Pcs',4500]]],
+  ['sabun','Nuvo Sabun Batang 76 g',[['Pcs',3500]]],
+  ['sabun','Nuvo Sabun Cair 400 ml',[['Pouch',20500]]],
+  ['sabun','Giv Sabun Cair 400 ml',[['Pouch',20500]]],
+  ['sabun','Biore Body Foam Refill 400 ml',[['Pouch',28500]]],
+  ['sabun','Close Up 160 g',[['Tube',19500]]],
+  ['sabun','Formula Pasta Gigi 190 g',[['Tube',13000]]],
+  ['sabun','Ciptadent 190 g',[['Tube',11000]]],
+  ['sabun','Sikat Gigi Pepsodent',[['Pcs',6000]]],
+  ['sabun','Pantene Sampo Sachet',[['Sachet',1000],['Renceng (12)',11000]]],
+  ['sabun','Lifebuoy Sampo Sachet',[['Sachet',1000],['Renceng (12)',11000]]],
+  ['sabun','Head & Shoulders Sampo Sachet',[['Sachet',1000],['Renceng (12)',11500]]],
+  ['sabun','Dove Sampo Sachet',[['Sachet',1000],['Renceng (12)',11500]]],
+  ['sabun','Zinc Sampo Sachet',[['Sachet',1000],['Renceng (12)',11000]]],
+
+  // ——— Perawatan Diri ———
+  ['kosmetik','Marina Hand Body Lotion 185 ml',[['Botol',10000]]],
+  ['kosmetik','Rexona Men Roll On 45 ml',[['Botol',19500]]],
+  ['kosmetik','Fres & Natural Cologne 100 ml',[['Botol',14000]]],
+  ['kosmetik','Bedak Marcks 40 g',[['Pcs',11000]]],
+  ['kosmetik','Cotton Bud',[['Pak',5000]]],
+  ['kosmetik','Pisau Cukur Gillette Goal',[['Pcs',6000]]],
+  ['kosmetik','Gunting Kuku',[['Pcs',5000]]],
+  ['kosmetik','Sisir',[['Pcs',3000]]],
+  ['kosmetik','Ikat Rambut',[['Pcs',1000]]],
+
+  // ——— Deterjen & Kebersihan ———
+  ['deterjen','Rinso Anti Noda 770 g',[['Bungkus',23000]]],
+  ['deterjen','Rinso Sachet',[['Sachet',1000],['Renceng (6)',5500]]],
+  ['deterjen','Rinso Cair + Molto 510 g',[['Pouch',15500]]],
+  ['deterjen','So Klin Softergent 1,4 kg',[['Bungkus',31000]]],
+  ['deterjen','Daia Bubuk 1,4 kg',[['Bungkus',29500]]],
+  ['deterjen','Molto Pewangi Sachet',[['Sachet',1000],['Renceng (6)',5500]]],
+  ['deterjen','Molto Pewangi 765 ml',[['Pouch',13500]]],
+  ['deterjen','Sunlight Jeruk Nipis 210 ml',[['Pouch',5000]]],
+  ['deterjen','Mama Lemon 950 g',[['Pouch',14000]]],
+  ['deterjen','So Klin Lantai 800 ml',[['Pouch',13000]]],
+  ['deterjen','Wipol Karbol 750 ml',[['Pouch',16000]]],
+  ['deterjen','Rinso + Molto Bubuk 1,44 kg',[['Bungkus',34000]]],
+  ['deterjen','So Klin Cair 700 g',[['Pouch',17500]]],
+  ['deterjen','Daia Sachet',[['Sachet',1000],['Renceng (6)',5500]]],
+  ['deterjen','So Klin Sachet',[['Sachet',1000],['Renceng (6)',5500]]],
+  ['deterjen','Downy Sachet',[['Sachet',1000],['Renceng (6)',5500]]],
+  ['deterjen','Royale Pelembut 650 ml',[['Pouch',17000]]],
+  ['deterjen','Rapika 400 ml',[['Pouch',5500]]],
+  ['deterjen','Sunlight Jeruk Nipis 650 ml',[['Pouch',13000]]],
+  ['deterjen','Super Pell 770 ml',[['Pouch',13500]]],
+  ['deterjen','Vixal 750 ml',[['Botol',16500]]],
+
+  // ——— Bayi & Wanita ———
+  ['bayi','MamyPoko Pants Standar M (32)',[['Pak',70000],['Pcs',2500]]],
+  ['bayi','Sweety Silver Pants M (32)',[['Pak',61000]]],
+  ['bayi','Baby Happy Pants M (32)',[['Pak',58500],['Pcs',2000]]],
+  ['bayi','Minyak Telon My Baby 60 ml',[['Botol',18500]]],
+  ['bayi','Softex Daun Sirih 36 cm (12)',[['Pak',21000]]],
+  ['bayi','Charm Safe Night 35 cm (12)',[['Pak',23000]]],
+  ['bayi','Laurier Relax Night 35 cm (12)',[['Pak',20000]]],
+  ['bayi','MamyPoko Pants Standar L (28)',[['Pak',70500],['Pcs',2500]]],
+  ['bayi','MamyPoko Pants Standar XL (26)',[['Pak',68000],['Pcs',3000]]],
+  ['bayi','Sweety Silver Pants L (28)',[['Pak',61000]]],
+  ['bayi','Baby Happy Pants L (28)',[['Pak',58500],['Pcs',2000]]],
+  ['bayi','Baby Happy Pants XL (26)',[['Pak',62000],['Pcs',2500]]],
+  ['bayi','Popok Dewasa Lifree Perekat M',[['Pak',52000]]],
+  ['bayi','Tisu Basah Mitu 50 lembar',[['Pak',10000]]],
+  ['bayi','Bedak Bayi My Baby 150 g',[['Pcs',13000]]],
+  ['bayi','Minyak Kayu Putih Bayi Cap Lang 60 ml',[['Botol',15000]]],
+  ['bayi','Charm Body Fit Wing (10)',[['Pak',10000]]],
+  ['bayi','Laurier Active Day Wing (10)',[['Pak',9000]]],
+  ['bayi','Softex Comfort Slim Wing (10)',[['Pak',8500]]],
+
+  // ——— Obat & P3K ———
+  ['obat','Paramex',[['Strip',3000]]],
+  ['obat','Bodrex',[['Strip',4000]]],
+  ['obat','Panadol Biru',[['Strip',12500]]],
+  ['obat','Mixagrip Flu',[['Strip',3000]]],
+  ['obat','Neozep Forte',[['Strip',3000]]],
+  ['obat','Oskadon',[['Strip',2500]]],
+  ['obat','Promag',[['Strip',10000]]],
+  ['obat','Diapet',[['Strip',2500]]],
+  ['obat','Entrostop',[['Strip',10000]]],
+  ['obat','Tolak Angin Cair',[['Sachet',4500],['Kotak (5)',21000]]],
+  ['obat','Antangin JRG',[['Sachet',4000],['Kotak (5)',19000]]],
+  ['obat','Komix Herbal',[['Sachet',2000]]],
+  ['obat','Salonpas Koyo',[['Sachet (2 lbr)',2000],['Dus (10)',18000]]],
+  ['obat','Minyak Kayu Putih Cap Lang 60 ml',[['Botol',25000]]],
+  ['obat','Freshcare Roll On 10 ml',[['Botol',14500]]],
+  ['obat','Insto 7,5 ml',[['Botol',16000]]],
+  ['obat','Plester Hansaplast',[['Lembar',500]]],
+  ['obat','Bodrex Flu & Batuk',[['Strip',4000]]],
+  ['obat','Procold Flu',[['Strip',3500]]],
+  ['obat','Inza',[['Strip',3000]]],
+  ['obat','Decolgen',[['Strip',2500]]],
+  ['obat','Konidin',[['Strip',2000]]],
+  ['obat','OBH Combi Batuk Berdahak 100 ml',[['Botol',20000]]],
+  ['obat','Vicks Formula 44 54 ml',[['Botol',19000]]],
+  ['obat','Antimo',[['Strip',6000]]],
+  ['obat','Enervon-C',[['Strip',7000]]],
+  ['obat','Tolak Linu',[['Sachet',4000]]],
+  ['obat','Adem Sari',[['Sachet',3000]]],
+  ['obat','Oralit',[['Sachet',1000]]],
+  ['obat','Balsem Geliga 20 g',[['Pcs',13000]]],
+  ['obat','Minyak Angin Cap Kapak 10 ml',[['Botol',13000]]],
+  ['obat','Minyak Kayu Putih Cap Lang 30 ml',[['Botol',13000]]],
+  ['obat','Betadine 15 ml',[['Botol',17000]]],
+  ['obat','Alkohol 70% 100 ml',[['Botol',8000]]],
+  ['obat','Bye Bye Fever Dewasa',[['Pcs',15000]]],
+  ['obat','Rohto Cool 7 ml',[['Botol',17500]]],
+
+  // ——— Gas LPG & Es ———
+  ['gas','LPG 3 kg (Isi Ulang)',[['Tabung',18000]]],
+  ['gas','Bright Gas 5,5 kg (Isi Ulang)',[['Tabung',103000]]],
+  ['gas','Bright Gas 12 kg (Isi Ulang)',[['Tabung',220000]]],
+  ['gas','Es Batu',[['Kantong Kecil',1000],['Kantong Besar',3000]]],
+  ['gas','Karet Seal Tabung Gas',[['Pcs',2000]]],
+  ['gas','Regulator Gas',[['Pcs',55000]]],
+
+  // ——— Plastik & Kemasan ———
+  ['plastik','Kantong Kresek Kecil',[['Pak',4000]]],
+  ['plastik','Kantong Kresek Sedang',[['Pak',5000]]],
+  ['plastik','Plastik PE 1/4 kg',[['Pak',4000]]],
+  ['plastik','Plastik PE 1/2 kg',[['Pak',5000]]],
+  ['plastik','Plastik PE 1 kg',[['Pak',7000]]],
+  ['plastik','Plastik PE 2 kg',[['Pak',10000]]],
+  ['plastik','Plastik Es Lilin',[['Pak',3000]]],
+  ['plastik','Plastik Klip Kecil',[['Pak',3000]]],
+  ['plastik','Gelas Plastik (isi 50)',[['Pak',12000]]],
+  ['plastik','Sedotan Plastik',[['Pak',3000]]],
+  ['plastik','Karet Gelang',[['Ons',6000]]],
+  ['plastik','Tali Rafia',[['Gulung',5000]]],
+
+  // ——— Alat Tulis ———
+  ['atk','Buku Tulis Sinar Dunia 38 lbr',[['Pcs',4000],['Pak (10)',37000]]],
+  ['atk','Buku Tulis Sinar Dunia 58 lbr',[['Pcs',5500],['Pak (10)',52000]]],
+  ['atk','Buku Tulis Big Boss 38 lbr',[['Pcs',3500]]],
+  ['atk','Buku Gambar A4',[['Pcs',5000]]],
+  ['atk','Pulpen Standard AE7',[['Pcs',2500],['Pak (12)',27000]]],
+  ['atk','Pensil 2B Faber-Castell',[['Pcs',4000]]],
+  ['atk','Penghapus',[['Pcs',1500]]],
+  ['atk','Rautan Pensil',[['Pcs',2000]]],
+  ['atk','Penggaris 30 cm',[['Pcs',3000]]],
+  ['atk','Lem Kertas',[['Pcs',3000]]],
+  ['atk','Isolasi Bening Kecil',[['Pcs',2000]]],
+  ['atk','Lakban Cokelat',[['Gulung',12000]]],
+  ['atk','Amplop Putih',[['Pcs',500]]],
+  ['atk','Kertas HVS A4',[['Lembar',200],['Rim',60000]]],
+  ['atk','Kertas Folio Bergaris',[['Lembar',500]]],
+  ['atk','Map Plastik',[['Pcs',2000]]],
+  ['atk','Spidol Permanen Snowman',[['Pcs',8000]]],
+  ['atk','Tipe-X Cair',[['Pcs',5000]]],
+  ['atk','Isi Stapler No. 10',[['Kotak',3000]]],
+  ['atk','Materai 10.000',[['Lembar',12000]]],
+
+  // ——— Lain-lain ———
+  ['lain','Obat Nyamuk Bakar Baygon',[['Kotak (10)',5500]]],
+  ['lain','Baygon Aerosol 600 ml',[['Kaleng',45000]]],
+  ['lain','Autan Lotion',[['Sachet',1500]]],
+  ['lain','Baterai ABC AA',[['Pasang (2)',5000]]],
+  ['lain','Lilin Batang',[['Pcs',1000],['Pak (10)',9000]]],
+  ['lain','Tisu Paseo 250 lembar',[['Pak',13000]]],
+  ['lain','Kantong Kresek Besar',[['Pak',6000]]],
+  ['lain','Korek Api Kayu',[['Kotak',500],['Pak (10)',4500]]],
+  ['lain','Lampu LED 10 Watt',[['Pcs',20000]]],
+  ['lain','Baterai ABC AAA',[['Pasang (2)',5000]]],
+  ['lain','Kapur Barus',[['Pak',5000]]],
+  ['lain','Pengharum Ruangan Gantung',[['Pcs',7000]]],
+  ['lain','HIT Aerosol 400 ml',[['Kaleng',30000]]],
+  ['lain','Vape Liquid Refill 45 ml',[['Botol',20000]]],
+  ['lain','Soffell Lotion',[['Sachet',1500]]],
+  ['lain','Spons Cuci Piring',[['Pcs',2000]]],
+  ['lain','Sabut Kawat',[['Pcs',2000]]],
+  ['lain','Sikat Baju',[['Pcs',8000]]],
+  ['lain','Sapu Ijuk',[['Pcs',25000]]],
+  ['lain','Jepitan Jemuran (isi 12)',[['Pak',6000]]],
+  ['lain','Tisu Nice 250 lembar',[['Pak',12000]]],
+  ['lain','Tisu Gulung',[['Gulung',3000]]],
+];
+const CATALOG_VER = 3;
+// Barang yang sudah ada di daftar versi 2 — barang ini tidak ditambahkan ulang kalau sudah dihapus pemilik toko.
+const V2_IDS = ["gudang-garam-surya-12","gudang-garam-surya-16","gudang-garam-filter-international-12","gudang-garam-merah-12","gudang-garam-signature-12","surya-pro-mild-16","sampoerna-a-mild-16","sampoerna-a-mild-12","sampoerna-kretek-12","sampoerna-legit-nira-12","dji-sam-soe-kretek-12","dji-sam-soe-magnum-filter-12","dji-sam-soe-super-premium-12","djarum-super-12","djarum-super-16","djarum-coklat-12","djarum-76-mangga-12","djarum-black-16","la-bold-16","la-lights-16","class-mild-16","u-mild-16","marlboro-merah-20","marlboro-filter-black-20","esse-change-20","dunhill-fine-cut-mild-20","tembakau-iris-lombok","kertas-papir-linting","korek-api-gas","beras-premium","beras-medium","beras-sphp-bulog-5-kg","gula-pasir","gulaku-premium-1-kg","minyakita-1-l","minyak-goreng-bimoli-2-l","minyak-goreng-fortune-2-l","minyak-goreng-curah","telur-ayam","tepung-terigu-segitiga-biru-1-kg","tepung-terigu-curah","tepung-beras-rose-brand-500-g","tepung-tapioka-rose-brand-500-g","kacang-hijau","bawang-merah","bawang-putih","indomie-goreng","indomie-goreng-jumbo","indomie-soto","indomie-ayam-bawang","indomie-kari-ayam","mie-sedaap-goreng","mie-sedaap-soto","mie-sedaap-kari-spesial","sarimi-isi-2-ayam-kecap","pop-mie-rasa-ayam","mie-sedaap-cup-soto","kecap-manis-bango-220-ml","kecap-manis-sedaap-550-ml","saus-sambal-abc-135-ml","saus-tomat-del-monte-135-ml","royco-kaldu-ayam","masako-ayam","ajinomoto-50-g","garam-dapur-250-g","blue-band-serbaguna-200-g","santan-kara-65-ml","bumbu-racik-indofood","merica-bubuk-ladaku","sarden-abc-425-g","sarden-abc-155-g","sarden-maya-155-g","kornet-pronas-198-g","sosis-so-nice","le-minerale-600-ml","aqua-600-ml","aqua-1500-ml","crystalline-600-ml","le-minerale-galon-15-l","aqua-galon-19-l-isi-ulang","coca-cola-390-ml","sprite-390-ml","teh-pucuk-harum-350-ml","teh-botol-sosro-kotak-250-ml","ichi-ocha-350-ml","floridina-orange-350-ml","mizone-500-ml","pocari-sweat-350-ml","good-day-cappuccino-botol-250-ml","larutan-cap-kaki-tiga-320-ml","kratingdaeng-150-ml","extra-joss","nutrisari","marimas","kapal-api-special-mix","kopi-abc-susu","nescafe-original-3in1","good-day-cappuccino","luwak-white-koffie","torabika-creamy-latte","top-kopi-susu","kopi-bubuk-kapal-api-165-g","teh-celup-sariwangi-25","skm-frisian-flag-sachet","skm-frisian-flag-kaleng-370-g","skm-frisian-flag-pouch-545-g","dancow-fortigro-sachet","energen-cokelat","chocolatos-drink","ultra-milk-cokelat-200-ml","ultra-milk-cokelat-1-l","indomilk-kids-115-ml","susu-bear-brand-189-ml","chiki-balls-cokelat","garuda-rosta","kacang-garuda-kulit-70-g","beng-beng","taro-net-seaweed","qtela-singkong-balado","piattos-sapi-panggang","twistko-jagung-bakar-40-g","chocolatos-wafer-roll","mini-jelly-inaco-isi-15","permen-kopiko","roma-kelapa-300-g","tango-wafer-cokelat","oreo-vanilla","nextar-brownies","richeese-nabati-wafer","biskuat-cokelat","good-time-cookies-72-g","better-sandwich-100-g","pepsodent-190-g","pepsodent-75-g","close-up-110-g","sikat-gigi-formula","lifebuoy-sabun-batang-75-g","giv-sabun-batang-76-g","clear-men-sampo-sachet","sunsilk-sampo-sachet","emeron-sampo-170-ml","rinso-anti-noda-770-g","rinso-sachet","rinso-cair-molto-510-g","so-klin-softergent-1-4-kg","daia-bubuk-1-4-kg","molto-pewangi-sachet","molto-pewangi-765-ml","sunlight-jeruk-nipis-210-ml","mama-lemon-950-g","so-klin-lantai-800-ml","wipol-karbol-750-ml","mamypoko-pants-standar-m-32","sweety-silver-pants-m-32","baby-happy-pants-m-32","minyak-telon-my-baby-60-ml","softex-daun-sirih-36-cm-12","charm-safe-night-35-cm-12","laurier-relax-night-35-cm-12","paramex","bodrex","panadol-biru","mixagrip-flu","neozep-forte","oskadon","promag","diapet","entrostop","tolak-angin-cair","antangin-jrg","komix-herbal","salonpas-koyo","minyak-kayu-putih-cap-lang-60-ml","freshcare-roll-on-10-ml","insto-7-5-ml","plester-hansaplast","lpg-3-kg-isi-ulang","bright-gas-5-5-kg-isi-ulang","bright-gas-12-kg-isi-ulang","es-batu","obat-nyamuk-bakar-baygon","baygon-aerosol-600-ml","autan-lotion","baterai-abc-aa","lilin-batang","tisu-paseo-250-lembar","kantong-kresek-besar","korek-api-kayu"];
+// Sidik daftar versi 1 — dipakai untuk memperbarui harga yang belum pernah diubah pemilik toko.
+const V1 = {"gudang-garam-surya-12":["rokok","Bungkus:30000|Batang:2500|Slop (10 bks):295000"],"gudang-garam-surya-16":["rokok","Bungkus:39000|Batang:2500|Slop (10 bks):385000"],"gudang-garam-filter-international-12":["rokok","Bungkus:24500|Batang:2000"],"surya-pro-mild-16":["rokok","Bungkus:32500|Batang:2000"],"sampoerna-a-mild-16":["rokok","Bungkus:38500|Batang:2500|Slop (10 bks):380000"],"sampoerna-kretek-12":["rokok","Bungkus:19000|Batang:1500"],"dji-sam-soe-kretek-12":["rokok","Bungkus:23000|Batang:2000"],"dji-sam-soe-magnum-filter-12":["rokok","Bungkus:27000|Batang:2500"],"djarum-super-12":["rokok","Bungkus:27500|Batang:2500"],"djarum-coklat-12":["rokok","Bungkus:20000|Batang:2000"],"la-bold-16":["rokok","Bungkus:33000|Batang:2000"],"class-mild-16":["rokok","Bungkus:28000|Batang:2000"],"u-mild-16":["rokok","Bungkus:30500|Batang:2000"],"marlboro-merah-20":["rokok","Bungkus:49000|Batang:2500"],"marlboro-filter-black-20":["rokok","Bungkus:44000|Batang:2500"],"tembakau-iris-lombok":["rokok","Ons:15000|1/4 Kg:35000"],"kertas-papir-linting":["rokok","Pak:2000"],"korek-api-gas":["rokok","Pcs:3000"],"beras-premium":["sembako","Kg:15500|Karung 5 kg:76000|Karung 25 kg:375000"],"beras-medium":["sembako","Kg:13500|Karung 25 kg:330000"],"gula-pasir":["sembako","Kg:18500|1/2 Kg:9500"],"minyakita-1-l":["sembako","Pouch:15700|Dus (12):186000"],"minyak-goreng-bimoli-2-l":["sembako","Pouch:42000"],"telur-ayam":["sembako","Butir:2000|Rak (30 butir):57000"],"tepung-terigu-segitiga-biru-1-kg":["sembako","Bungkus:14000"],"tepung-beras-rose-brand-500-g":["sembako","Bungkus:8000"],"garam-dapur-250-g":["sembako","Bungkus:3000"],"blue-band-serbaguna-200-g":["sembako","Sachet:10000"],"kacang-hijau":["sembako","Kg:28000|1/4 Kg:7000"],"indomie-goreng":["mie","Bungkus:3500|Dus (40):125000"],"indomie-soto":["mie","Bungkus:3300|Dus (40):118000"],"indomie-ayam-bawang":["mie","Bungkus:3300|Dus (40):118000"],"mie-sedaap-goreng":["mie","Bungkus:3500|Dus (40):123000"],"mie-sedaap-kari-spesial":["mie","Bungkus:3500|Dus (40):123000"],"sarimi-isi-2-ayam-kecap":["mie","Bungkus:4000"],"pop-mie-rasa-ayam":["mie","Cup:6000"],"kecap-manis-bango-220-ml":["mie","Pouch:10500"],"saus-sambal-abc-135-ml":["mie","Botol:7500"],"royco-kaldu-ayam":["mie","Sachet:500|Renceng (12):5500"],"masako-ayam":["mie","Sachet:500|Renceng (12):5500"],"ajinomoto-50-g":["mie","Bungkus:4000"],"le-minerale-600-ml":["minuman","Botol:3500|Dus (24):58000"],"aqua-600-ml":["minuman","Botol:4000|Dus (24):64000"],"aqua-1500-ml":["minuman","Botol:7000|Dus (12):68000"],"le-minerale-galon-15-l":["minuman","Galon:23000"],"coca-cola-390-ml":["minuman","Botol:6500"],"teh-pucuk-harum-350-ml":["minuman","Botol:4000|Dus (24):84000"],"teh-botol-sosro-kotak-250-ml":["minuman","Kotak:4000"],"floridina-orange-350-ml":["minuman","Botol:3500"],"mizone-500-ml":["minuman","Botol:6000"],"pocari-sweat-350-ml":["minuman","Botol:7500"],"ultra-milk-cokelat-200-ml":["minuman","Kotak:6500"],"good-day-cappuccino-botol-250-ml":["minuman","Botol:7000"],"kapal-api-special-mix":["kopi","Sachet:1500|Renceng (10):14000"],"kopi-abc-susu":["kopi","Sachet:1500|Renceng (10):14000"],"nescafe-original-3in1":["kopi","Sachet:1500|Renceng (10):14500"],"good-day-cappuccino":["kopi","Sachet:2000|Renceng (10):19000"],"luwak-white-koffie":["kopi","Sachet:1500|Renceng (10):14000"],"torabika-creamy-latte":["kopi","Sachet:1500|Renceng (10):14000"],"kopi-bubuk-kapal-api-165-g":["kopi","Bungkus:14500"],"energen-cokelat":["kopi","Sachet:2000|Renceng (10):19000"],"chocolatos-drink":["kopi","Sachet:2000|Renceng (10):19000"],"dancow-fortigro-sachet":["kopi","Sachet:3000|Renceng (10):28500"],"skm-frisian-flag-sachet":["kopi","Sachet:1500|Renceng (6):8500"],"skm-frisian-flag-kaleng-370-g":["kopi","Kaleng:13500"],"teh-celup-sariwangi-25":["kopi","Kotak:7500"],"chiki-balls-cokelat":["jajan","Bungkus:2000"],"garuda-rosta":["jajan","Bungkus:2000"],"kacang-garuda-kulit-70-g":["jajan","Bungkus:6000"],"beng-beng":["jajan","Pcs:2500|Kotak (20):46000"],"oreo-vanilla":["jajan","Bungkus:2500"],"nextar-brownies":["jajan","Bungkus:2500"],"richeese-nabati-wafer":["jajan","Bungkus:2000"],"taro-net-seaweed":["jajan","Bungkus:5500"],"qtela-singkong-balado":["jajan","Bungkus:6500"],"piattos-sapi-panggang":["jajan","Bungkus:6000"],"roma-kelapa-300-g":["jajan","Bungkus:11000"],"tango-wafer-cokelat":["jajan","Bungkus:9000"],"mini-jelly-inaco-isi-15":["jajan","Bungkus:12500"],"permen-kopiko":["jajan","3 Pcs:1000|Bungkus (50):15000"],"pepsodent-190-g":["sabun","Tube:13000"],"sikat-gigi-formula":["sabun","Pcs:5000"],"lifebuoy-sabun-batang-75-g":["sabun","Pcs:4000"],"clear-men-sampo-sachet":["sabun","Sachet:1000|Renceng (12):11000"],"sunsilk-sampo-sachet":["sabun","Sachet:1000|Renceng (12):11000"],"rinso-anti-noda-770-g":["sabun","Bungkus:23000"],"rinso-sachet":["sabun","Sachet:1000|Renceng (6):5500"],"molto-pewangi-sachet":["sabun","Sachet:1000|Renceng (6):5500"],"sunlight-jeruk-nipis-210-ml":["sabun","Pouch:5000"],"so-klin-lantai-800-ml":["sabun","Pouch:9500"],"lpg-3-kg-isi-ulang":["gas","Tabung:18000"],"bright-gas-5-5-kg-isi-ulang":["gas","Tabung:96000"],"es-batu":["gas","Kantong Kecil:1000|Kantong Besar:3000"],"obat-nyamuk-bakar-baygon":["lain","Kotak (10):5500"],"baterai-abc-aa":["lain","Pasang (2):5000"],"lilin-batang":["lain","Pcs:1000|Pak (10):9000"],"tisu-paseo-250-lembar":["lain","Pak:13000"],"kantong-kresek-besar":["lain","Pak:6000"],"korek-api-kayu":["lain","Kotak:500|Pak (10):4500"]};
+
+/* ================= Utilitas ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const NF = new Intl.NumberFormat('id-ID');
+const fmtN = n => NF.format(Math.round(Number(n) || 0));
+const rp = n => 'Rp ' + fmtN(n);
+const parseNum = s => { const d = String(s ?? '').replace(/[^\d]/g, ''); return d ? Math.min(parseInt(d, 10), 999999999) : 0; };
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+const slug = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'barang';
+const idsafe = s => String(s).replace(/[^A-Za-z0-9]/g, '_');
+const pad2 = n => String(n).padStart(2, '0');
+const dateStr = (d = new Date()) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isDesktop = () => window.matchMedia('(min-width: 1000px)').matches;
+
+const LS = {
+  get(k, fb) { try { const v = localStorage.getItem(k); return v == null ? fb : JSON.parse(v); } catch (e) { return fb; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+};
+const K = {
+  products: 'swarning.products.v1', cart: 'swarning.cart.v1', name: 'swarning.name.v1', cats: 'swarning.cats.v1',
+  notice: 'swarning.notice.v2', device: 'swarning.device.v1', cat: 'swarning.cat.v1', catver: 'swarning.catver',
+  sales: d => 'swarning.sales.v1.' + d,
+};
+
+const I = (d, s = 20, w = 2) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const ICON = {
+  plus:   I('<path d="M12 5v14M5 12h14"/>', 22, 2.5),
+  minus:  I('<path d="M5 12h14"/>', 22, 2.5),
+  plusS:  I('<path d="M12 5v14M5 12h14"/>', 18, 2.5),
+  minusS: I('<path d="M5 12h14"/>', 18, 2.5),
+  pencil: I('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>', 15),
+  pen:    I('<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>', 13, 2.2),
+  camera: I('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', 18),
+  cameraL: I('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', 34, 1.6),
+  barcode: I('<path d="M3 5v14M6.5 5v14M9 5v14M13 5v14M15.5 5v14M18 5v14M21 5v14"/>', 22),
+  gear:   I('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>', 19),
+  printer: I('<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>', 18),
+  clock:  I('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', 19),
+  sliders:I('<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>', 19),
+  cart:   I('<path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/>', 22),
+  x:      I('<path d="M6 6l12 12M18 6 6 18"/>', 20),
+  trash:  I('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>', 18),
+  trashS: I('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>', 16, 2.2),
+  checkS: I('<path d="m5 12 5 5 9-10"/>', 16, 3.2),
+  check:  I('<path d="m5 12 5 5 9-10"/>', 24, 2.6),
+  copy:   I('<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/>', 18),
+  chev:   I('<path d="m9 6 6 6-6 6"/>', 22, 2.4),
+};
+
+function getDevice() {
+  let d = LS.get(K.device, null);
+  if (!d) { d = 'd' + Math.random().toString(36).slice(2, 8); LS.set(K.device, d); }
+  return d;
+}
+const DEVICE = getDevice();
+
+function defaults() {
+  return CATALOG.map(([cat, name, units]) => ({ id: slug(name), cat, name, units: units.map(([n, p]) => ({ n, p })) }));
+}
+function cleanProducts(arr) {
+  if (!Array.isArray(arr) || !arr.length) return null;
+  const out = arr.filter(p => p && p.id && p.name && Array.isArray(p.units) && p.units.length).map(p => ({
+    id: String(p.id), name: String(p.name), cat: String(p.cat || 'lain'),
+    units: p.units.map(u => ({ n: String(u.n || 'Satuan'), p: Number(u.p) || 0, ...(u.b ? { b: String(u.b) } : {}) })),
+  }));
+  return out.length ? out : null;
+}
+
+function cleanCats(arr) {
+  if (!Array.isArray(arr)) return null;
+  const seen = new Set(), out = [];
+  for (const c of arr) {
+    if (!c || !c.id || !c.name) continue;
+    const id = String(c.id); if (seen.has(id)) continue; seen.add(id);
+    out.push({ id, name: String(c.name).slice(0, 30), hint: String(c.hint || ''), units: Array.isArray(c.units) ? c.units.map(String).filter(Boolean).slice(0, 6) : [] });
+  }
+  return out.length ? out : null;
+}
+
+/* ================= State ================= */
+const state = {
+  cats: cleanCats(LS.get(K.cats, null)) || DEFAULT_CATS.map(c => ({ ...c, units: [] })),
+  products: cleanProducts(LS.get(K.products, null)) || defaults(),
+  cart: (() => { try { const a = LS.get(K.cart, []); return new Map(Array.isArray(a) ? a.filter(x => Array.isArray(x) && x.length === 2 && Number(x[1]) > 0) : []); } catch (e) { return new Map(); } })(),
+  cat: String(LS.get(K.cat, 'rokok') || 'rokok'),
+  q: '',
+  manage: false,
+  storeName: LS.get(K.name, 'Toko Swarning') || 'Toko Swarning',
+  mode: 'connecting',
+  cloudEmpty: false,
+  today: dateStr(),
+  todaySales: [],
+  paid: 0,
+  dirty: false,
+  sel: new Set(),   // barang yang dipilih di mode Atur
+  viewIds: [],      // barang yang sedang tampil (untuk "Pilih semua")
+};
+let index = new Map();
+let byCode = new Map(); // barcode -> { pid, ui }
+function reindex() {
+  index = new Map(state.products.map(p => [p.id, p]));
+  byCode = new Map();
+  for (const p of state.products) p.units.forEach((u, ui) => { if (u.b) byCode.set(String(u.b), { pid: p.id, ui }); });
+}
+reindex();
+
+const catById = id => state.cats.find(c => c.id === id);
+const fallbackCat = () => (catById('lain') || state.cats[state.cats.length - 1]).id;
+const catOf = p => catById(p.cat) ? p.cat : fallbackCat();
+const catName = id => (catById(id) || { name: 'Lain-lain' }).name;
+const unitsFor = id => { const c = catById(id); return (c && c.units && c.units.length) ? c.units : (DEFAULT_UNITS[id] || ['Pcs']); };
+function ensureCat() { if (!catById(state.cat)) state.cat = state.cats[0].id; }
+
+/* Perbarui daftar lama di perangkat ini: barang baru ditambahkan, harga & kategori
+   hanya diganti kalau belum pernah diubah pemilik toko, barang yang dihapus tidak dikembalikan. */
+function migrateCatalog() {
+  const hadStored = LS.get(K.products, null) != null;
+  const ver = Number(LS.get(K.catver, hadStored ? 1 : CATALOG_VER)) || 1;
+  if (ver >= CATALOG_VER) { LS.set(K.catver, CATALOG_VER); return null; }
+  const sig = units => units.map(u => u.n + ':' + u.p).join('|');
+  const byId = new Map(state.products.map(p => [p.id, p]));
+  const known = new Set(Object.keys(V1));
+  if (ver >= 2) V2_IDS.forEach(id => known.add(id));
+  let changed = 0, added = 0;
+  for (const [cat, name, units] of CATALOG) {
+    const id = slug(name);
+    const nu = units.map(([n, p]) => ({ n, p }));
+    const old = byId.get(id), v1 = V1[id];
+    if (old) {
+      if (ver >= 2 || !v1) continue;
+      const upd = { ...old };
+      if (sig(old.units) === v1[1] && sig(nu) !== v1[1]) upd.units = nu;
+      if (old.cat === v1[0]) upd.cat = cat;
+      if (upd.units !== old.units || upd.cat !== old.cat) { byId.set(id, upd); changed++; }
+    } else if (!known.has(id)) { byId.set(id, { id, cat, name, units: nu }); added++; }
+  }
+  state.products = [...byId.values()]; reindex();
+  const cur = JSON.stringify(state.cats.map(c => [c.id, c.name, c.hint]));
+  if (cur === JSON.stringify(V1_CATS)) {
+    state.cats = DEFAULT_CATS.map(c => ({ ...c, units: [] }));
+  } else {
+    const v1map = Object.fromEntries(V1_CATS.map(([id, n, h]) => [id, [n, h]]));
+    state.cats = state.cats.map(c => {
+      const d = DEFAULT_CATS.find(x => x.id === c.id), o = v1map[c.id];
+      if (!d) return c;
+      const oldHint = c.hint === V2_CAT_HINTS[c.id] || (o && c.hint === o[1]);
+      return { ...c, name: o && c.name === o[0] ? d.name : c.name, hint: oldHint ? d.hint : c.hint };
+    });
+    DEFAULT_CATS.forEach((d, i) => {
+      if (state.cats.some(c => c.id === d.id)) return;
+      let at = -1;
+      for (let j = i - 1; j >= 0 && at < 0; j--) at = state.cats.findIndex(c => c.id === DEFAULT_CATS[j].id);
+      state.cats.splice(at + 1, 0, { ...d, units: [] });
+    });
+  }
+  LS.set(K.products, state.products); LS.set(K.cats, state.cats); LS.set(K.catver, CATALOG_VER);
+  return { changed, added };
+}
+const migrated = migrateCatalog();
+ensureCat();
+
+const memSales = {};
+function localSales(d) {
+  const arr = LS.get(K.sales(d), null) ?? memSales[d] ?? [];
+  return arr.map(v => ({ ...v, _path: null })).sort((a, b) => String(b.at).localeCompare(String(a.at)));
+}
+function writeLocalSales(d, arr) { memSales[d] = arr; LS.set(K.sales(d), arr); }
+
+/* ================= Penyimpanan online (db) ================= */
+let db = null;
+let dbReady = Promise.resolve(null);
+let unsubToday = null;
+const chains = new Map();
+
+// Paling banyak 4 penulisan online berjalan bersamaan, supaya hapus/pulihkan ratusan barang tidak kena batas.
+let inFlight = 0;
+const slotWaiters = [];
+async function withSlot(fn) {
+  if (inFlight >= 4) await new Promise(r => slotWaiters.push(r));
+  inFlight++;
+  try { return await fn(); }
+  finally { inFlight--; const w = slotWaiters.shift(); if (w) w(); }
+}
+function queueWrite(path, fn) {
+  const prev = chains.get(path) || Promise.resolve();
+  const next = prev.catch(() => {}).then(() => withSlot(fn));
+  chains.set(path, next);
+  return next;
+}
+async function withRetry(fn) {
+  for (let attempt = 0; ; attempt++) {
+    try { return await fn(); }
+    catch (e) {
+      const c = e && e.code;
+      if ((c === 'unavailable' || c === 'resource_exhausted') && attempt < 3) {
+        await sleep((c === 'resource_exhausted' ? 1200 : 400) * (attempt + 1) + Math.random() * 400);
+        continue;
+      }
+      throw e;
+    }
+  }
+}
+function onWriteError(e) {
+  const c = e && e.code;
+  if (c === 'invalid_argument') toast('Tidak bisa menyimpan: akun ini hanya punya akses lihat.', 'err');
+  else if (c === 'quota_exceeded') toast('Penyimpanan online penuh. Hapus riwayat lama lalu coba lagi.', 'err');
+  else toast('Gagal menyimpan ke online. Periksa koneksi lalu coba lagi.', 'err');
+}
+const cloudOn = () => !!db && state.mode !== 'local';
+const body = p => ({ cat: p.cat, name: p.name, units: p.units.map(u => ({ n: u.n, p: u.p, ...(u.b ? { b: u.b } : {}) })), updatedAt: new Date().toISOString() });
+
+async function connect() {
+  const c = window.claude;
+  if (!c || typeof c.use !== 'function') { goLocal(); return null; }
+  let d = null;
+  try { d = await c.use('db'); } catch (e) { d = null; }
+  if (!d) { goLocal(); return null; }
+  db = d;
+  try {
+    db.collection('products').onSnapshot(onProducts, lostCloud);
+    db.doc('settings/categories').onSnapshot(s => {
+      if (s.exists) {
+        const list = cleanCats(s.data() && s.data().list);
+        if (list) { state.cats = list; LS.set(K.cats, list); ensureCat(); renderChips(); renderList(); }
+      } else if (!s.metadata.fromCache && JSON.stringify(state.cats) !== JSON.stringify(DEFAULT_CATS)) {
+        saveCats();
+      }
+    }, () => {});
+    db.collection('images').onSnapshot(snap => {
+      const seen = new Set();
+      for (const s of snap.docs) { const x = s.data() || {}; if (x.data) { seen.add(s.id); setImageLocal(s.id, String(x.data)); } }
+      for (const id of [...images.keys()]) if (!seen.has(id) && !pendingImg.has(id)) setImageLocal(id, null);
+      renderList(); if (dlgProd.open) renderProfile();
+    }, () => {});
+    db.doc('settings/store').onSnapshot(s => {
+      if (s.exists) { const n = s.data() && s.data().name; if (n) { state.storeName = String(n); LS.set(K.name, state.storeName); renderHeader(); } }
+    }, () => {});
+  } catch (e) { db = null; goLocal(); return null; }
+  subscribeToday();
+  return db;
+}
+function goLocal() {
+  state.mode = 'local';
+  state.todaySales = localSales(state.today);
+  renderStatus(); renderHeader(); renderBanners();
+}
+function lostCloud() {
+  if (state.mode === 'local') return;
+  goLocal();
+  toast('Penyimpanan online tidak tersedia. Perubahan disimpan di perangkat ini.', 'err');
+}
+function onProducts(snap) {
+  if (snap.empty) {
+    if (!snap.metadata.fromCache) { state.cloudEmpty = true; state.mode = 'cloud'; renderStatus(); renderBanners(); }
+    return;
+  }
+  state.cloudEmpty = false;
+  let arr = snap.docs.map(s => {
+    const x = s.data() || {};
+    return {
+      id: s.id, cat: String(x.cat || 'lain'), name: String(x.name || 'Tanpa nama'),
+      units: Array.isArray(x.units) ? x.units.map(u => ({ n: String((u && u.n) || 'Satuan'), p: Number(u && u.p) || 0, ...(u && u.b ? { b: String(u.b) } : {}) })) : [],
+    };
+  }).filter(p => p.units.length);
+  // Perubahan yang masih antre dikirim tetap ditampilkan, supaya barang yang baru dihapus tidak muncul sesaat lagi.
+  if (pending.size) {
+    const byId = new Map(arr.map(p => [p.id, p]));
+    for (const [id, w] of pending) { if (w.p) byId.set(id, w.p); else byId.delete(id); }
+    arr = [...byId.values()];
+  }
+  state.products = arr; reindex(); LS.set(K.products, arr);
+  state.mode = 'cloud';
+  renderStatus(); renderBanners(); renderChips(); renderList(); renderCart();
+}
+function subscribeToday() {
+  if (unsubToday) { unsubToday(); unsubToday = null; }
+  if (!db) return;
+  const d = state.today;
+  unsubToday = db.collection('sales').where('date', '==', d).onSnapshot(snap => {
+    state.todaySales = flattenSales(snap.docs);
+    renderHeader();
+    if (dlgHistory.open && hist.date === state.today) renderHistory();
+  }, () => {});
+}
+function flattenSales(docs) {
+  const out = [];
+  for (const s of docs) {
+    const x = s.data() || {};
+    for (const v of (Array.isArray(x.list) ? x.list : [])) if (v && v.id) out.push({ ...v, _path: 'sales/' + s.id });
+  }
+  return out.sort((a, b) => String(b.at).localeCompare(String(a.at)));
+}
+
+/* ================= Simpan barang ================= */
+// Satu penulisan barang ke penyimpanan online: p = barang (simpan) atau null (hapus).
+const pending = new Map();
+let pendingSeq = 0;
+function cloudWrite(id, p) {
+  const v = ++pendingSeq;
+  pending.set(id, { v, p });
+  return dbReady.then(d => {
+    if (!d || state.mode === 'local') return;
+    const ref = () => d.doc('products/' + id);
+    return queueWrite('products/' + id, () => withRetry(() => p ? ref().set(body(p)) : ref().delete()));
+  }).finally(() => { const cur = pending.get(id); if (cur && cur.v === v) pending.delete(id); });
+}
+function cloudWriteMany(entries) {
+  return Promise.allSettled(entries.map(({ id, p }) => cloudWrite(id, p))).then(rs => {
+    const failed = rs.filter(r => r.status === 'rejected');
+    if (failed.length) onWriteError(failed[0].reason);
+    return failed.length;
+  });
+}
+function saveProduct(p) {
+  const i = state.products.findIndex(x => x.id === p.id);
+  if (i >= 0) state.products[i] = p; else state.products.push(p);
+  state.products = state.products.slice(); reindex(); LS.set(K.products, state.products);
+  cloudWrite(p.id, p).catch(onWriteError);
+}
+function saveProducts(list) {
+  const byId = new Map(state.products.map(p => [p.id, p]));
+  for (const p of list) byId.set(p.id, p);
+  state.products = [...byId.values()]; reindex(); LS.set(K.products, state.products);
+  return cloudWriteMany(list.map(p => ({ id: p.id, p })));
+}
+function deleteProducts(ids) {
+  const set = new Set(ids);
+  const removed = state.products.filter(p => set.has(p.id));
+  const removedCart = [...state.cart].filter(([k]) => set.has(k.slice(0, k.indexOf('|'))));
+  state.products = state.products.filter(p => !set.has(p.id)); reindex(); LS.set(K.products, state.products);
+  for (const [k] of removedCart) state.cart.delete(k);
+  saveCart();
+  cloudWriteMany(removed.map(p => ({ id: p.id, p: null })));
+  return { removed, removedCart };
+}
+function saveCats() {
+  LS.set(K.cats, state.cats);
+  const list = state.cats.map(c => ({ id: c.id, name: c.name, hint: c.hint, units: c.units }));
+  dbReady.then(d => {
+    if (!d || state.mode === 'local') return;
+    return queueWrite('settings/categories', () => withRetry(() => d.doc('settings/categories').set({ list, updatedAt: new Date().toISOString() })));
+  }).catch(onWriteError);
+}
+function deleteProduct(id) {
+  state.products = state.products.filter(p => p.id !== id); reindex(); LS.set(K.products, state.products);
+  for (const k of [...state.cart.keys()]) if (k.startsWith(id + '|')) state.cart.delete(k);
+  saveCart();
+  cloudWrite(id, null).catch(onWriteError);
+}
+async function uploadAll(btn) {
+  const d = await dbReady; if (!d) return;
+  btn.disabled = true;
+  const list = state.products.slice();
+  let n = 0;
+  try {
+    for (const p of list) {
+      await queueWrite('products/' + p.id, () => withRetry(() => d.doc('products/' + p.id).set(body(p))));
+      n++; btn.textContent = `Mengunggah ${n}/${list.length}…`;
+    }
+    toast(`${n} barang diunggah. Semua perangkat kini memakai daftar yang sama.`);
+  } catch (e) { onWriteError(e); btn.disabled = false; btn.textContent = 'Coba unggah lagi'; }
+}
+
+/* ================= Keranjang ================= */
+const ckey = (pid, unit) => pid + '|' + unit;
+function saveCart() { LS.set(K.cart, [...state.cart]); }
+function qtyOf(pid, unit) { return state.cart.get(ckey(pid, unit)) || 0; }
+function setQty(pid, unit, qty) {
+  qty = Math.max(0, Math.min(9999, Math.floor(Number(qty) || 0)));
+  const k = ckey(pid, unit);
+  const before = state.cart.get(k) || 0;
+  if (qty) state.cart.set(k, qty); else state.cart.delete(k);
+  saveCart();
+  renderList(); renderCart(qty > before);
+  if (dlgProd.open) renderProfile();
+}
+function cartLines() {
+  const lines = [];
+  for (const [k, qty] of state.cart) {
+    const at = k.indexOf('|'); if (at < 0) continue;
+    const pid = k.slice(0, at), unit = k.slice(at + 1);
+    const p = index.get(pid); if (!p) continue;
+    const u = p.units.find(x => x.n === unit); if (!u) continue;
+    lines.push({ k, pid, unit, qty, price: u.p, name: p.name, sub: u.p * qty });
+  }
+  return lines;
+}
+function suggestions(total) {
+  const out = new Set();
+  for (const step of [5000, 10000, 20000, 50000, 100000]) {
+    const v = Math.ceil(total / step) * step;
+    if (v > total) out.add(v);
+  }
+  return [...out].sort((a, b) => a - b).slice(0, 3);
+}
+
+/* ================= Render: header & status ================= */
+const el = {
+  name: $('#store-name'), statusDot: $('#status-dot'), statusText: $('#status-text'), todaySum: $('#today-sum'),
+  q: $('#q'), qClear: $('#q-clear'), chips: $('#chips'), banners: $('#banners'), list: $('#list'), manageBar: $('#manage-bar'),
+  btnManage: $('#btn-manage'), cart: $('#cart'), lines: $('#lines'), total: $('#total'), cartCount: $('#cart-count'),
+  cartClear: $('#cart-clear'), paid: $('#paid'), quick: $('#quick'), change: $('#change'), changeLabel: $('#change-label'),
+  changeVal: $('#change-val'), finish: $('#finish'), cartbar: $('#cartbar'), cbCount: $('#cb-count'), cbTotal: $('#cb-total'),
+  scrim: $('#scrim'), toast: $('#toast'),
+};
+const dlgHistory = $('#dlg-history'), dlgEdit = $('#dlg-edit'), dlgStore = $('#dlg-store'), dlgReceipt = $('#dlg-receipt'), dlgBulk = $('#dlg-bulk');
+const dlgProd = $('#dlg-prod'), dlgScan = $('#dlg-scan'), dlgSettings = $('#dlg-settings');
+
+function renderHeader() {
+  el.name.textContent = state.storeName;
+  const sales = state.todaySales;
+  const sum = sales.reduce((s, v) => s + (Number(v.total) || 0), 0);
+  el.todaySum.textContent = `Hari ini ${rp(sum)} · ${sales.length} transaksi`;
+}
+function renderStatus() {
+  const t = { connecting: 'Menghubungkan…', cloud: 'Tersinkron online', local: 'Tersimpan di perangkat ini' }[state.mode];
+  el.statusText.textContent = t;
+  el.statusDot.className = 'dot ' + state.mode;
+}
+function renderBanners() {
+  let h = '';
+  if (!LS.get(K.notice, false)) {
+    h += `<div class="banner tagged"><p><b>Harga sudah disesuaikan dengan riset September 2026</b> (harga minimarket, harga pangan NTB, HET), dibulatkan ke harga eceran warung. Tetap cocokkan dengan harga beli Anda: ketuk label harga kuning (misalnya <span class="tag tag-mini">Rp 29.000</span>) lalu ketik harga toko.</p><button type="button" class="btn ghost sm" data-banner="notice">Mengerti</button></div>`;
+  }
+  if (state.cloudEmpty && db) {
+    h += `<div class="banner info"><p><b>Daftar barang online masih kosong.</b> Unggah daftar yang tampil sekarang supaya semua perangkat memakai barang dan harga yang sama.</p><button type="button" class="btn primary sm" data-banner="upload">Unggah daftar barang</button></div>`;
+  }
+  el.banners.innerHTML = h;
+}
+
+/* ================= Render: kategori & daftar ================= */
+function renderChips() {
+  const counts = {};
+  for (const p of state.products) { const c = catOf(p); counts[c] = (counts[c] || 0) + 1; }
+  const searching = !!state.q.trim();
+  el.chips.innerHTML = state.cats.map(c =>
+    `<button type="button" class="chip" data-cat="${esc(c.id)}" aria-pressed="${!searching && c.id === state.cat}">${esc(c.name)}<span class="chip-n">${counts[c.id] || 0}</span></button>`
+  ).join('') + `<button type="button" class="chip add" data-newcat="1">+ Kategori</button>`;
+}
+const byName = (a, b) => a.name.localeCompare(b.name, 'id', { sensitivity: 'base' });
+
+function unitRowHTML(p, u, i) {
+  const k = ckey(p.id, u.n);
+  const qty = state.cart.get(k) || 0;
+  const fk = idsafe(k);
+  const label = `${p.name} per ${u.n}`;
+  return `<div class="unit-row${qty ? ' on' : ''}">
+    <span class="unit-name">${esc(u.n)}</span>
+    <button type="button" class="tag" data-act="price" data-pid="${esc(p.id)}" data-ui="${i}" data-fk="price-${fk}" aria-label="Ubah harga ${esc(label)}, sekarang ${rp(u.p)}"><span class="rp">Rp</span>${fmtN(u.p)}${ICON.pen}</button>
+    <div class="stepper">
+      <button type="button" class="step minus" data-act="dec" data-pid="${esc(p.id)}" data-ui="${i}" data-fk="dec-${fk}" aria-label="Kurangi ${esc(label)}"${qty ? '' : ' disabled'}>${ICON.minus}</button>
+      <input class="qty" id="q-${fk}" data-act="qty" data-pid="${esc(p.id)}" data-ui="${i}" data-fk="qty-${fk}" value="${qty}" inputmode="numeric" autocomplete="off" aria-label="Jumlah ${esc(label)}">
+      <button type="button" class="step plus" data-act="inc" data-pid="${esc(p.id)}" data-ui="${i}" data-fk="inc-${fk}" aria-label="Tambah ${esc(label)}">${ICON.plus}</button>
+    </div>
+  </div>`;
+}
+function thumbHTML(pid) {
+  const u = thumbUrl(pid);
+  return u ? `<img class="thumb" src="${u}" alt="" loading="lazy">` : '';
+}
+function unitRowManageHTML(p, u, i) {
+  const fk = idsafe(ckey(p.id, u.n));
+  return `<div class="unit-row">
+    <span class="unit-name">${esc(u.n)}</span>
+    <button type="button" class="tag" data-act="price" data-pid="${esc(p.id)}" data-ui="${i}" data-fk="price-${fk}" aria-label="Ubah harga ${esc(p.name)} per ${esc(u.n)}, sekarang ${rp(u.p)}"><span class="rp">Rp</span>${fmtN(u.p)}${ICON.pen}</button>
+  </div>`;
+}
+function itemHTML(p) {
+  if (state.manage) {
+    const on = state.sel.has(p.id);
+    return `<article class="item managing${on ? ' sel' : ''}" data-pick="${esc(p.id)}">
+      <div class="item-head">
+        <button type="button" class="pick" role="checkbox" aria-checked="${on}" data-act="pick" data-pid="${esc(p.id)}" data-fk="pick-${idsafe(p.id)}"><span class="box" aria-hidden="true">${ICON.checkS}</span>${thumbHTML(p.id)}<span class="item-name">${esc(p.name)}</span></button>
+        <button type="button" class="mini-btn" data-act="edit" data-pid="${esc(p.id)}" data-fk="edit-${idsafe(p.id)}">${ICON.pencil}Ubah</button>
+      </div>
+      <div class="units">${p.units.map((u, i) => unitRowManageHTML(p, u, i)).join('')}</div>
+    </article>`;
+  }
+  return `<article class="item">
+    <div class="item-head"><button type="button" class="name-btn" data-act="profile" data-pid="${esc(p.id)}" data-fk="prof-${idsafe(p.id)}" aria-label="Lihat profil ${esc(p.name)}">${thumbHTML(p.id)}<h3 class="item-name">${esc(p.name)}</h3></button></div>
+    <div class="units">${p.units.map((u, i) => unitRowHTML(p, u, i)).join('')}</div>
+  </article>`;
+}
+function listBusy() {
+  const a = document.activeElement;
+  return !!(a && a.tagName === 'INPUT' && el.list.contains(a));
+}
+function renderList(force) {
+  if (!force && listBusy()) { state.dirty = true; return; }
+  state.dirty = false;
+  const fk = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.fk : null;
+  const q = state.q.trim();
+  let h = '';
+  if (q) {
+    const words = q.toLowerCase().split(/\s+/);
+    const hits = state.products.filter(p => {
+      const hay = (p.name + ' ' + catName(catOf(p)) + ' ' + p.units.map(u => u.n).join(' ')).toLowerCase();
+      return words.every(w => hay.includes(w));
+    }).sort(byName);
+    state.viewIds = hits.map(p => p.id);
+    h += `<div class="list-head"><div><h2 class="cat-title">Hasil cari</h2><p class="cat-hint">${hits.length} barang cocok dengan “${esc(q)}”.</p></div></div>`;
+    if (hits.length) {
+      for (const c of state.cats) {
+        const g = hits.filter(p => catOf(p) === c.id);
+        if (!g.length) continue;
+        h += `<h3 class="group-title">${esc(c.name)}</h3><div class="items">${g.map(itemHTML).join('')}</div>`;
+      }
+    } else {
+      h += `<div class="items"><div class="empty"><p>Belum ada barang bernama “${esc(q)}”.</p><button type="button" class="btn primary" data-act="add" data-name="${esc(q)}">+ Tambah “${esc(q)}” sebagai barang baru</button></div></div>`;
+    }
+  } else {
+    ensureCat();
+    const c = catById(state.cat);
+    const items = state.products.filter(p => catOf(p) === c.id).sort(byName);
+    state.viewIds = items.map(p => p.id);
+    h += `<div class="list-head"><div><h2 class="cat-title">${esc(c.name)}</h2><p class="cat-hint">${c.hint ? esc(c.hint) + ' · ' : ''}${items.length} barang</p></div>${state.manage ? `<button type="button" class="mini-btn" data-act="editcat" data-cat="${esc(c.id)}">${ICON.pencil}Ubah kategori</button>` : ''}</div>`;
+    if (items.length) {
+      h += `<div class="items">${items.map(itemHTML).join('')}</div>`;
+      h += `<button type="button" class="add-row" data-act="add" data-cat="${esc(c.id)}">+ Tambah barang ke ${esc(c.name)}</button>`;
+    } else {
+      h += `<div class="items"><div class="empty"><p>Belum ada barang di kategori <b>${esc(c.name)}</b>.</p><button type="button" class="btn primary" data-act="add" data-cat="${esc(c.id)}">+ Tambah barang pertama</button></div></div>`;
+    }
+  }
+  el.list.innerHTML = h;
+  if (fk) {
+    const t = el.list.querySelector(`[data-fk="${CSS.escape(fk)}"]`);
+    if (t && !t.disabled) t.focus({ preventScroll: true });
+  }
+  renderSelbar();
+}
+
+/* ================= Mode Atur: pilih lalu hapus ================= */
+function renderSelbar() {
+  const bar = $('#selbar');
+  bar.hidden = !state.manage;
+  if (!state.manage) return;
+  // Pilihan hanya berlaku untuk barang yang sedang tampil di kategori/pencarian ini.
+  const visible = new Set(state.viewIds);
+  for (const id of [...state.sel]) if (!visible.has(id) || !index.has(id)) state.sel.delete(id);
+  const n = state.sel.size, total = state.viewIds.length;
+  const allOn = total > 0 && state.viewIds.every(id => state.sel.has(id));
+  $('#sel-count').textContent = n ? `${n} barang dipilih` : 'Belum ada yang dipilih';
+  $('#sel-hint').textContent = !n ? 'Ketuk barang untuk memilih, lalu tekan Hapus.'
+    : n === 1 ? index.get([...state.sel][0]).name
+    : `Dari ${total} barang di daftar ini.`;
+  const all = $('#sel-all');
+  all.textContent = allOn ? 'Batal pilih semua' : `Pilih semua (${total})`;
+  all.disabled = !total;
+  $('#sel-clear').hidden = !n;
+  const del = $('#sel-del');
+  del.disabled = !n;
+  del.innerHTML = ICON.trashS + (n ? `Hapus ${n}` : 'Hapus');
+}
+function togglePick(id) {
+  if (!index.has(id)) return;
+  const on = !state.sel.has(id);
+  if (on) state.sel.add(id); else state.sel.delete(id);
+  const art = el.list.querySelector(`[data-pick="${CSS.escape(id)}"]`);
+  if (art) {
+    art.classList.toggle('sel', on);
+    const b = art.querySelector('.pick'); if (b) b.setAttribute('aria-checked', String(on));
+  }
+  renderSelbar();
+}
+function clearSelection() {
+  if (!state.sel.size) return;
+  state.sel.clear();
+  el.list.querySelectorAll('.item.sel').forEach(a => { a.classList.remove('sel'); const b = a.querySelector('.pick'); if (b) b.setAttribute('aria-checked', 'false'); });
+  renderSelbar();
+}
+function openBulkDelete() {
+  const list = [...state.sel].map(id => index.get(id)).filter(Boolean).sort(byName);
+  if (!list.length) return;
+  const n = list.length, SHOW = 30;
+  $('#b-title').textContent = `Hapus ${n} barang?`;
+  $('#b-text').textContent = n === 1 ? 'Barang ini akan dihapus dari daftar kasir:' : `${n} barang ini akan dihapus dari daftar kasir:`;
+  $('#b-list').innerHTML = list.slice(0, SHOW).map(p => `<li>${esc(p.name)}</li>`).join('')
+    + (n > SHOW ? `<li class="bulk-more">…dan ${n - SHOW} barang lainnya</li>` : '');
+  $('#b-note').textContent = (cloudOn() ? 'Barang juga hilang di semua perangkat yang tersinkron. ' : '')
+    + 'Riwayat penjualan tidak berubah. Setelah dihapus, Anda masih bisa menekan “Urungkan”.';
+  $('#b-confirm').innerHTML = ICON.trashS + (n === 1 ? 'Hapus barang' : `Hapus ${n} barang`);
+  dlgBulk.showModal();
+  setTimeout(() => $('#b-confirm').focus(), 30);
+}
+function doBulkDelete() {
+  const ids = [...state.sel];
+  if (!ids.length) { dlgBulk.close(); return; }
+  const { removed, removedCart } = deleteProducts(ids);
+  state.sel.clear();
+  dlgBulk.close();
+  renderChips(); renderList(true); renderCart();
+  const n = removed.length;
+  toast(n === 1 ? `${removed[0].name} dihapus.` : `${n} barang dihapus.`, null, {
+    label: 'Urungkan',
+    fn: () => {
+      saveProducts(removed);
+      for (const [k, q] of removedCart) state.cart.set(k, q);
+      saveCart();
+      renderChips(); renderList(true); renderCart();
+      toast(n === 1 ? `${removed[0].name} dikembalikan.` : `${n} barang dikembalikan.`);
+    },
+  });
+}
+
+/* ================= Render: keranjang ================= */
+function lineHTML(l) {
+  const fk = idsafe(l.k);
+  const one = l.qty === 1;
+  return `<div class="line">
+    <div><div class="line-name">${esc(l.name)}</div><div class="line-meta num">${esc(l.unit)} · ${rp(l.price)}</div></div>
+    <div class="line-right">
+      <div class="line-sub">${rp(l.sub)}</div>
+      <div class="stepper sm">
+        <button type="button" class="step minus${one ? ' rm' : ''}" data-cact="dec" data-k="${esc(l.k)}" data-fk="cdec-${fk}" aria-label="${one ? 'Hapus' : 'Kurangi'} ${esc(l.name)} ${esc(l.unit)}">${one ? ICON.trashS : ICON.minusS}</button>
+        <span class="n">${l.qty}</span>
+        <button type="button" class="step plus" data-cact="inc" data-k="${esc(l.k)}" data-fk="cinc-${fk}" aria-label="Tambah ${esc(l.name)} ${esc(l.unit)}">${ICON.plusS}</button>
+      </div>
+    </div>
+  </div>`;
+}
+function cartTotals() {
+  const lines = cartLines();
+  return { lines, total: lines.reduce((s, l) => s + l.sub, 0), count: lines.reduce((s, l) => s + l.qty, 0) };
+}
+function renderCart(bump) {
+  const { lines, total, count } = cartTotals();
+  const fk = document.activeElement && el.cart.contains(document.activeElement) ? document.activeElement.dataset.fk : null;
+  el.cartCount.textContent = count ? `${count} barang · ${lines.length} jenis` : 'Kosong';
+  el.lines.innerHTML = lines.length
+    ? lines.map(lineHTML).join('')
+    : `<div class="empty"><p>Belum ada barang.<br>Ketuk tombol <b>+</b> di daftar barang.</p></div>`;
+  el.cartClear.hidden = !lines.length;
+  el.total.textContent = rp(total);
+  const sug = suggestions(total);
+  el.quick.innerHTML = total
+    ? `<button type="button" data-pay="${total}" aria-pressed="${state.paid === total}">Uang pas</button>` + sug.map(v => `<button type="button" data-pay="${v}" aria-pressed="${state.paid === v}">${fmtN(v)}</button>`).join('')
+    : '';
+  updateChange(total);
+  el.finish.disabled = !lines.length;
+  el.finish.innerHTML = ICON.check + (lines.length ? `<span>Selesai</span><span style="text-transform:none">· ${rp(total)}</span>` : '<span>Selesai · Simpan</span>');
+  el.cartbar.hidden = !count || state.manage;
+  el.cbCount.textContent = `${count} barang`;
+  el.cbTotal.textContent = rp(total);
+  if (bump && !reduceMotion()) { el.cartbar.classList.remove('bump'); void el.cartbar.offsetWidth; el.cartbar.classList.add('bump'); }
+  if (!count && el.cart.classList.contains('open')) closeCart();
+  if (fk) { const t = el.cart.querySelector(`[data-fk="${CSS.escape(fk)}"]`); if (t) t.focus({ preventScroll: true }); }
+}
+function updateChange(total) {
+  if (total == null) total = cartTotals().total;
+  const paid = state.paid;
+  el.change.classList.remove('ok', 'bad');
+  if (!total) { el.changeLabel.textContent = 'Kembalian'; el.changeVal.textContent = '–'; return; }
+  if (!paid) { el.changeLabel.textContent = 'Kembalian'; el.changeVal.textContent = 'Uang pas'; return; }
+  if (paid < total) { el.change.classList.add('bad'); el.changeLabel.textContent = 'Uang kurang'; el.changeVal.textContent = rp(total - paid); return; }
+  el.change.classList.add('ok'); el.changeLabel.textContent = 'Kembalian'; el.changeVal.textContent = rp(paid - total);
+}
+function setPaid(v) {
+  state.paid = v;
+  el.paid.value = v ? fmtN(v) : '';
+  const total = cartTotals().total;
+  el.quick.querySelectorAll('[data-pay]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.pay === v)));
+  updateChange(total);
+}
+
+/* Keranjang di HP: panel geser dari bawah */
+function openCart() {
+  if (isDesktop()) { el.paid.focus(); return; }
+  el.cart.classList.add('open'); el.scrim.classList.add('show');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => $('#cart-close').focus({ preventScroll: true }), 30);
+}
+function closeCart() {
+  el.cart.classList.remove('open'); el.scrim.classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+/* ================= Transaksi ================= */
+async function recordSale(sale) {
+  const d = await dbReady;
+  if (d && state.mode !== 'local') {
+    const path = `sales/${sale.date}_${DEVICE}`;
+    return queueWrite(path, () => withRetry(async () => {
+      const ref = d.doc(path);
+      const s = await ref.get();
+      const cur = s.exists ? s.data() : null;
+      const list = cur && Array.isArray(cur.list) ? cur.list.slice() : [];
+      if (!list.some(v => v.id === sale.id)) list.push(sale);
+      await ref.set({ date: sale.date, device: DEVICE, list, updatedAt: new Date().toISOString() });
+    }));
+  }
+  const arr = LS.get(K.sales(sale.date), null) ?? memSales[sale.date] ?? [];
+  arr.push(sale); writeLocalSales(sale.date, arr);
+  if (sale.date === state.today) { state.todaySales = localSales(state.today); renderHeader(); }
+  if (dlgHistory.open) renderHistory();
+}
+async function deleteSale(sale) {
+  const d = await dbReady;
+  if (d && sale._path && state.mode !== 'local') {
+    return queueWrite(sale._path, () => withRetry(async () => {
+      const ref = d.doc(sale._path);
+      const s = await ref.get(); if (!s.exists) return;
+      const x = s.data();
+      await ref.set({ ...x, list: (x.list || []).filter(v => v.id !== sale.id), updatedAt: new Date().toISOString() });
+    })).then(() => toast('Transaksi dihapus.')).catch(onWriteError);
+  }
+  const arr = (LS.get(K.sales(sale.date), null) ?? memSales[sale.date] ?? []).filter(v => v.id !== sale.id);
+  writeLocalSales(sale.date, arr);
+  if (sale.date === state.today) { state.todaySales = localSales(state.today); renderHeader(); }
+  if (hist.date !== state.today) hist.sales = localSales(hist.date);
+  renderHistory(); toast('Transaksi dihapus.');
+}
+function finishSale() {
+  const { lines, total } = cartTotals();
+  if (!lines.length) return;
+  const paid = state.paid || total;
+  if (paid < total) { toast(`Uang diterima kurang ${rp(total - paid)}.`, 'err'); el.paid.focus(); return; }
+  const now = new Date();
+  const sale = {
+    id: now.getTime().toString(36) + Math.random().toString(36).slice(2, 6),
+    at: now.toISOString(), date: dateStr(now),
+    items: lines.map(l => ({ name: l.name, unit: l.unit, price: l.price, qty: l.qty })),
+    total, paid, change: paid - total,
+  };
+  state.cart.clear(); saveCart(); setPaid(0);
+  closeCart(); renderList(true); renderCart();
+  showReceipt(sale, false);
+  if (settings.autoPrint && printerUsable()) printSale(sale);
+  recordSale(sale).catch(() => {
+    const arr = LS.get(K.sales(sale.date), null) ?? memSales[sale.date] ?? [];
+    if (!arr.some(v => v.id === sale.id)) { arr.push(sale); writeLocalSales(sale.date, arr); }
+    toast('Gagal simpan online — transaksi disimpan di perangkat ini.', 'err');
+  });
+}
+
+/* ================= Struk ================= */
+// Baris-baris struk. c = rata tengah, big = huruf besar (untuk printer), bold = tebal.
+function receiptLines(sale, W = 32) {
+  const line = '-'.repeat(W);
+  const lr = (l, r) => { l = String(l); r = String(r); const sp = W - l.length - r.length; return sp >= 1 ? [l + ' '.repeat(sp) + r] : [l, ' '.repeat(Math.max(0, W - r.length)) + r]; };
+  const wrap = s => { const out = []; let cur = ''; for (const w of String(s).split(' ')) { if ((cur + ' ' + w).trim().length > W) { if (cur) out.push(cur); cur = w.slice(0, W); } else cur = (cur + ' ' + w).trim(); } if (cur) out.push(cur); return out; };
+  const d = new Date(sale.at);
+  const when = d.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  const out = [
+    { t: state.storeName.toUpperCase(), c: true, big: true, bold: true },
+    { t: 'Sembako · Rokok · Gas LPG', c: true },
+    { t: when, c: true },
+    { t: line },
+  ];
+  for (const it of sale.items) {
+    wrap(`${it.name} (${it.unit})`).forEach(t => out.push({ t }));
+    lr(`  ${it.qty} x ${fmtN(it.price)}`, fmtN(it.qty * it.price)).forEach(t => out.push({ t }));
+  }
+  out.push({ t: line });
+  lr('TOTAL', fmtN(sale.total)).forEach(t => out.push({ t, bold: true }));
+  lr('Tunai', fmtN(sale.paid)).forEach(t => out.push({ t }));
+  lr('Kembali', fmtN(sale.change)).forEach(t => out.push({ t }));
+  out.push({ t: line });
+  String(settings.footer || '').split('\n').filter(Boolean).forEach(f => wrap(f).forEach(t => out.push({ t, c: true })));
+  return out;
+}
+function receiptText(sale, W = 32) {
+  return receiptLines(sale, W).map(l => {
+    const t = String(l.t).slice(0, W);
+    return l.c ? ' '.repeat(Math.max(0, Math.floor((W - t.length) / 2))) + t : t;
+  }).join('\n');
+}
+function showReceipt(sale, fromHistory) {
+  $('#r-title').textContent = fromHistory ? 'Struk transaksi' : 'Transaksi tersimpan';
+  $('#r-change').textContent = sale.change ? rp(sale.change) : 'Uang pas';
+  $('#r-meta').textContent = `Total ${rp(sale.total)} · Tunai ${rp(sale.paid)}`;
+  $('#r-text').value = receiptText(sale);
+  const nb = $('#r-new'); nb.textContent = fromHistory ? 'Tutup' : 'Transaksi baru';
+  nb.className = fromHistory ? 'btn ghost' : 'btn go';
+  resetCopyBtn();
+  receiptSale = sale;
+  $('#r-print').hidden = !printerUsable();
+  dlgReceipt.showModal();
+  setTimeout(() => nb.focus(), 20);
+}
+function resetCopyBtn() { const b = $('#r-copy'); b.innerHTML = ICON.copy + 'Salin struk'; }
+
+/* ================= Riwayat ================= */
+const hist = { date: null, sales: [], unsub: null };
+function openHistory() {
+  hist.date = state.today; $('#h-date').value = hist.date;
+  loadHistory(); dlgHistory.showModal();
+}
+function loadHistory() {
+  if (hist.unsub) { hist.unsub(); hist.unsub = null; }
+  if (hist.date === state.today) { renderHistory(); return; }
+  if (cloudOn()) {
+    hist.sales = 'loading'; renderHistory();
+    hist.unsub = db.collection('sales').where('date', '==', hist.date).onSnapshot(snap => { hist.sales = flattenSales(snap.docs); renderHistory(); }, () => { hist.sales = []; renderHistory(); });
+  } else { hist.sales = localSales(hist.date); renderHistory(); }
+}
+function currentHistSales() { return hist.date === state.today ? state.todaySales : (Array.isArray(hist.sales) ? hist.sales : []); }
+function renderHistory() {
+  const box = $('#h-content');
+  if (hist.date !== state.today && hist.sales === 'loading') { box.innerHTML = '<p class="note">Memuat riwayat…</p>'; return; }
+  const sales = currentHistSales();
+  const omzet = sales.reduce((s, v) => s + (Number(v.total) || 0), 0);
+  const nItems = sales.reduce((s, v) => s + (v.items || []).reduce((a, i) => a + (Number(i.qty) || 0), 0), 0);
+  const agg = new Map();
+  for (const s of sales) for (const i of (s.items || [])) {
+    const k = i.name + ' · ' + i.unit;
+    const a = agg.get(k) || { k, qty: 0, rev: 0 };
+    a.qty += Number(i.qty) || 0; a.rev += (Number(i.qty) || 0) * (Number(i.price) || 0); agg.set(k, a);
+  }
+  const top = [...agg.values()].sort((a, b) => b.qty - a.qty || b.rev - a.rev).slice(0, 5);
+  const dLabel = new Date(hist.date + 'T12:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  let h = `<div class="stats">
+    <div class="stat big"><span class="label">Omzet · ${esc(dLabel)}</span><b>${rp(omzet)}</b></div>
+    <div class="stat"><span class="label">Transaksi</span><b>${sales.length}</b></div>
+    <div class="stat"><span class="label">Barang terjual</span><b>${fmtN(nItems)}</b></div>
+  </div>`;
+  if (!cloudOn()) h += `<p class="note">Riwayat ini tersimpan di perangkat ini saja.</p>`;
+  if (top.length) h += `<div><h3 class="sub-title">Paling laku</h3><ol class="top-list">${top.map(t => `<li><span>${esc(t.k)}</span><b class="num">× ${fmtN(t.qty)}</b></li>`).join('')}</ol></div>`;
+  h += `<div><h3 class="sub-title">Transaksi</h3>`;
+  h += sales.length ? `<div class="sales">${sales.map(saleHTML).join('')}</div>` : `<p class="note">Belum ada transaksi pada tanggal ini.</p>`;
+  h += `</div>`;
+  const openIds = new Set([...box.querySelectorAll('details[open]')].map(d => d.dataset.sid));
+  box.innerHTML = h;
+  box.querySelectorAll('details').forEach(d => { if (openIds.has(d.dataset.sid)) d.open = true; });
+}
+function saleHTML(s) {
+  const t = new Date(s.at);
+  const time = t.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  const items = s.items || [];
+  const summary = items.map(i => `${i.name} ×${i.qty}`).join(', ');
+  return `<details class="sale" data-sid="${esc(s.id)}"><summary><span class="sale-time">${time}</span><span class="sale-sum">${esc(summary)}</span><span class="sale-total">${rp(s.total)}</span></summary>
+    <div class="sale-body">
+      ${items.map(i => `<div class="sale-line"><span>${esc(i.name)} <small>(${esc(i.unit)})</small><br><small class="num">${i.qty} × ${rp(i.price)}</small></span><b class="num">${rp(i.qty * i.price)}</b></div>`).join('')}
+      <div class="sale-line"><small class="num">Tunai ${rp(s.paid)} · Kembali ${rp(s.change)}</small></div>
+      <div class="sale-actions">
+        <button type="button" class="btn ghost sm" data-hact="receipt" data-sid="${esc(s.id)}">Lihat struk</button>
+        ${printerUsable() ? `<button type="button" class="btn ghost sm" data-hact="print" data-sid="${esc(s.id)}">${ICON.printer}Cetak</button>` : ''}
+        <button type="button" class="btn danger sm" data-hact="del" data-sid="${esc(s.id)}">Hapus transaksi</button>
+      </div>
+    </div></details>`;
+}
+
+/* ================= Edit barang ================= */
+let editingId = null, editUnits = [], unitsTouched = false;
+function fillCatSelect() { $('#f-cat').innerHTML = state.cats.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join(''); }
+function openEdit(pid, preset = {}) {
+  const p = pid ? index.get(pid) : null;
+  editingId = p ? p.id : null; unitsTouched = !!p;
+  fillCatSelect();
+  $('#edit-title').textContent = p ? 'Ubah barang' : `Tambah barang`;
+  $('#f-name').value = p ? p.name : (preset.name || '');
+  const cat = p ? catOf(p) : (preset.cat && catById(preset.cat) ? preset.cat : state.cat);
+  $('#f-cat').value = cat;
+  editUnits = p ? p.units.map(u => ({ ...u })) : unitsFor(cat).map(n => ({ n, p: 0 }));
+  if (!p && preset.barcode && editUnits[0]) editUnits[0].b = preset.barcode;
+  renderUnitRows();
+  $('#f-err').textContent = '';
+  const del = $('#f-delete'); del.hidden = !p; del.dataset.armed = ''; del.innerHTML = 'Hapus barang';
+  dlgEdit.showModal();
+  setTimeout(() => (p ? $('#fu-p-0') : $('#f-name')).focus(), 30);
+}
+function renderUnitRows() {
+  $('#f-units').innerHTML = editUnits.map((u, i) => `<div class="unit-edit">
+    <input class="field-in" id="fu-n-${i}" data-i="${i}" data-f="n" value="${esc(u.n)}" placeholder="Satuan" aria-label="Nama satuan ${i + 1}" autocomplete="off" style="height:46px;border-radius:12px;border:1.5px solid var(--line);background:var(--ground);padding:0 12px;min-width:0">
+    <div class="money sm"><span>Rp</span><input class="bare" id="fu-p-${i}" data-i="${i}" data-f="p" inputmode="numeric" value="${u.p ? fmtN(u.p) : ''}" placeholder="0" aria-label="Harga satuan ${i + 1}" autocomplete="off"></div>
+    <button type="button" class="icon-btn" data-rm="${i}" aria-label="Hapus satuan ${i + 1}"${editUnits.length < 2 ? ' disabled' : ''}>${ICON.trash}</button>
+    <div class="bc"><input id="fu-b-${i}" data-i="${i}" data-f="b" value="${esc(u.b || '')}" placeholder="Barcode (boleh kosong)" inputmode="numeric" autocomplete="off" aria-label="Barcode satuan ${i + 1}"><button type="button" class="icon-btn" data-scanunit="${i}" aria-label="Scan barcode satuan ${i + 1}">${ICON.barcode}</button></div>
+  </div>`).join('');
+}
+function uniqueId(base) { let id = base, n = 2; while (index.has(id)) id = `${base}-${n++}`; return id; }
+
+/* ================= Toast ================= */
+let toastT = null;
+function hideToast() {
+  clearTimeout(toastT);
+  el.toast.classList.remove('show');
+  try { el.toast.hidePopover(); } catch (e) {}
+}
+// action (opsional): { label, fn } — menampilkan tombol di toast, misalnya "Urungkan".
+function toast(msg, kind, action) {
+  const t = el.toast;
+  t.textContent = '';
+  const span = document.createElement('span'); span.textContent = msg; t.appendChild(span);
+  if (action) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'toast-act'; b.textContent = action.label;
+    b.addEventListener('click', () => { hideToast(); action.fn(); });
+    t.appendChild(b);
+  }
+  t.className = 'toast' + (kind === 'err' ? ' err' : '');
+  try { if (t.matches(':popover-open')) t.hidePopover(); } catch (e) {}
+  void t.offsetWidth;
+  t.classList.add('show');
+  try { t.showPopover(); } catch (e) {}
+  clearTimeout(toastT);
+  toastT = setTimeout(hideToast, action ? 8000 : kind === 'err' ? 4200 : 2600);
+}
+
+/* Konfirmasi dua ketukan (dialog bawaan browser tidak dipakai) */
+function armConfirm(btn, label, fn) {
+  if (btn.dataset.armed === '1') { clearTimeout(btn._t); btn.dataset.armed = ''; btn.innerHTML = btn.dataset.orig; fn(); return; }
+  btn.dataset.orig = btn.innerHTML; btn.dataset.armed = '1'; btn.textContent = label;
+  btn._t = setTimeout(() => { btn.dataset.armed = ''; btn.innerHTML = btn.dataset.orig; }, 3500);
+}
+
+/* ================= Harga: ubah langsung di label ================= */
+function startPriceEdit(btn, pid, ui) {
+  const p = index.get(pid); if (!p || !p.units[ui]) return;
+  const u = p.units[ui];
+  const inp = document.createElement('input');
+  inp.className = 'tag-input'; inp.id = 'price-edit'; inp.inputMode = 'numeric'; inp.autocomplete = 'off';
+  inp.value = u.p ? fmtN(u.p) : '';
+  inp.setAttribute('aria-label', `Harga baru ${p.name} per ${u.n}`);
+  inp.dataset.fk = btn.dataset.fk;
+  btn.replaceWith(inp);
+  inp.focus(); inp.select();
+  let done = false;
+  const finish = save => {
+    if (done) return; done = true;
+    const v = parseNum(inp.value);
+    if (save && v && v !== u.p) {
+      const np = { ...p, units: p.units.map((x, i) => i === ui ? { ...x, p: v } : x) };
+      saveProduct(np);
+      toast(`Harga ${p.name} (${u.n}) jadi ${rp(v)}`);
+    } else if (save && !v) toast('Harga tidak diubah — isi angka lebih dari 0.');
+    const nextFk = inp.dataset.fk;
+    inp.blur();
+    renderList(true); renderCart();
+    const again = el.list.querySelector(`[data-fk="${CSS.escape(nextFk)}"]`);
+    if (again && save !== null) again.focus({ preventScroll: true });
+  };
+  inp.addEventListener('input', () => { const v = parseNum(inp.value); inp.value = v ? fmtN(v) : ''; });
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+    else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); finish(false); }
+  });
+  inp.addEventListener('blur', () => { if (!done) { done = true; const v = parseNum(inp.value); if (v && v !== u.p) { saveProduct({ ...p, units: p.units.map((x, i) => i === ui ? { ...x, p: v } : x) }); toast(`Harga ${p.name} (${u.n}) jadi ${rp(v)}`); } setTimeout(() => { renderList(true); renderCart(); }, 0); } });
+}
+
+/* ================= Event ================= */
+function selectCat(id) {
+  state.sel.clear();
+  state.cat = id; state.q = ''; el.q.value = ''; el.qClear.hidden = true; LS.set(K.cat, id);
+  renderChips(); renderList(true);
+  const chip = el.chips.querySelector(`[data-cat="${id}"]`);
+  if (chip && el.chips.scrollWidth > el.chips.clientWidth) {
+    el.chips.scrollTo({ left: chip.offsetLeft - el.chips.clientWidth / 2 + chip.offsetWidth / 2, behavior: reduceMotion() ? 'auto' : 'smooth' });
+  }
+  const tb = $('.toolbar').getBoundingClientRect();
+  const top = el.list.getBoundingClientRect().top;
+  if (top < tb.bottom) window.scrollBy({ top: top - tb.bottom - 4, behavior: reduceMotion() ? 'auto' : 'smooth' });
+}
+
+// Di laptop: putar roda mouse di atas deretan kategori untuk menggeser ke samping.
+el.chips.addEventListener('wheel', e => {
+  if (Math.abs(e.deltaY) <= Math.abs(e.deltaX) || el.chips.scrollWidth <= el.chips.clientWidth) return;
+  el.chips.scrollLeft += e.deltaY;
+  e.preventDefault();
+}, { passive: false });
+el.chips.addEventListener('click', e => {
+  if (e.target.closest('[data-newcat]')) { openCat(null); return; }
+  const b = e.target.closest('[data-cat]'); if (b) selectCat(b.dataset.cat);
+});
+
+el.q.addEventListener('input', () => {
+  state.q = el.q.value; el.qClear.hidden = !state.q;
+  state.sel.clear();
+  renderChips(); renderList(true);
+});
+el.q.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && el.q.value) { e.preventDefault(); el.qClear.click(); }
+  // Scanner yang mengetik ke kolom cari: kode angka + Enter langsung dicari sebagai barcode.
+  if (e.key === 'Enter') {
+    const v = el.q.value.trim();
+    if (/^[0-9A-Za-z\-]{6,}$/.test(v) && (byCode.has(v) || /^\d{8,14}$/.test(v))) {
+      e.preventDefault();
+      el.q.value = ''; state.q = ''; el.qClear.hidden = true; renderChips(); renderList(true);
+      el.q.blur(); onScanned(v);
+    }
+  }
+});
+el.qClear.addEventListener('click', () => { el.q.value = ''; state.q = ''; el.qClear.hidden = true; state.sel.clear(); renderChips(); renderList(true); el.q.focus(); });
+
+el.list.addEventListener('click', e => {
+  // Mode Atur: ketuk di mana saja pada kartu barang untuk memilih/membatalkan pilihan.
+  if (state.manage && !e.target.closest('input')) {
+    const art = e.target.closest('.item.managing');
+    const actEl = e.target.closest('[data-act]');
+    if (art && (!actEl || actEl.dataset.act === 'pick')) { togglePick(art.dataset.pick); return; }
+  }
+  const b = e.target.closest('[data-act]'); if (!b || b.tagName === 'INPUT') return;
+  const act = b.dataset.act, pid = b.dataset.pid, ui = Number(b.dataset.ui);
+  const p = pid ? index.get(pid) : null;
+  if (act === 'inc' && p) setQty(pid, p.units[ui].n, qtyOf(pid, p.units[ui].n) + 1);
+  else if (act === 'dec' && p) setQty(pid, p.units[ui].n, qtyOf(pid, p.units[ui].n) - 1);
+  else if (act === 'price' && p) startPriceEdit(b, pid, ui);
+  else if (act === 'edit' && p) openEdit(pid);
+  else if (act === 'add') openEdit(null, { cat: b.dataset.cat || state.cat, name: b.dataset.name || '' });
+  else if (act === 'editcat') openCat(b.dataset.cat);
+  else if (act === 'profile' && p) openProfile(pid);
+});
+el.list.addEventListener('focusin', e => { if (e.target.classList.contains('qty')) setTimeout(() => e.target.select(), 0); });
+el.list.addEventListener('input', e => { if (e.target.classList.contains('qty')) e.target.value = e.target.value.replace(/[^\d]/g, '').slice(0, 4); });
+el.list.addEventListener('keydown', e => { if (e.target.classList.contains('qty') && e.key === 'Enter') { e.preventDefault(); e.target.blur(); } });
+el.list.addEventListener('change', e => {
+  const t = e.target; if (!t.classList.contains('qty')) return;
+  const p = index.get(t.dataset.pid); if (!p) return;
+  const u = p.units[Number(t.dataset.ui)]; if (!u) return;
+  setQty(p.id, u.n, parseNum(t.value));
+});
+el.list.addEventListener('focusout', () => { setTimeout(() => { if (state.dirty && !listBusy()) renderList(true); }, 0); });
+
+el.banners.addEventListener('click', e => {
+  const b = e.target.closest('[data-banner]'); if (!b) return;
+  if (b.dataset.banner === 'notice') { LS.set(K.notice, true); b.closest('.banner').remove(); }
+  else if (b.dataset.banner === 'upload') uploadAll(b);
+});
+
+el.lines.addEventListener('click', e => {
+  const b = e.target.closest('[data-cact]'); if (!b) return;
+  const k = b.dataset.k; const q = state.cart.get(k) || 0;
+  const at = k.indexOf('|'); const pid = k.slice(0, at), unit = k.slice(at + 1);
+  if (b.dataset.cact === 'inc') setQty(pid, unit, q + 1);
+  else if (b.dataset.cact === 'dec') setQty(pid, unit, q - 1);
+  else if (b.dataset.cact === 'rm') setQty(pid, unit, 0);
+});
+el.cartClear.addEventListener('click', () => armConfirm(el.cartClear, 'Yakin kosongkan?', () => { state.cart.clear(); saveCart(); setPaid(0); renderList(true); renderCart(); toast('Keranjang dikosongkan.'); }));
+el.paid.addEventListener('input', () => { setPaid(parseNum(el.paid.value)); });
+el.paid.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); finishSale(); } });
+el.quick.addEventListener('click', e => { const b = e.target.closest('[data-pay]'); if (b) setPaid(Number(b.dataset.pay)); });
+el.finish.addEventListener('click', finishSale);
+el.cartbar.addEventListener('click', openCart);
+$('#cart-close').addEventListener('click', closeCart);
+el.scrim.addEventListener('click', closeCart);
+
+$('#btn-history').addEventListener('click', openHistory);
+$('#h-date').addEventListener('change', e => { if (e.target.value) { hist.date = e.target.value; loadHistory(); } });
+$('#h-today').addEventListener('click', () => { hist.date = state.today; $('#h-date').value = hist.date; loadHistory(); });
+dlgHistory.addEventListener('close', () => { if (hist.unsub) { hist.unsub(); hist.unsub = null; } });
+$('#h-content').addEventListener('click', e => {
+  const b = e.target.closest('[data-hact]'); if (!b) return;
+  const sale = currentHistSales().find(s => s.id === b.dataset.sid); if (!sale) return;
+  if (b.dataset.hact === 'receipt') showReceipt(sale, true);
+  else if (b.dataset.hact === 'print') printSale(sale);
+  else if (b.dataset.hact === 'del') armConfirm(b, 'Ketuk lagi untuk hapus', () => deleteSale(sale));
+});
+
+function setManage(on) {
+  state.manage = on;
+  state.sel.clear();
+  el.btnManage.setAttribute('aria-pressed', String(on));
+  el.manageBar.hidden = !on;
+  if (on) closeCart();
+  renderList(true); renderCart();
+}
+$('#sel-all').addEventListener('click', () => {
+  const allOn = state.viewIds.length > 0 && state.viewIds.every(id => state.sel.has(id));
+  if (allOn) state.viewIds.forEach(id => state.sel.delete(id));
+  else state.viewIds.forEach(id => state.sel.add(id));
+  renderList(true);
+});
+$('#sel-clear').addEventListener('click', clearSelection);
+$('#sel-del').addEventListener('click', openBulkDelete);
+$('#b-confirm').addEventListener('click', doBulkDelete);
+el.btnManage.addEventListener('click', () => setManage(!state.manage));
+$('#mb-done').addEventListener('click', () => setManage(false));
+$('#mb-add').addEventListener('click', () => openEdit(null, { cat: state.cat }));
+$('#mb-cat').addEventListener('click', () => openCat(null));
+
+/* ================= Kategori: tambah, ubah, hapus ================= */
+const dlgCat = $('#dlg-cat');
+let editingCat = null;
+function openCat(id) {
+  const c = id ? catById(id) : null;
+  editingCat = c ? c.id : null;
+  $('#c-title').textContent = c ? 'Ubah kategori' : 'Tambah kategori';
+  $('#c-save').textContent = c ? 'Simpan perubahan' : 'Buat kategori';
+  $('#c-name').value = c ? c.name : '';
+  $('#c-hint').value = c ? c.hint : '';
+  $('#c-unit').value = c ? unitsFor(c.id).join(', ') : '';
+  const others = state.cats.filter(x => !c || x.id !== c.id);
+  const pos = $('#c-pos');
+  pos.innerHTML = `<option value="__first">Paling depan</option>` + others.map(x => `<option value="${esc(x.id)}">Sesudah ${esc(x.name)}</option>`).join('');
+  if (c) { const i = state.cats.findIndex(x => x.id === c.id); pos.value = i === 0 ? '__first' : state.cats[i - 1].id; }
+  else pos.value = others.length ? others[others.length - 1].id : '__first';
+  $('#c-err').textContent = '';
+  const del = $('#c-delete'); del.hidden = !c || state.cats.length < 2; del.dataset.armed = ''; del.innerHTML = 'Hapus kategori';
+  dlgCat.showModal();
+  setTimeout(() => $('#c-name').focus(), 30);
+}
+$('#form-cat').addEventListener('submit', e => {
+  e.preventDefault();
+  const err = $('#c-err');
+  const name = $('#c-name').value.trim().replace(/\s+/g, ' ');
+  if (!name) { err.textContent = 'Isi nama kategori dulu.'; $('#c-name').focus(); return; }
+  if (state.cats.some(x => x.id !== editingCat && x.name.toLowerCase() === name.toLowerCase())) { err.textContent = `Kategori “${name}” sudah ada.`; $('#c-name').focus(); return; }
+  const hint = $('#c-hint').value.trim();
+  const units = $('#c-unit').value.split(',').map(s => s.trim()).filter(Boolean).slice(0, 6);
+  const list = state.cats.slice();
+  let cat;
+  if (editingCat) {
+    const i = list.findIndex(x => x.id === editingCat);
+    cat = { ...list[i], name, hint, units };
+    list.splice(i, 1);
+  } else {
+    const base = 'k-' + slug(name); let id = base, n = 2;
+    while (list.some(x => x.id === id)) id = `${base}-${n++}`;
+    cat = { id, name, hint, units };
+  }
+  const posVal = $('#c-pos').value;
+  const at = posVal === '__first' ? 0 : list.findIndex(x => x.id === posVal) + 1;
+  list.splice(at <= 0 && posVal !== '__first' ? list.length : at, 0, cat);
+  const isNew = !editingCat;
+  state.cats = list; saveCats();
+  dlgCat.close();
+  selectCat(cat.id);
+  toast(isNew ? `Kategori “${name}” dibuat. Sekarang tambahkan barangnya.` : 'Kategori disimpan.');
+});
+$('#c-delete').addEventListener('click', e => {
+  const b = e.currentTarget;
+  const c = catById(editingCat); if (!c || state.cats.length < 2) return;
+  const rest = state.cats.filter(x => x.id !== c.id);
+  const target = rest.find(x => x.id === 'lain') || rest[rest.length - 1];
+  const moving = state.products.filter(p => catOf(p) === c.id);
+  armConfirm(b, moving.length ? `Ketuk lagi — ${moving.length} barang pindah ke ${target.name}` : 'Ketuk lagi untuk hapus', () => {
+    state.cats = rest; saveCats();
+    for (const p of moving) saveProduct({ ...p, cat: target.id });
+    dlgCat.close();
+    if (state.cat === c.id) state.cat = target.id;
+    LS.set(K.cat, state.cat);
+    renderChips(); renderList(true);
+    toast(`Kategori ${c.name} dihapus${moving.length ? `, ${moving.length} barang dipindah ke ${target.name}` : ''}.`);
+  });
+});
+
+$('#mb-store').addEventListener('click',() => { $('#f-store').value = state.storeName; dlgStore.showModal(); setTimeout(() => $('#f-store').select(), 30); });
+
+$('#form-store').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = $('#f-store').value.trim(); if (!v) { $('#f-store').focus(); return; }
+  state.storeName = v; LS.set(K.name, v); renderHeader(); dlgStore.close(); toast('Nama toko disimpan.');
+  dbReady.then(d => { if (d && state.mode !== 'local') return queueWrite('settings/store', () => withRetry(() => d.doc('settings/store').set({ name: v }))); }).catch(onWriteError);
+});
+
+$('#f-cat').addEventListener('change', e => {
+  if (!editingId && !unitsTouched) { editUnits = unitsFor(e.target.value).map(n => ({ n, p: 0 })); renderUnitRows(); }
+});
+$('#f-units').addEventListener('input', e => {
+  const t = e.target; const i = Number(t.dataset.i); if (!editUnits[i]) return;
+  unitsTouched = true;
+  if (t.dataset.f === 'n') editUnits[i].n = t.value;
+  else if (t.dataset.f === 'b') editUnits[i].b = t.value.trim();
+  else { const v = parseNum(t.value); editUnits[i].p = v; t.value = v ? fmtN(v) : ''; }
+});
+$('#f-units').addEventListener('keydown', e => { if (e.target.dataset.f === 'b' && e.key === 'Enter') e.preventDefault(); });
+$('#f-units').addEventListener('click', e => {
+  const s = e.target.closest('[data-scanunit]');
+  if (s) {
+    const i = Number(s.dataset.scanunit);
+    openScan({ title: 'Scan barcode satuan', onCode: code => { if (!editUnits[i]) return; editUnits[i].b = code; const inp = $('#fu-b-' + i); if (inp) inp.value = code; dlgScan.close(); beep(); } });
+    return;
+  }
+  const b = e.target.closest('[data-rm]'); if (!b || editUnits.length < 2) return;
+  editUnits.splice(Number(b.dataset.rm), 1); unitsTouched = true; renderUnitRows();
+});
+$('#f-add-unit').addEventListener('click', () => {
+  editUnits.push({ n: '', p: 0 }); unitsTouched = true; renderUnitRows();
+  $('#fu-n-' + (editUnits.length - 1)).focus();
+});
+$('#form-edit').addEventListener('submit', e => {
+  e.preventDefault();
+  const err = $('#f-err');
+  const name = $('#f-name').value.trim();
+  if (!name) { err.textContent = 'Isi nama barang dulu.'; $('#f-name').focus(); return; }
+  const cat = $('#f-cat').value;
+  const seen = new Set(), units = [];
+  for (const u of editUnits) {
+    const n = String(u.n || '').trim();
+    if (!n || seen.has(n.toLowerCase())) continue;
+    seen.add(n.toLowerCase());
+    const code = String(u.b || '').trim();
+    units.push({ n, p: Number(u.p) || 0, ...(code ? { b: code } : {}) });
+  }
+  const codes = units.map(u => u.b).filter(Boolean);
+  if (new Set(codes).size !== codes.length) { err.textContent = 'Dua satuan tidak boleh memakai barcode yang sama.'; return; }
+  for (const c of codes) {
+    const hit = byCode.get(c);
+    if (hit && hit.pid !== editingId) { const other = index.get(hit.pid); err.textContent = `Barcode ${c} sudah dipakai ${other ? other.name : 'barang lain'}. Hapus dulu dari barang itu.`; return; }
+  }
+  if (!units.length) { err.textContent = 'Isi minimal satu satuan, misalnya “Bungkus”.'; return; }
+  if (units.some(u => !u.p)) { err.textContent = 'Setiap satuan perlu harga lebih dari 0.'; return; }
+  const old = editingId ? index.get(editingId) : null;
+  const id = old ? old.id : uniqueId(slug(name));
+  if (old) for (const k of [...state.cart.keys()]) if (k.startsWith(id + '|') && !units.some(u => k === ckey(id, u.n))) state.cart.delete(k);
+  saveCart();
+  saveProduct({ id, cat, name, units });
+  dlgEdit.close();
+  if (!old) { state.cat = cat; state.q = ''; el.q.value = ''; el.qClear.hidden = true; LS.set(K.cat, cat); }
+  renderChips(); renderList(true); renderCart();
+  toast(old ? 'Perubahan barang disimpan.' : `${name} ditambahkan ke ${catName(cat)}.`);
+});
+$('#f-delete').addEventListener('click', e => {
+  const b = e.currentTarget; if (!editingId) return;
+  const p = index.get(editingId);
+  armConfirm(b, 'Ketuk lagi untuk hapus', () => {
+    deleteProduct(editingId); dlgEdit.close(); renderChips(); renderList(true); renderCart();
+    toast(`${p ? p.name : 'Barang'} dihapus.`);
+  });
+});
+
+$('#r-copy').addEventListener('click', () => {
+  const ta = $('#r-text'); const b = $('#r-copy');
+  const ok = () => { b.innerHTML = ICON.check + 'Tersalin'; setTimeout(resetCopyBtn, 2200); };
+  const fallback = () => { ta.focus(); ta.select(); b.textContent = 'Teks dipilih — tekan Salin'; setTimeout(resetCopyBtn, 3000); };
+  try { navigator.clipboard.writeText(ta.value).then(ok, fallback); } catch (err) { fallback(); }
+});
+
+document.addEventListener('click', e => { const c = e.target.closest('[data-close]'); if (c) { const d = c.closest('dialog'); if (d) d.close(); } });
+document.querySelectorAll('dialog.sheet').forEach(d => d.addEventListener('click', e => { if (e.target === d) d.close(); }));
+
+document.addEventListener('keydown', e => {
+  const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement && document.activeElement.tagName);
+  if (e.key === '/' && !typing && !document.querySelector('dialog[open]')) { e.preventDefault(); el.q.focus(); }
+  if (e.key === 'Escape' && el.cart.classList.contains('open')) closeCart();
+  if (e.key === 'Escape' && state.manage && state.sel.size && !typing && !document.querySelector('dialog[open]')) clearSelection();
+});
+window.matchMedia('(min-width: 1000px)').addEventListener('change', ev => { if (ev.matches) closeCart(); });
+
+function rollover() {
+  const d = dateStr();
+  if (d === state.today) return;
+  state.today = d;
+  if (cloudOn()) subscribeToday(); else { state.todaySales = localSales(d); renderHeader(); }
+}
+
+/* ================= Setelan (per perangkat) ================= */
+const IN_CLAUDE = !!(window.claude && typeof window.claude.use === 'function');
+const K_SET = 'swarning.settings.v1';
+const settings = Object.assign({
+  printer: 'none',     // none | ble | serial | browser | rawbt
+  width: 32,           // 32 = kertas 58 mm, 48 = kertas 80 mm
+  autoPrint: false,
+  footer: 'Terima kasih, datang lagi',
+  baud: 9600,
+  scanAdd: false,      // scan langsung masuk keranjang
+  beep: true,
+}, LS.get(K_SET, {}) || {});
+function saveSettings() { LS.set(K_SET, settings); }
+const CAN = {
+  ble: !IN_CLAUDE && !!navigator.bluetooth,
+  serial: !IN_CLAUDE && !!navigator.serial,
+  browser: !IN_CLAUDE,
+  rawbt: !IN_CLAUDE && /Android/i.test(navigator.userAgent),
+  camera: !IN_CLAUDE && !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia),
+};
+function printerUsable() { return settings.printer !== 'none' && !!CAN[settings.printer]; }
+
+/* ================= Foto barang ================= */
+const images = new Map();     // pid -> dataURL (JPEG kecil)
+const thumbCache = new Map(); // pid -> blob URL (supaya HTML daftar tetap ringan)
+const pendingImg = new Set();
+const IDB = (() => {
+  let op = null;
+  const open = () => op || (op = new Promise((res, rej) => {
+    try {
+      const r = indexedDB.open('swarning', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('images');
+      r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+    } catch (e) { rej(e); }
+  }));
+  const run = async (mode, fn) => {
+    const d = await open();
+    return new Promise((res, rej) => { const t = d.transaction('images', mode); fn(t.objectStore('images')); t.oncomplete = () => res(); t.onerror = () => rej(t.error); });
+  };
+  return {
+    async all() {
+      const d = await open();
+      return new Promise((res, rej) => {
+        const out = new Map(); const c = d.transaction('images', 'readonly').objectStore('images').openCursor();
+        c.onsuccess = () => { const cur = c.result; if (cur) { out.set(cur.key, cur.value); cur.continue(); } else res(out); };
+        c.onerror = () => rej(c.error);
+      });
+    },
+    put: (k, v) => run('readwrite', s => s.put(v, k)),
+    del: k => run('readwrite', s => s.delete(k)),
+  };
+})();
+function dataUrlToBlob(u) {
+  const [head, b64] = u.split(','); const mime = (head.match(/data:([^;]+)/) || [])[1] || 'image/jpeg';
+  const bin = atob(b64); const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
+function setImageLocal(pid, data) {
+  if (images.get(pid) === data) return;
+  const old = thumbCache.get(pid); if (old) { URL.revokeObjectURL(old); thumbCache.delete(pid); }
+  if (data) images.set(pid, data); else images.delete(pid);
+}
+function thumbUrl(pid) {
+  const d = images.get(pid); if (!d) return null;
+  let u = thumbCache.get(pid);
+  if (!u) { try { u = URL.createObjectURL(dataUrlToBlob(d)); } catch (e) { u = d; } thumbCache.set(pid, u); }
+  return u;
+}
+async function fileToPhoto(file, max = 320, q = 0.72) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('gambar')); i.src = url; });
+    const side = Math.min(img.naturalWidth, img.naturalHeight);
+    const sx = (img.naturalWidth - side) / 2, sy = (img.naturalHeight - side) / 2, out = Math.min(max, side);
+    const c = document.createElement('canvas'); c.width = c.height = out;
+    const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, out, out);
+    g.drawImage(img, sx, sy, side, side, 0, 0, out, out);
+    return c.toDataURL('image/jpeg', q);
+  } finally { URL.revokeObjectURL(url); }
+}
+function saveImage(pid, data) {
+  setImageLocal(pid, data);
+  pendingImg.add(pid);
+  IDB[data ? 'put' : 'del'](pid, data).catch(() => {});
+  dbReady.then(d => {
+    if (!d || state.mode === 'local') return;
+    const ref = () => d.doc('images/' + pid);
+    return queueWrite('images/' + pid, () => withRetry(() => data ? ref().set({ data, updatedAt: new Date().toISOString() }) : ref().delete()));
+  }).catch(onWriteError).finally(() => pendingImg.delete(pid));
+  renderList(true); if (dlgProd.open) renderProfile();
+}
+IDB.all().then(m => {
+  let n = 0;
+  for (const [k, v] of m) if (!images.has(k) && v) { setImageLocal(k, v); n++; }
+  if (n) { renderList(); if (dlgProd.open) renderProfile(); }
+}).catch(() => {});
+
+let photoFor = null;
+async function onPhotoPicked(e) {
+  const f = e.target.files && e.target.files[0]; e.target.value = '';
+  if (!f || !photoFor) return;
+  try { const data = await fileToPhoto(f); saveImage(photoFor, data); toast('Foto barang disimpan.'); }
+  catch (err) { toast('Foto tidak bisa dibaca. Coba foto lain.', 'err'); }
+}
+$('#photo-cam').addEventListener('change', onPhotoPicked);
+$('#photo-gal').addEventListener('change', onPhotoPicked);
+
+/* ================= Profil barang ================= */
+const prof = { pid: null, ui: -1 };
+function openProfile(pid, ui = -1) {
+  if (!index.has(pid)) return;
+  prof.pid = pid; prof.ui = ui;
+  renderProfile();
+  if (!dlgProd.open) dlgProd.showModal();
+}
+function renderProfile() {
+  const p = index.get(prof.pid);
+  if (!p) { if (dlgProd.open) dlgProd.close(); return; }
+  $('#p-title').textContent = p.name;
+  const img = thumbUrl(p.id);
+  const link = state.linkCode;
+  let h = `<div class="p-photo-wrap">`;
+  h += img ? `<img class="p-photo" src="${img}" alt="Foto ${esc(p.name)}">`
+           : `<button type="button" class="p-nophoto" data-pact="cam">${ICON.cameraL}<span>Belum ada foto.<br>Ketuk untuk memotret barang.</span></button>`;
+  h += `<div class="row-btns" style="justify-content:center">
+      <button type="button" class="btn ghost sm" data-pact="cam">${ICON.camera}${img ? 'Foto ulang' : 'Ambil foto'}</button>
+      <button type="button" class="btn ghost sm" data-pact="gal">Pilih dari galeri</button>
+      ${img ? `<button type="button" class="btn danger sm" data-pact="delphoto">Hapus foto</button>` : ''}
+    </div>
+    <div class="p-meta"><span class="pill">${esc(catName(catOf(p)))}</span></div>
+  </div>`;
+  if (link) h += `<div class="warn-box">Pilih satuan untuk barcode <span class="code">${esc(link)}</span>, lalu tekan <b>Pasang di sini</b>.</div>`;
+  h += `<div class="p-units">` + p.units.map((u, i) => {
+    const k = ckey(p.id, u.n), qty = state.cart.get(k) || 0;
+    return `<div class="p-unit${i === prof.ui ? ' hl' : ''}">
+      <div class="p-unit-top"><span class="p-unit-name">${esc(u.n)}</span><span class="p-price">${rp(u.p)}</span></div>
+      <div class="p-code">${u.b ? `<span>Barcode <span class="code">${esc(u.b)}</span></span>` : '<span>Belum ada barcode</span>'}
+        ${link ? `<button type="button" class="btn primary sm" data-pact="link" data-ui="${i}">Pasang di sini</button>`
+               : `<span class="row-btns"><button type="button" class="btn ghost sm" data-pact="scanunit" data-ui="${i}">${ICON.barcode}${u.b ? 'Ganti' : 'Pasang barcode'}</button>${u.b ? `<button type="button" class="btn ghost sm" data-pact="unlink" data-ui="${i}">Lepas</button>` : ''}</span>`}
+      </div>
+      <div class="p-unit-top">
+        <span class="hint">${qty ? `${qty} di keranjang` : 'Belum di keranjang'}</span>
+        <div class="stepper">
+          <button type="button" class="step minus" data-pact="dec" data-ui="${i}" aria-label="Kurangi ${esc(u.n)}"${qty ? '' : ' disabled'}>${ICON.minus}</button>
+          <span class="qty" style="display:grid;place-items:center;color:var(--ink)">${qty}</span>
+          <button type="button" class="step plus" data-pact="inc" data-ui="${i}" aria-label="Tambah ${esc(u.n)}">${ICON.plus}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('') + `</div>`;
+  $('#p-body').innerHTML = h;
+}
+// Pasang (atau lepas, kalau code kosong) barcode pada satu satuan. Kalau kode itu dipakai satuan lain, dipindah.
+function setUnitBarcode(pid, ui, code) {
+  const changed = new Map();
+  const get = id => changed.get(id) || index.get(id);
+  const strip = u => ({ n: u.n, p: u.p });
+  if (code) {
+    const hit = byCode.get(code);
+    if (hit && !(hit.pid === pid && hit.ui === ui)) {
+      const o = get(hit.pid);
+      if (o) changed.set(o.id, { ...o, units: o.units.map((u, i) => i === hit.ui ? strip(u) : u) });
+    }
+  }
+  const p = get(pid); if (!p || !p.units[ui]) return;
+  changed.set(pid, { ...p, units: p.units.map((u, i) => i === ui ? (code ? { ...u, b: code } : strip(u)) : u) });
+  saveProducts([...changed.values()]);
+  renderList(true);
+}
+$('#p-body').addEventListener('click', e => {
+  const b = e.target.closest('[data-pact]'); if (!b) return;
+  const p = index.get(prof.pid); if (!p) return;
+  const act = b.dataset.pact, ui = Number(b.dataset.ui), u = p.units[ui];
+  if (act === 'cam') { photoFor = p.id; $('#photo-cam').click(); }
+  else if (act === 'gal') { photoFor = p.id; $('#photo-gal').click(); }
+  else if (act === 'delphoto') armConfirm(b, 'Ketuk lagi', () => { saveImage(p.id, null); toast('Foto dihapus.'); });
+  else if (act === 'inc' && u) setQty(p.id, u.n, qtyOf(p.id, u.n) + 1);
+  else if (act === 'dec' && u) setQty(p.id, u.n, qtyOf(p.id, u.n) - 1);
+  else if (act === 'unlink' && u) { setUnitBarcode(p.id, ui, ''); prof.ui = ui; renderProfile(); toast('Barcode dilepas.'); }
+  else if (act === 'link' && u) {
+    const code = state.linkCode; endLink();
+    setUnitBarcode(p.id, ui, code); prof.ui = ui; renderProfile(); beep();
+    toast(`Barcode dipasang ke ${p.name} (${u.n}).`);
+  }
+  else if (act === 'scanunit' && u) {
+    openScan({ title: `Barcode ${u.n}`, onCode: code => { dlgScan.close(); setUnitBarcode(p.id, ui, code); prof.ui = ui; renderProfile(); beep(); toast(`Barcode dipasang ke ${p.name} (${u.n}).`); } });
+  }
+});
+$('#p-edit').addEventListener('click', () => { const id = prof.pid; dlgProd.close(); openEdit(id); });
+
+/* ================= Barcode ================= */
+let audioCtx = null;
+function beep() {
+  if (!settings.beep) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.frequency.value = 1800; g.gain.value = 0.08; o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + 0.09);
+  } catch (e) {}
+}
+// Pasang barcode ke barang yang sudah ada: pilih barangnya dari daftar.
+state.linkCode = null;
+function startLink(code) {
+  state.linkCode = code;
+  $('#link-text').innerHTML = `<b>Pasang barcode <span class="code">${esc(code)}</span>.</b> Cari atau buka kategori, ketuk nama barangnya, lalu pilih satuannya.`;
+  $('#link-bar').hidden = false;
+  el.q.focus();
+}
+function endLink() { state.linkCode = null; $('#link-bar').hidden = true; }
+$('#link-cancel').addEventListener('click', endLink);
+
+function onScanned(raw) {
+  const code = String(raw || '').trim(); if (!code) return;
+  if (dlgScan.open && scanCtx.onCode) { scanCtx.onCode(code); return; }
+  if (dlgEdit.open) { const a = document.activeElement; if (a && a.dataset && a.dataset.f === 'b') return; }
+  const hit = byCode.get(code);
+  if (hit) {
+    const p = index.get(hit.pid), u = p.units[hit.ui];
+    beep();
+    if (settings.scanAdd && !state.manage) {
+      setQty(p.id, u.n, qtyOf(p.id, u.n) + 1);
+      toast(`${p.name} (${u.n}) +1 · ${rp(u.p)}`);
+    } else openProfile(p.id, hit.ui);
+    return;
+  }
+  // Belum terdaftar
+  beep();
+  openScan({ noAutoCam: true });
+  showUnknown(code);
+}
+function showUnknown(code) {
+  $('#sc-status').textContent = '';
+  $('#sc-result').innerHTML = `<div class="scan-result">
+    <div><b>Barcode <span class="code">${esc(code)}</span> belum terdaftar.</b><br><span class="hint">Pilih: buat barang baru, atau pasang ke barang yang sudah ada.</span></div>
+    <div class="row-btns">
+      <button type="button" class="btn primary sm" data-new="${esc(code)}">+ Barang baru</button>
+      <button type="button" class="btn ghost sm" data-link="${esc(code)}">Pasang ke barang yang ada</button>
+    </div></div>`;
+}
+$('#sc-result').addEventListener('click', e => {
+  const n = e.target.closest('[data-new]'), l = e.target.closest('[data-link]');
+  if (n) { const code = n.dataset.new; dlgScan.close(); openEdit(null, { cat: state.cat, barcode: code }); }
+  if (l) { const code = l.dataset.link; dlgScan.close(); startLink(code); }
+});
+
+// Alat scanner USB/Bluetooth bekerja seperti keyboard yang mengetik sangat cepat lalu menekan Enter.
+const wedge = { buf: '', last: 0 };
+document.addEventListener('keydown', e => {
+  const a = document.activeElement;
+  if (a && /INPUT|TEXTAREA|SELECT/.test(a.tagName)) { wedge.buf = ''; return; }
+  if (e.ctrlKey || e.altKey || e.metaKey) return;
+  const now = performance.now();
+  if (now - wedge.last > 90) wedge.buf = '';
+  wedge.last = now;
+  if (e.key === 'Enter') {
+    if (wedge.buf.length >= 4) { e.preventDefault(); e.stopPropagation(); const c = wedge.buf; wedge.buf = ''; onScanned(c); }
+    return;
+  }
+  if (e.key.length === 1) wedge.buf += e.key;
+}, true);
+
+// Jendela scan: kamera langsung (Chrome di HP/laptop), foto barcode, atau ketik manual.
+const scanCtx = { onCode: null, stream: null, timer: null, reader: null };
+let zxingP = null;
+function loadZxing() {
+  if (window.ZXing) return Promise.resolve(window.ZXing);
+  return zxingP || (zxingP = new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/@zxing/library@0.20.0/umd/index.min.js';
+    s.onload = () => window.ZXing ? res(window.ZXing) : rej(new Error('zxing'));
+    s.onerror = () => { zxingP = null; rej(new Error('zxing')); };
+    document.head.appendChild(s);
+  }));
+}
+async function nativeDetector() {
+  if (!('BarcodeDetector' in window)) return null;
+  try {
+    const fm = await window.BarcodeDetector.getSupportedFormats();
+    if (!fm || !fm.length) return null;
+    return new window.BarcodeDetector({ formats: fm });
+  } catch (e) { return null; }
+}
+function openScan(opts) {
+  scanCtx.onCode = opts.onCode || (code => { stopCamera(); const hit = byCode.get(code); if (hit) { dlgScan.close(); } onScannedFind(code); });
+  $('#sc-title').textContent = opts.title || 'Scan barcode';
+  $('#sc-result').innerHTML = '';
+  $('#sc-manual').value = '';
+  $('#sc-status').textContent = CAN.camera ? 'Arahkan kamera ke barcode, atau pilih cara lain di bawah.' : 'Kamera langsung tidak tersedia di sini. Pakai “Foto barcode” atau ketik kodenya.';
+  $('#sc-cam').hidden = !CAN.camera;
+  if (!dlgScan.open) dlgScan.showModal();
+  if (CAN.camera && !opts.noAutoCam) startCamera();
+}
+function onScannedFind(code) {
+  const hit = byCode.get(code);
+  if (hit) { const p = index.get(hit.pid), u = p.units[hit.ui]; beep();
+    if (settings.scanAdd && !state.manage) { setQty(p.id, u.n, qtyOf(p.id, u.n) + 1); toast(`${p.name} (${u.n}) +1 · ${rp(u.p)}`); }
+    else openProfile(p.id, hit.ui);
+    return; }
+  beep(); showUnknown(code);
+}
+async function startCamera() {
+  stopCamera();
+  const v = $('#sc-video');
+  try {
+    scanCtx.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+  } catch (e) {
+    $('#sc-status').textContent = 'Kamera tidak bisa dibuka (izin ditolak atau tidak ada kamera). Pakai “Foto barcode” atau ketik kodenya.';
+    return;
+  }
+  v.srcObject = scanCtx.stream; v.hidden = false;
+  try { await v.play(); } catch (e) {}
+  const det = await nativeDetector();
+  if (det) {
+    const tick = async () => {
+      if (!scanCtx.stream) return;
+      try { const r = await det.detect(v); if (r && r.length) { const c = r[0].rawValue; stopCamera(); scanCtx.onCode && scanCtx.onCode(c); return; } } catch (e) {}
+      scanCtx.timer = setTimeout(tick, 220);
+    };
+    tick();
+    return;
+  }
+  try {
+    const Z = await loadZxing();
+    if (!scanCtx.stream) return;
+    scanCtx.reader = new Z.BrowserMultiFormatReader();
+    scanCtx.reader.decodeFromStream(scanCtx.stream, v, (res) => {
+      if (res && scanCtx.stream) { const c = res.getText(); stopCamera(); scanCtx.onCode && scanCtx.onCode(c); }
+    });
+  } catch (e) {
+    $('#sc-status').textContent = 'Pembaca barcode gagal dimuat (cek internet). Ketik kodenya di bawah.';
+  }
+}
+function stopCamera() {
+  clearTimeout(scanCtx.timer); scanCtx.timer = null;
+  try { scanCtx.reader && scanCtx.reader.reset(); } catch (e) {}
+  scanCtx.reader = null;
+  if (scanCtx.stream) { scanCtx.stream.getTracks().forEach(t => t.stop()); scanCtx.stream = null; }
+  const v = $('#sc-video'); v.hidden = true; v.srcObject = null;
+}
+async function decodeImageFile(file) {
+  const det = await nativeDetector();
+  if (det) {
+    try { const bmp = await createImageBitmap(file); const r = await det.detect(bmp); if (r && r.length) return r[0].rawValue; } catch (e) {}
+  }
+  const Z = await loadZxing();
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+    const r = await new Z.BrowserMultiFormatReader().decodeFromImageElement(img);
+    return r.getText();
+  } finally { URL.revokeObjectURL(url); }
+}
+dlgScan.addEventListener('close', () => { stopCamera(); scanCtx.onCode = null; });
+$('#btn-scan').addEventListener('click', () => openScan({}));
+$('#sc-cam').addEventListener('click', startCamera);
+$('#sc-photo').addEventListener('click', () => { stopCamera(); $('#scan-photo').click(); });
+$('#scan-photo').addEventListener('change', async e => {
+  const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
+  $('#sc-status').textContent = 'Membaca barcode dari foto…';
+  try { const c = await decodeImageFile(f); $('#sc-status').textContent = ''; scanCtx.onCode && scanCtx.onCode(c); }
+  catch (err) { $('#sc-status').textContent = 'Barcode tidak terbaca. Foto lebih dekat & terang (garis barcode lurus), atau ketik kodenya.'; }
+});
+const manualGo = () => { const c = $('#sc-manual').value.trim(); if (c && scanCtx.onCode) scanCtx.onCode(c); };
+$('#sc-manual-go').addEventListener('click', manualGo);
+$('#sc-manual').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); manualGo(); } });
+
+/* ================= Printer kasir (ESC/POS) ================= */
+const BT_SERVICES = ['000018f0-0000-1000-8000-00805f9b34fb', 'e7810a71-73ae-499d-8c15-faa9aef0c3f2', '49535343-fe7d-4ae5-8fa9-9fafd205e455', '0000ff00-0000-1000-8000-00805f9b34fb', '0000ffe0-0000-1000-8000-00805f9b34fb', '0000fee7-0000-1000-8000-00805f9b34fb', '0000ae30-0000-1000-8000-00805f9b34fb'];
+const prn = { dev: null, ch: null, port: null, name: '' };
+const asciiOnly = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[·•–—]/g, '-').replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/[^\x20-\x7E]/g, '?');
+function escposBytes(lines, W) {
+  const b = [];
+  const txt = s => { for (const ch of asciiOnly(s)) b.push(ch.charCodeAt(0)); };
+  b.push(0x1B, 0x40);                 // mulai ulang printer
+  for (const l of lines) {
+    b.push(0x1B, 0x61, l.c ? 1 : 0);   // rata tengah / kiri
+    b.push(0x1B, 0x45, l.bold ? 1 : 0); // tebal
+    b.push(0x1D, 0x21, l.big ? 0x11 : 0x00); // ukuran huruf
+    txt(String(l.t).slice(0, l.big ? Math.floor(W / 2) : W));
+    b.push(0x0A);
+  }
+  b.push(0x1B, 0x61, 0, 0x1D, 0x21, 0, 0x1B, 0x45, 0);
+  b.push(0x1B, 0x64, 4);              // dorong kertas
+  b.push(0x1D, 0x56, 0x42, 0x00);     // potong kertas (kalau ada pemotong)
+  return new Uint8Array(b);
+}
+async function btFindChar(device) {
+  const server = device.gatt.connected ? device.gatt : await device.gatt.connect();
+  const services = await server.getPrimaryServices();
+  for (const s of services) {
+    let chars = []; try { chars = await s.getCharacteristics(); } catch (e) { continue; }
+    for (const c of chars) if (c.properties.writeWithoutResponse || c.properties.write) return c;
+  }
+  throw new Error('Printer tersambung tapi tidak menerima data. Coba printer Bluetooth lain, atau pakai RawBT.');
+}
+async function connectBle(interactive) {
+  if (prn.ch && prn.dev && prn.dev.gatt.connected) return prn.ch;
+  let dev = prn.dev;
+  if (!dev && navigator.bluetooth.getDevices) {
+    try { const list = await navigator.bluetooth.getDevices(); dev = list.find(d => d.id === settings.btId) || null; } catch (e) {}
+  }
+  if (!dev) {
+    if (!interactive) throw new Error('need-pick');
+    dev = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: BT_SERVICES });
+  }
+  prn.dev = dev; prn.name = dev.name || 'Printer Bluetooth';
+  settings.btId = dev.id; settings.btName = prn.name; saveSettings();
+  dev.addEventListener('gattserverdisconnected', () => { prn.ch = null; renderSettings(); });
+  prn.ch = await btFindChar(dev);
+  return prn.ch;
+}
+async function connectSerial(interactive) {
+  let port = prn.port;
+  if (!port) { try { const ports = await navigator.serial.getPorts(); port = ports[0] || null; } catch (e) {} }
+  if (!port) { if (!interactive) throw new Error('need-pick'); port = await navigator.serial.requestPort(); }
+  if (!port.writable) await port.open({ baudRate: Number(settings.baud) || 9600 });
+  prn.port = port; prn.name = 'Printer USB / COM';
+  settings.serialPicked = true; saveSettings();
+  return port;
+}
+async function sendBytes(bytes, interactive) {
+  if (settings.printer === 'ble') {
+    const ch = await connectBle(interactive);
+    const CH = 100;
+    for (let i = 0; i < bytes.length; i += CH) {
+      const part = bytes.slice(i, i + CH);
+      if (ch.properties.writeWithoutResponse && ch.writeValueWithoutResponse) await ch.writeValueWithoutResponse(part);
+      else if (ch.writeValueWithResponse) await ch.writeValueWithResponse(part);
+      else await ch.writeValue(part);
+      await sleep(25);
+    }
+  } else if (settings.printer === 'serial') {
+    const port = await connectSerial(interactive);
+    const w = port.writable.getWriter();
+    try { await w.write(bytes); } finally { w.releaseLock(); }
+  } else if (settings.printer === 'rawbt') {
+    let s = ''; bytes.forEach(x => { s += String.fromCharCode(x); });
+    window.location.href = 'intent:base64,' + btoa(s) + '#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;end;';
+  }
+}
+function browserPrint(text) {
+  const area = $('#print-area');
+  area.textContent = text;
+  document.documentElement.classList.add('printing');
+  const done = () => { document.documentElement.classList.remove('printing'); window.removeEventListener('afterprint', done); };
+  window.addEventListener('afterprint', done);
+  window.print();
+  setTimeout(done, 1500);
+}
+async function printLines(lines, plainText) {
+  if (!printerUsable()) { toast('Printer belum diatur. Buka Setelan → Printer.', 'err'); return false; }
+  if (settings.printer === 'browser') { browserPrint(plainText); return true; }
+  try {
+    await sendBytes(escposBytes(lines, Number(settings.width) || 32), true);
+    toast(settings.printer === 'rawbt' ? 'Struk dikirim ke aplikasi RawBT.' : 'Struk dicetak.');
+    renderSettings();
+    return true;
+  } catch (e) {
+    const m = String(e && (e.message || e.name) || '');
+    if (/cancel|NotFoundError|No port selected|User cancelled/i.test(m + (e && e.name))) toast('Pemilihan printer dibatalkan.');
+    else toast('Gagal mencetak: ' + (m || 'printer tidak menjawab') + '. Pastikan printer menyala & dekat.', 'err');
+    prn.ch = null;
+    renderSettings();
+    return false;
+  }
+}
+let receiptSale = null;
+function printSale(sale) {
+  const W = Number(settings.width) || 32;
+  return printLines(receiptLines(sale, W), receiptText(sale, W));
+}
+function printTest() {
+  const W = Number(settings.width) || 32;
+  const now = new Date();
+  const lines = [
+    { t: state.storeName.toUpperCase(), c: true, big: true, bold: true },
+    { t: 'Tes printer berhasil', c: true },
+    { t: now.toLocaleString('id-ID'), c: true },
+    { t: '-'.repeat(W) },
+    { t: '1234567890'.repeat(5).slice(0, W) },
+    { t: `Lebar ${W} huruf (${W === 32 ? '58' : '80'} mm)` },
+    { t: '-'.repeat(W) },
+  ];
+  const text = lines.map(l => l.c ? ' '.repeat(Math.max(0, Math.floor((W - l.t.length) / 2))) + l.t : l.t).join('\n');
+  return printLines(lines, text);
+}
+$('#r-print').addEventListener('click', () => { if (receiptSale) printSale(receiptSale); });
+
+/* ================= Jendela Setelan ================= */
+const PRN_OPTS = [
+  ['ble', 'Bluetooth (BLE)', 'Printer thermal Bluetooth. Chrome di HP Android atau laptop.', 'Butuh Google Chrome/Edge dan halaman HTTPS (GitHub Pages).'],
+  ['serial', 'USB / kabel (atau Bluetooth yang sudah di-pair di Windows)', 'Printer dicolok ke laptop. Chrome/Edge di Windows.', 'Butuh Chrome/Edge di laptop dan halaman HTTPS.'],
+  ['browser', 'Printer Windows (lewat jendela Cetak)', 'Pakai printer yang sudah terpasang drivernya. Pilih printer kasir di jendela Cetak.', 'Tidak tersedia di tampilan ini.'],
+  ['rawbt', 'Aplikasi RawBT (Android)', 'Untuk printer Bluetooth lama yang tidak terdeteksi. Pasang aplikasi RawBT dari Play Store.', 'Hanya untuk HP Android.'],
+  ['none', 'Tidak pakai printer', 'Struk cukup disalin ke WhatsApp.', ''],
+];
+function prnConnected() {
+  if (settings.printer === 'ble') return !!(prn.ch && prn.dev && prn.dev.gatt.connected);
+  if (settings.printer === 'serial') return !!(prn.port && prn.port.writable);
+  return printerUsable();
+}
+function renderSettings() {
+  if (!dlgSettings.open) return;
+  const t = settings.printer;
+  let h = '';
+  if (IN_CLAUDE) h += `<div class="warn-box"><b>Printer & kamera langsung tidak bisa dipakai di tampilan Claude ini.</b> Buka versi <b>index.html</b> di GitHub Pages lewat Google Chrome (HP Android atau laptop) untuk mencetak. Foto barang, scanner barcode USB/Bluetooth, dan “Foto barcode” tetap bisa dipakai di sini.</div>`;
+  h += `<section class="set-sec"><h3 class="sub-title">${ICON.printer} Printer kasir</h3>`;
+  if (t !== 'none' && CAN[t]) {
+    const ok = prnConnected();
+    const nm = t === 'ble' ? (prn.name || settings.btName || 'Printer Bluetooth') : t === 'serial' ? 'Printer USB / COM' : t === 'browser' ? 'Jendela Cetak' : 'RawBT';
+    h += `<div class="prn-status"><span class="dot${ok ? ' ok' : ''}"></span>${ok ? 'Siap: ' : 'Belum tersambung: '}${esc(nm)}</div>`;
+  }
+  h += `<div class="opt-list" role="radiogroup" aria-label="Jenis printer">` + PRN_OPTS.map(([id, name, desc, why]) => {
+    const avail = id === 'none' || CAN[id];
+    return `<label class="opt${avail ? '' : ' off'}"><input type="radio" name="prn" value="${id}" ${t === id ? 'checked' : ''} ${avail ? '' : 'disabled'}><b>${name}</b><small>${avail ? desc : why}</small></label>`;
+  }).join('') + `</div>`;
+  if (t !== 'none') {
+    h += `<div class="field"><span>Lebar kertas</span><div class="seg"><button type="button" data-w="32" aria-pressed="${settings.width == 32}">58 mm</button><button type="button" data-w="48" aria-pressed="${settings.width == 48}">80 mm</button></div></div>`;
+    h += `<div class="row-btns">`;
+    if (t === 'ble' || t === 'serial') h += `<button type="button" class="btn primary sm" id="st-connect">${prnConnected() ? 'Ganti printer' : 'Hubungkan printer'}</button>`;
+    h += `<button type="button" class="btn ghost sm" id="st-test">${ICON.printer}Cetak tes</button></div>`;
+    if (t === 'serial') h += `<label class="field" for="st-baud">Kecepatan (baud) — biarkan 9600 kalau ragu<input id="st-baud" inputmode="numeric" value="${esc(settings.baud)}"></label>`;
+    h += `<label class="check-row"><input type="checkbox" id="st-auto" ${settings.autoPrint ? 'checked' : ''}><span>Cetak otomatis setiap transaksi selesai<small>Kalau mati, tekan “Cetak” di jendela struk.</small></span></label>`;
+  }
+  h += `<label class="field" for="st-footer">Tulisan di bawah struk<input id="st-footer" maxlength="64" value="${esc(settings.footer)}"></label>`;
+  h += `</section>`;
+  h += `<section class="set-sec"><h3 class="sub-title">${ICON.barcode} Scan barcode</h3>
+    <label class="check-row"><input type="checkbox" id="st-scanadd" ${settings.scanAdd ? 'checked' : ''}><span>Scan langsung masuk keranjang<small>Kalau mati, scan membuka profil barang dulu.</small></span></label>
+    <label class="check-row"><input type="checkbox" id="st-beep" ${settings.beep ? 'checked' : ''}><span>Bunyi “bip” saat barcode terbaca</span></label>
+    <p class="note">Alat scanner USB/Bluetooth: colokkan/pasangkan, lalu scan kapan saja saat aplikasi terbuka.</p>
+  </section>`;
+  h += `<section class="set-sec"><h3 class="sub-title">Toko</h3><div class="row-btns"><button type="button" class="btn ghost sm" id="st-store">Ganti nama toko</button></div></section>`;
+  $('#st-body').innerHTML = h;
+}
+$('#btn-settings').addEventListener('click', () => { dlgSettings.showModal(); renderSettings(); });
+$('#st-body').addEventListener('change', e => {
+  const t = e.target;
+  if (t.name === 'prn') { settings.printer = t.value; prn.ch = null; saveSettings(); renderSettings(); }
+  else if (t.id === 'st-auto') { settings.autoPrint = t.checked; saveSettings(); }
+  else if (t.id === 'st-scanadd') { settings.scanAdd = t.checked; saveSettings(); }
+  else if (t.id === 'st-beep') { settings.beep = t.checked; saveSettings(); if (t.checked) beep(); }
+  else if (t.id === 'st-footer') { settings.footer = t.value.trim(); saveSettings(); }
+  else if (t.id === 'st-baud') { settings.baud = parseNum(t.value) || 9600; saveSettings(); }
+});
+$('#st-body').addEventListener('click', async e => {
+  const w = e.target.closest('[data-w]');
+  if (w) { settings.width = Number(w.dataset.w); saveSettings(); renderSettings(); return; }
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'st-test') printTest();
+  else if (b.id === 'st-store') { dlgSettings.close(); $('#mb-store').click(); }
+  else if (b.id === 'st-connect') {
+    try {
+      if (settings.printer === 'ble') { prn.dev = null; prn.ch = null; await connectBle(true); }
+      else { prn.port = null; await connectSerial(true); }
+      toast(`Printer tersambung: ${prn.name}.`);
+    } catch (err) {
+      const m = String(err && (err.message || err.name) || '');
+      if (!/cancel|NotFoundError|No port selected/i.test(m + (err && err.name))) toast('Printer tidak tersambung: ' + m, 'err');
+    }
+    renderSettings();
+  }
+});
+
+/* ================= Mulai ================= */
+document.querySelectorAll('[data-icon]').forEach(n => n.insertAdjacentHTML('afterbegin', ICON[n.dataset.icon] || ''));
+fillCatSelect();
+renderHeader(); renderStatus(); renderBanners(); renderChips(); renderList(true); renderCart();
+dbReady = connect();
+setInterval(rollover, 60000);
+if (migrated && (migrated.added || migrated.changed)) {
+  const parts = [];
+  if (migrated.added) parts.push(`${migrated.added} barang baru`);
+  if (migrated.changed) parts.push(`${migrated.changed} harga/kategori disesuaikan`);
+  setTimeout(() => toast(`Daftar barang diperbarui: ${parts.join(', ')}.`), 400);
+}
+})();
+</script>
+
+</body>
+</html>
