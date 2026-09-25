@@ -336,7 +336,24 @@ dialog.sheet::backdrop{background:var(--scrim)}
 .p-code{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--ink-2)}
 .code{font-family:var(--f-mono);font-size:13px;color:var(--ink);letter-spacing:.02em}
 .linkbar{margin-top:14px}
-.scan-video{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:14px;background:#000;display:block}
+.scan-video{width:100%;aspect-ratio:4/3;max-height:42vh;object-fit:cover;border-radius:14px;background:#000;display:block}
+.scan-video.mirror{transform:scaleX(-1)}
+.scan-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px}
+.scan-order{border:1px solid var(--line);border-radius:14px;padding:4px 12px 12px;display:grid;gap:0}
+.so-head{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line)}
+.so-head b{font-family:var(--f-display);font-size:20px;text-transform:uppercase}
+.so-head span{color:var(--ink-2);font-size:14px;font-weight:600}
+.so-line{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center;padding:8px 6px;margin-inline:-6px;border-bottom:1px dashed var(--line);border-radius:10px}
+.so-line.hl{background:var(--lpg-soft);animation:soHl 1.2s ease}
+.so-line.hl .line-name::before{content:'✓ ';color:var(--lpg)}
+@keyframes soHl{from{background:var(--lpg)}}
+.so-line .line-meta b{color:var(--ink);font-weight:800;white-space:nowrap}
+.scan-loop .scan-video{max-height:32vh}
+.so-sub{font-family:var(--f-display);font-size:19px;text-align:right;font-variant-numeric:tabular-nums}
+.so-total{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0}
+.so-total b{font-family:var(--f-display);font-size:30px;font-variant-numeric:tabular-nums}
+.scan-order .btn.go{width:100%}
+.scan-ok{color:var(--lpg)}
 .scan-status{margin:0;font-weight:600;font-size:14px;color:var(--ink-2)}
 .scan-result{border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:10px}
 .manual-row{display:flex;gap:8px}
@@ -384,7 +401,6 @@ dialog.sheet::backdrop{background:var(--scrim)}
   *,*::before,*::after{transition:none !important;animation:none !important}
 }
 </style>
-
 </head>
 <body>
 <div class="roof" aria-hidden="true"></div>
@@ -571,9 +587,14 @@ dialog.sheet::backdrop{background:var(--scrim)}
 <dialog id="dlg-scan" class="sheet" aria-labelledby="sc-title">
   <div class="sheet-head"><h2 class="sheet-title" id="sc-title">Scan barcode</h2><button type="button" class="icon-btn" data-close aria-label="Tutup" data-icon="x"></button></div>
   <div class="sheet-body">
+    <div class="scan-tools" id="sc-tools">
+      <label class="check-row" id="sc-loop-row"><input type="checkbox" id="sc-loop"><span>Scan terus<small>Setiap barcode langsung masuk pesanan, kamera tetap menyala.</small></span></label>
+      <button type="button" class="btn ghost sm" id="sc-flip" data-icon="flip">Kamera depan</button>
+    </div>
     <video class="scan-video" id="sc-video" playsinline muted hidden></video>
     <p class="scan-status" id="sc-status" aria-live="polite"></p>
     <div id="sc-result"></div>
+    <div class="scan-order" id="sc-order" hidden></div>
     <div class="row-btns">
       <button type="button" class="btn primary" id="sc-cam" data-icon="camera">Buka kamera</button>
       <button type="button" class="btn ghost" id="sc-photo" data-icon="camera">Foto barcode</button>
@@ -1255,6 +1276,7 @@ const ICON = {
   cameraL: I('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', 34, 1.6),
   barcode: I('<path d="M3 5v14M6.5 5v14M9 5v14M13 5v14M15.5 5v14M18 5v14M21 5v14"/>', 22),
   gear:   I('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>', 19),
+  flip:   I('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><path d="M9.5 12.5a3 3 0 0 1 5-1.5M14.5 14a3 3 0 0 1-5 1.5"/><path d="M14.5 9.5v1.8h-1.8M9.5 16.5v-1.8h1.8"/>', 18),
   printer: I('<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>', 18),
   clock:  I('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', 19),
   sliders:I('<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>', 19),
@@ -1600,6 +1622,7 @@ function setQty(pid, unit, qty) {
   saveCart();
   renderList(); renderCart(qty > before);
   if (dlgProd.open) renderProfile();
+  if (dlgScan.open && scanCtx.loop) renderScanOrder();
 }
 function cartLines() {
   const lines = [];
@@ -1729,7 +1752,7 @@ function renderList(force) {
   if (q) {
     const words = q.toLowerCase().split(/\s+/);
     const hits = state.products.filter(p => {
-      const hay = (p.name + ' ' + catName(catOf(p)) + ' ' + p.units.map(u => u.n).join(' ')).toLowerCase();
+      const hay = (p.name + ' ' + catName(catOf(p)) + ' ' + p.units.map(u => u.n + ' ' + (u.b || '')).join(' ')).toLowerCase();
       return words.every(w => hay.includes(w));
     }).sort(byName);
     state.viewIds = hits.map(p => p.id);
@@ -2483,6 +2506,8 @@ const settings = Object.assign({
   footer: 'Terima kasih, datang lagi',
   baud: 9600,
   scanAdd: false,      // scan langsung masuk keranjang
+  scanLoop: true,      // jendela scan: scan terus-menerus, kamera tetap menyala
+  camFacing: 'environment', // kamera belakang; 'user' = kamera depan
   beep: true,
 }, LS.get(K_SET, {}) || {});
 function saveSettings() { LS.set(K_SET, settings); }
@@ -2902,7 +2927,7 @@ document.addEventListener('keydown', e => {
 }, true);
 
 // Jendela scan: kamera langsung (Chrome di HP/laptop), foto barcode, atau ketik manual.
-const scanCtx = { onCode: null, stream: null, timer: null, reader: null };
+const scanCtx = { onCode: null, stream: null, timer: null, reader: null, find: false, loop: false, lastCode: '', lastAt: 0, lastKey: '' };
 let zxingP = null;
 function loadZxing() {
   if (window.ZXing) return Promise.resolve(window.ZXing);
@@ -2923,15 +2948,91 @@ async function nativeDetector() {
   } catch (e) { return null; }
 }
 function openScan(opts) {
-  scanCtx.onCode = opts.onCode || (code => { stopCamera(); const hit = byCode.get(code); if (hit) { dlgScan.close(); } onScannedFind(code); });
-  $('#sc-title').textContent = opts.title || 'Scan barcode';
+  scanCtx.find = !opts.onCode;
+  scanCtx.loop = scanCtx.find && settings.scanLoop !== false && !state.manage;
+  scanCtx.lastCode = ''; scanCtx.lastAt = 0; scanCtx.lastKey = '';
+  scanCtx.onCode = opts.onCode || findHandler;
+  $('#sc-title').textContent = opts.title || (scanCtx.loop ? 'Scan pesanan' : 'Scan barcode');
   $('#sc-result').innerHTML = '';
   $('#sc-manual').value = '';
   $('#sc-status').textContent = CAN.camera ? 'Arahkan kamera ke barcode, atau pilih cara lain di bawah.' : 'Kamera langsung tidak tersedia di sini. Pakai “Foto barcode” atau ketik kodenya.';
   $('#sc-cam').hidden = !CAN.camera;
+  $('#sc-loop-row').hidden = !scanCtx.find || state.manage;
+  $('#sc-loop').checked = scanCtx.loop;
+  $('#sc-flip').hidden = !CAN.camera;
+  $('#sc-tools').hidden = $('#sc-loop-row').hidden && $('#sc-flip').hidden;
+  renderFlipBtn();
+  renderScanOrder();
   if (!dlgScan.open) dlgScan.showModal();
   if (CAN.camera && !opts.noAutoCam) startCamera();
 }
+// Hasil scan di jendela "Scan barcode" biasa.
+function findHandler(code, fromCam) {
+  if (scanCtx.loop) return loopHandler(code, fromCam);
+  stopCamera();
+  if (byCode.has(code)) dlgScan.close();
+  onScannedFind(code);
+}
+// Mode "Scan terus": barang langsung masuk pesanan, kamera tetap menyala.
+function loopHandler(code, fromCam) {
+  const now = Date.now();
+  // Kamera membaca barcode yang sama berkali-kali per detik: abaikan ulangan dalam 1,8 detik.
+  if (fromCam && code === scanCtx.lastCode && now - scanCtx.lastAt < 1800) { scanCtx.lastAt = now; return; }
+  scanCtx.lastCode = code; scanCtx.lastAt = now;
+  const hit = byCode.get(code);
+  if (!hit) { beep(); showUnknown(code); return; }
+  const p = index.get(hit.pid), u = p.units[hit.ui];
+  scanCtx.lastKey = ckey(p.id, u.n);
+  $('#sc-result').innerHTML = '';
+  setQty(p.id, u.n, qtyOf(p.id, u.n) + 1);
+  beep();
+  if (navigator.vibrate) { try { navigator.vibrate(60); } catch (e) {} }
+  $('#sc-status').innerHTML = `<span class="scan-ok">✓ ${esc(p.name)} (${esc(u.n)}) +1</span> — jumlah sekarang ${qtyOf(p.id, u.n)}`;
+}
+function renderScanOrder() {
+  const box = $('#sc-order');
+  dlgScan.classList.toggle('scan-loop', !!scanCtx.loop);
+  if (!scanCtx.loop) { box.hidden = true; return; }
+  const { lines, total, count } = cartTotals();
+  box.hidden = false;
+  box.innerHTML = `<div class="so-head"><b>Pesanan</b><span>${count} barang · ${lines.length} jenis</span></div>`
+    + (lines.length ? lines.map(l => `<div class="so-line${l.k === scanCtx.lastKey ? ' hl' : ''}">
+        <div><div class="line-name">${esc(l.name)}</div><div class="line-meta num">${esc(l.unit)} · ${rp(l.price)} · <b>${rp(l.sub)}</b></div></div>
+        <div class="stepper sm">
+          <button type="button" class="step minus${l.qty === 1 ? ' rm' : ''}" data-sk="${esc(l.k)}" data-d="-1" aria-label="Kurangi ${esc(l.name)}">${l.qty === 1 ? ICON.trashS : ICON.minusS}</button>
+          <span class="n">${l.qty}</span>
+          <button type="button" class="step plus" data-sk="${esc(l.k)}" data-d="1" aria-label="Tambah ${esc(l.name)}">${ICON.plusS}</button>
+        </div>
+      </div>`).join('')
+      : '<p class="note" style="padding:10px 0">Belum ada barang. Arahkan kamera ke barcode barang.</p>')
+    + `<div class="so-total"><span class="label">Total</span><b>${rp(total)}</b></div>
+       <button type="button" class="btn go" id="sc-pay"${lines.length ? '' : ' disabled'}>${ICON.check}Selesai scan · Bayar</button>`;
+}
+$('#sc-order').addEventListener('click', e => {
+  const b = e.target.closest('[data-sk]');
+  if (b) {
+    const k = b.dataset.sk, at = k.indexOf('|');
+    setQty(k.slice(0, at), k.slice(at + 1), (state.cart.get(k) || 0) + Number(b.dataset.d));
+    return;
+  }
+  if (e.target.closest('#sc-pay')) { dlgScan.close(); openCart(); }
+});
+$('#sc-loop').addEventListener('change', e => {
+  settings.scanLoop = e.target.checked; saveSettings();
+  scanCtx.loop = e.target.checked;
+  $('#sc-title').textContent = scanCtx.loop ? 'Scan pesanan' : 'Scan barcode';
+  renderScanOrder();
+  if (CAN.camera && !scanCtx.stream) startCamera();
+});
+function renderFlipBtn() {
+  const b = $('#sc-flip');
+  b.innerHTML = ICON.flip + (settings.camFacing === 'user' ? 'Kamera belakang' : 'Kamera depan');
+}
+$('#sc-flip').addEventListener('click', () => {
+  settings.camFacing = settings.camFacing === 'user' ? 'environment' : 'user';
+  saveSettings(); renderFlipBtn();
+  startCamera();
+});
 function onScannedFind(code) {
   const hit = byCode.get(code);
   if (hit) { const p = index.get(hit.pid), u = p.units[hit.ui]; beep();
@@ -2940,22 +3041,45 @@ function onScannedFind(code) {
     return; }
   beep(); showUnknown(code);
 }
+let camGen = 0;
 async function startCamera() {
   stopCamera();
+  const gen = ++camGen;
   const v = $('#sc-video');
+  const facing = settings.camFacing === 'user' ? 'user' : 'environment';
+  let st;
   try {
-    scanCtx.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+    try {
+      st = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: facing }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
+    } catch (e1) {
+      // Perangkat yang hanya punya satu kamera: pakai kamera yang ada.
+      st = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: facing } }, audio: false });
+    }
   } catch (e) {
-    $('#sc-status').textContent = 'Kamera tidak bisa dibuka (izin ditolak atau tidak ada kamera). Pakai “Foto barcode” atau ketik kodenya.';
+    if (gen === camGen) $('#sc-status').textContent = 'Kamera tidak bisa dibuka (izin ditolak atau tidak ada kamera). Pakai “Foto barcode” atau ketik kodenya.';
     return;
   }
+  // Tombol balik kamera ditekan lagi / jendela ditutup saat kamera masih dibuka: buang kamera lama.
+  if (gen !== camGen || !dlgScan.open) { st.getTracks().forEach(t => t.stop()); return; }
+  scanCtx.stream = st;
+  const track = scanCtx.stream.getVideoTracks()[0];
+  const actual = (track && track.getSettings && track.getSettings().facingMode) || facing;
+  v.classList.toggle('mirror', actual === 'user');
   v.srcObject = scanCtx.stream; v.hidden = false;
   try { await v.play(); } catch (e) {}
   const det = await nativeDetector();
   if (det) {
     const tick = async () => {
-      if (!scanCtx.stream) return;
-      try { const r = await det.detect(v); if (r && r.length) { const c = r[0].rawValue; stopCamera(); scanCtx.onCode && scanCtx.onCode(c); return; } } catch (e) {}
+      if (!scanCtx.stream || gen !== camGen) return;
+      try {
+        const r = await det.detect(v);
+        if (gen !== camGen) return;
+        if (r && r.length) {
+          const c = r[0].rawValue;
+          if (scanCtx.loop) { scanCtx.onCode && scanCtx.onCode(c, true); }
+          else { stopCamera(); scanCtx.onCode && scanCtx.onCode(c, true); return; }
+        }
+      } catch (e) {}
       scanCtx.timer = setTimeout(tick, 220);
     };
     tick();
@@ -2963,16 +3087,21 @@ async function startCamera() {
   }
   try {
     const Z = await loadZxing();
-    if (!scanCtx.stream) return;
+    if (!scanCtx.stream || gen !== camGen) return;
     scanCtx.reader = new Z.BrowserMultiFormatReader();
     scanCtx.reader.decodeFromStream(scanCtx.stream, v, (res) => {
-      if (res && scanCtx.stream) { const c = res.getText(); stopCamera(); scanCtx.onCode && scanCtx.onCode(c); }
+      if (res && scanCtx.stream && gen === camGen) {
+        const c = res.getText();
+        if (scanCtx.loop) { scanCtx.onCode && scanCtx.onCode(c, true); }
+        else { stopCamera(); scanCtx.onCode && scanCtx.onCode(c, true); }
+      }
     });
   } catch (e) {
     $('#sc-status').textContent = 'Pembaca barcode gagal dimuat (cek internet). Ketik kodenya di bawah.';
   }
 }
 function stopCamera() {
+  camGen++;
   clearTimeout(scanCtx.timer); scanCtx.timer = null;
   try { scanCtx.reader && scanCtx.reader.reset(); } catch (e) {}
   scanCtx.reader = null;
@@ -3272,6 +3401,5 @@ if (migrated && (migrated.added || migrated.changed)) {
 }
 })();
 </script>
-
 </body>
 </html>
