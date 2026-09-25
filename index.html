@@ -254,6 +254,7 @@ button:disabled{cursor:default}
 .change.bad{background:var(--danger-soft)} .change.bad .change-val{color:var(--danger)}
 .finish{height:58px;font-family:var(--f-display);font-weight:800;font-size:23px;text-transform:uppercase;letter-spacing:.04em;border-radius:14px;border:0;background:var(--lpg);color:var(--lpg-ink);display:flex;align-items:center;justify-content:center;gap:10px}
 .finish:disabled{opacity:.4}
+.finish span{white-space:nowrap}
 
 @media (min-width:900px){
   .cart{position:sticky;top:16px;margin-top:16px;max-height:calc(100dvh - 32px);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
@@ -402,10 +403,30 @@ dialog.sheet.floating.dragging .sheet-head{cursor:grabbing}
 .floating #sc-wedge-note{display:none}
 .floating.cam-on #sc-cam{display:none}
 .floating .check-row small{display:none}
-.floating.mini{width:min(300px,calc(100vw - 24px))}
-.floating.mini .sheet-body > :not(#sc-video):not(#sc-status):not(#sc-result){display:none}
-.floating.mini .scan-video{aspect-ratio:auto;height:120px}
+.sc-col{display:grid;gap:inherit;align-content:start;min-width:0}
+.scan-cam{position:relative;border-radius:14px;overflow:hidden;background:#000}
+.scan-cam .scan-video{border-radius:0}
+.scan-aim{position:absolute;inset:19% 7%;border-radius:10px;box-shadow:0 0 0 999px rgb(0 0 0 / .28);pointer-events:none}
+.scan-aim::before,.scan-aim::after{content:'';position:absolute;inset:0;border:3px solid #fff;border-radius:10px;-webkit-mask:linear-gradient(#000 0 0) top left/22px 22px no-repeat,linear-gradient(#000 0 0) top right/22px 22px no-repeat,linear-gradient(#000 0 0) bottom left/22px 22px no-repeat,linear-gradient(#000 0 0) bottom right/22px 22px no-repeat;mask:linear-gradient(#000 0 0) top left/22px 22px no-repeat,linear-gradient(#000 0 0) top right/22px 22px no-repeat,linear-gradient(#000 0 0) bottom left/22px 22px no-repeat,linear-gradient(#000 0 0) bottom right/22px 22px no-repeat}
+.scan-aim::after{display:none}
+.scan-aim i{position:absolute;left:6%;right:6%;top:50%;height:2px;background:#ff4b3a;box-shadow:0 0 8px #ff4b3a;opacity:.85}
+.scan-cam.hit .scan-aim::before{border-color:#6BE24A}
+.scan-cam.hit .scan-aim i{background:#6BE24A;box-shadow:0 0 10px #6BE24A}
+.cam-torch{position:absolute;right:8px;bottom:8px;width:40px;height:40px;border-radius:50%;border:0;background:rgb(0 0 0 / .55);color:#fff;display:grid;place-items:center}
+.cam-torch[aria-pressed="true"]{background:#FFD43B;color:#1A2340}
+.rs-handle{display:none}
+dialog.sheet.floating{width:min(var(--fw,380px),calc(100vw - 16px));container-type:inline-size}
+dialog.sheet.floating.mini{width:min(var(--fwm,300px),calc(100vw - 16px))}
+.floating .rs-handle{display:block;position:absolute;right:0;bottom:0;width:30px;height:30px;cursor:nwse-resize;touch-action:none;z-index:2;border-bottom-right-radius:16px;background:linear-gradient(135deg,transparent 0 52%,var(--ink-3) 52% 57%,transparent 57% 67%,var(--ink-3) 67% 72%,transparent 72% 82%,var(--ink-3) 82% 87%,transparent 87%)}
+.floating.resizing{user-select:none;-webkit-user-select:none}
+.floating.mini #sc-right,.floating.mini #sc-tools,.floating.mini #sc-float-hint{display:none}
+.floating.mini .scan-video{aspect-ratio:16/9}
 .floating.mini .scan-status{font-size:13px}
+.floating.mini .sheet-body{padding-bottom:22px}
+@container (min-width:600px){
+  .floating:not(.mini) .sheet-body{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}
+  .floating:not(.mini) .so-list{max-height:40vh}
+}
 .scan-status{margin:0;font-weight:600;font-size:14px;color:var(--ink-2)}
 .scan-result{border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:10px}
 .manual-row{display:flex;gap:8px}
@@ -440,6 +461,35 @@ dialog.sheet.floating.dragging .sheet-head{cursor:grabbing}
   html.printing body > *:not(#print-area){display:none !important}
   html.printing #print-area{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.35;white-space:pre;color:#000;background:#fff;padding:2mm}
 }
+
+/* ——— Cara bayar: Tunai / QRIS / Transfer ——— */
+.paymeth{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;border-radius:14px;background:var(--surface-2)}
+.paymeth button{height:42px;border:0;border-radius:10px;background:transparent;font-weight:800;font-size:15px;color:var(--ink-2)}
+.paymeth button[aria-checked="true"]{background:var(--surface);color:var(--door);box-shadow:0 1px 3px rgb(19 28 51 / .14)}
+.pay-cash{display:grid;gap:12px}
+.pay-alt{display:grid;gap:10px;border:1.5px solid var(--line);border-radius:14px;padding:12px}
+.pa-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center}
+.qris-thumb{width:84px;height:84px;border-radius:10px;border:1px solid var(--line);background:#fff;padding:3px;display:block;cursor:zoom-in}
+.qris-thumb img{width:100%;height:100%;object-fit:contain;display:block}
+.pa-text{display:grid;gap:4px;font-size:13.5px;color:var(--ink-2)}
+.pa-text b{color:var(--ink);font-size:15px}
+.bank-card{display:grid;gap:2px;padding:12px 14px;border-radius:12px;background:var(--door-soft)}
+.bank-card .bank{font-weight:800;font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:var(--door)}
+.bank-card .acc{font-family:var(--f-display);font-weight:800;font-size:28px;letter-spacing:.04em;font-variant-numeric:tabular-nums;line-height:1.15;word-break:break-all}
+.bank-card .holder{font-size:14px;font-weight:600}
+.pay-sheet{width:min(560px,calc(100% - 32px))}
+.pay-show{display:grid;justify-items:center;gap:12px;text-align:center}
+.pay-show .ps-store{font-family:var(--f-display);font-weight:800;font-size:24px;text-transform:uppercase;line-height:1}
+.pay-show .ps-total{font-family:var(--f-display);font-weight:800;font-size:clamp(40px,9vw,56px);line-height:1;font-variant-numeric:tabular-nums;color:var(--door)}
+.pay-show .ps-qr{width:min(100%,420px);max-height:58dvh;object-fit:contain;background:#fff;border-radius:14px;border:1px solid var(--line);padding:8px}
+.pay-show .bank-card{width:100%;text-align:center}
+.pay-show .bank-card .acc{font-size:clamp(30px,8vw,44px)}
+.qris-set{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center}
+.qris-set .qris-thumb{width:112px;height:112px;cursor:default}
+.qris-empty{width:112px;height:112px;border-radius:10px;border:2px dashed var(--line);display:grid;place-items:center;text-align:center;font-size:12px;font-weight:700;color:var(--ink-3);padding:8px}
+.pay-badge{display:inline-block;padding:1px 7px;border-radius:999px;font-size:11.5px;font-weight:800;letter-spacing:.03em;vertical-align:1px;background:var(--door-soft);color:var(--door)}
+.pay-badge.qris{background:var(--lpg-soft);color:var(--lpg)}
+.stats .stat.pm b{font-size:21px}
 
 /* ——— Toast ——— */
 .toast{position:fixed;inset:auto auto calc(92px + env(safe-area-inset-bottom,0px)) 50%;transform:translateX(-50%);margin:0;border:0;background:var(--ink);color:var(--surface);padding:12px 16px;border-radius:12px;font-weight:600;font-size:14px;z-index:100;max-width:calc(100% - 32px);width:max-content;box-shadow:var(--shadow);display:none;overflow:visible}
@@ -529,6 +579,13 @@ dialog.sheet.floating.dragging .sheet-head{cursor:grabbing}
     <div class="lines" id="lines"></div>
     <div class="pay">
       <div class="total-row"><span class="label">Total</span><span class="total-val" id="total">Rp 0</span></div>
+      <div class="paymeth" id="paymeth" role="radiogroup" aria-label="Cara bayar">
+        <button type="button" role="radio" data-m="tunai" aria-checked="true">Tunai</button>
+        <button type="button" role="radio" data-m="qris" aria-checked="false">QRIS</button>
+        <button type="button" role="radio" data-m="transfer" aria-checked="false">Transfer</button>
+      </div>
+      <div class="pay-alt" id="pay-alt" hidden></div>
+      <div class="pay-cash" id="pay-cash">
       <div class="paid-field">
         <label for="paid" class="label">Uang diterima</label>
         <div class="money"><span>Rp</span><input id="paid" inputmode="numeric" autocomplete="off" placeholder="0" aria-describedby="paid-hint"></div>
@@ -536,6 +593,7 @@ dialog.sheet.floating.dragging .sheet-head{cursor:grabbing}
         <span class="hint" id="paid-hint">Kosongkan kalau pembeli bayar uang pas.</span>
       </div>
       <div class="change" id="change"><span class="label" id="change-label">Kembalian</span><span class="change-val" id="change-val">–</span></div>
+      </div>
     </div>
     <div class="cart-foot">
       <button type="button" class="finish" id="finish" disabled>Selesai · Simpan</button>
@@ -639,14 +697,21 @@ dialog.sheet.floating.dragging .sheet-head{cursor:grabbing}
 <dialog id="dlg-scan" class="sheet" aria-labelledby="sc-title">
   <div class="sheet-head" id="sc-head"><span class="grip" id="sc-grip" aria-hidden="true" data-icon="grip"></span><h2 class="sheet-title" id="sc-title">Scan barcode</h2><div class="head-btns"><button type="button" class="icon-btn" id="sc-mini" aria-label="Perkecil jendela scan" hidden></button><button type="button" class="icon-btn" data-close aria-label="Tutup" data-icon="x"></button></div></div>
   <div class="sheet-body">
-    <p class="float-hint" id="sc-float-hint" hidden>Geser jendela ini lewat judulnya. Anda tetap bisa mencari dan menekan + di daftar barang sambil scan.</p>
+   <div class="sc-col" id="sc-left">
+    <p class="float-hint" id="sc-float-hint" hidden>Geser jendela lewat judulnya, ubah ukurannya lewat pojok kanan bawah. Anda tetap bisa mencari dan menekan + di daftar barang sambil scan.</p>
     <div class="scan-tools" id="sc-tools">
       <label class="check-row" id="sc-loop-row"><input type="checkbox" id="sc-loop"><span>Scan terus<small>Setiap barcode langsung masuk pesanan, kamera tetap menyala.</small></span></label>
       <button type="button" class="btn ghost sm" id="sc-flip" data-icon="flip">Kamera depan</button>
     </div>
-    <video class="scan-video" id="sc-video" playsinline muted hidden></video>
+    <div class="scan-cam" id="sc-cam-box" hidden>
+      <video class="scan-video" id="sc-video" playsinline muted></video>
+      <div class="scan-aim" aria-hidden="true"><i></i></div>
+      <button type="button" class="cam-torch" id="sc-torch" hidden aria-pressed="false" aria-label="Senter" title="Senter" data-icon="torch"></button>
+    </div>
     <p class="scan-status" id="sc-status" aria-live="polite"></p>
     <div id="sc-result"></div>
+   </div>
+   <div class="sc-col" id="sc-right">
     <div class="scan-order" id="sc-order" hidden></div>
     <div class="row-btns">
       <button type="button" class="btn primary" id="sc-cam" data-icon="camera">Buka kamera</button>
@@ -657,7 +722,9 @@ dialog.sheet.floating.dragging .sheet-head{cursor:grabbing}
       <div class="manual-row"><input id="sc-manual" inputmode="numeric" autocomplete="off" placeholder="mis. 8998866200301"><button type="button" class="btn ghost" id="sc-manual-go">Cari</button></div>
     </div>
     <p class="note" id="sc-wedge-note">Punya alat scanner barcode (USB/Bluetooth)? Tidak perlu buka jendela ini — scan saja langsung saat aplikasi terbuka.</p>
+   </div>
   </div>
+  <div class="rs-handle" id="sc-rs" title="Tarik untuk mengubah ukuran" aria-hidden="true"></div>
 </dialog>
 
 <dialog id="dlg-settings" class="sheet" aria-labelledby="st-title">
@@ -681,7 +748,7 @@ dialog.sheet.floating.dragging .sheet-head{cursor:grabbing}
 <dialog id="dlg-receipt" class="sheet" aria-labelledby="r-title">
   <div class="sheet-head"><h2 class="sheet-title" id="r-title">Transaksi tersimpan</h2><button type="button" class="icon-btn" data-close aria-label="Tutup" data-icon="x"></button></div>
   <div class="sheet-body">
-    <div class="r-change"><span class="label">Kembalian</span><b id="r-change">Rp 0</b><span class="r-meta num" id="r-meta"></span></div>
+    <div class="r-change"><span class="label" id="r-change-label">Kembalian</span><b id="r-change">Rp 0</b><span class="r-meta num" id="r-meta"></span></div>
     <label class="label" for="r-text">Struk — bisa disalin ke WhatsApp</label>
     <textarea id="r-text" class="receipt" readonly rows="14"></textarea>
   </div>
@@ -689,6 +756,15 @@ dialog.sheet.floating.dragging .sheet-head{cursor:grabbing}
     <button type="button" class="btn ghost" id="r-copy" data-icon="copy">Salin struk</button>
     <button type="button" class="btn ghost" id="r-print" data-icon="printer">Cetak</button>
     <button type="button" class="btn go" id="r-new" data-close>Transaksi baru</button>
+  </div>
+</dialog>
+
+<dialog id="dlg-pay" class="sheet pay-sheet" aria-labelledby="pay-title">
+  <div class="sheet-head"><h2 class="sheet-title" id="pay-title">Bayar QRIS</h2><button type="button" class="icon-btn" data-close aria-label="Tutup" data-icon="x"></button></div>
+  <div class="sheet-body" id="pay-body"></div>
+  <div class="sheet-foot">
+    <button type="button" class="btn ghost" data-close>Kembali</button>
+    <button type="button" class="btn go" id="pay-done" data-icon="check">Sudah dibayar · Selesai</button>
   </div>
 </dialog>
 
@@ -1314,7 +1390,7 @@ const LS = {
 const K = {
   products: 'swarning.products.v1', cart: 'swarning.cart.v1', name: 'swarning.name.v1', cats: 'swarning.cats.v1',
   notice: 'swarning.notice.v2', device: 'swarning.device.v1', cat: 'swarning.cat.v1', catver: 'swarning.catver',
-  sales: d => 'swarning.sales.v1.' + d,
+  sales: d => 'swarning.sales.v1.' + d, pay: 'swarning.pay.v1',
 };
 
 const I = (d, s = 20, w = 2) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
@@ -1332,6 +1408,7 @@ const ICON = {
   grip:   I('<circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/>', 18, 2),
   shrink: I('<path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/>', 18),
   grow:   I('<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>', 18),
+  torch:  I('<path d="M8 2h8l-1 6H9z"/><path d="M9 8v4l1 10h4l1-10V8"/><path d="M12 13v3"/>', 20),
   flip:   I('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><path d="M9.5 12.5a3 3 0 0 1 5-1.5M14.5 14a3 3 0 0 1-5 1.5"/><path d="M14.5 9.5v1.8h-1.8M9.5 16.5v-1.8h1.8"/>', 18),
   printer: I('<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>', 18),
   clock:  I('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', 19),
@@ -1390,6 +1467,8 @@ const state = {
   today: dateStr(),
   todaySales: [],
   paid: 0,
+  method: 'tunai',  // tunai | qris | transfer
+  pay: Object.assign({ bank: '', no: '', holder: '', qris: '' }, LS.get(K.pay, {}) || {}),
   dirty: false,
   sel: new Set(),   // barang yang dipilih di mode Atur
   viewIds: [],      // barang yang sedang tampil (untuk "Pilih semua")
@@ -1535,12 +1614,27 @@ async function connect() {
       for (const id of [...images.keys()]) if (!seen.has(id) && !pendingImg.has(id)) setImageLocal(id, null);
       renderList(); if (dlgProd.open) renderProfile();
     }, () => {});
+    db.doc('settings/pay').onSnapshot(s => {
+      if (!s.exists) { if (!s.metadata.fromCache && bankReady()) savePayInfo(); return; }
+      const x = s.data() || {};
+      Object.assign(state.pay, { bank: String(x.bank || ''), no: String(x.no || ''), holder: String(x.holder || '') });
+      LS.set(K.pay, state.pay); renderCart(); renderSettingsSafe();
+    }, () => {});
+    db.doc('settings/qris').onSnapshot(s => {
+      if (!s.exists) { if (!s.metadata.fromCache && state.pay.qris) savePayQris(state.pay.qris); return; }
+      const q = String((s.data() || {}).data || '');
+      if (q !== state.pay.qris) { state.pay.qris = q; LS.set(K.pay, state.pay); renderCart(); renderSettingsSafe(); }
+    }, () => {});
     db.doc('settings/store').onSnapshot(s => {
       if (s.exists) { const n = s.data() && s.data().name; if (n) { state.storeName = String(n); LS.set(K.name, state.storeName); renderHeader(); } }
     }, () => {});
   } catch (e) { db = null; goLocal(); return null; }
   subscribeToday();
   return db;
+}
+function renderSettingsSafe() {
+  const a = document.activeElement;
+  if (!(a && a.tagName === 'INPUT' && a.closest('#st-body'))) renderSettings();
 }
 function goLocal() {
   state.mode = 'local';
@@ -1950,8 +2044,10 @@ function renderCart(bump) {
     ? `<button type="button" data-pay="${total}" aria-pressed="${state.paid === total}">Uang pas</button>` + sug.map(v => `<button type="button" data-pay="${v}" aria-pressed="${state.paid === v}">${fmtN(v)}</button>`).join('')
     : '';
   updateChange(total);
+  renderPayAlt(total);
   el.finish.disabled = !lines.length;
-  el.finish.innerHTML = ICON.check + (lines.length ? `<span>Selesai</span><span style="text-transform:none">· ${rp(total)}</span>` : '<span>Selesai · Simpan</span>');
+  const mLabel = state.method === 'tunai' ? 'Selesai' : 'Lunas';
+  el.finish.innerHTML = ICON.check + (lines.length ? `<span>${mLabel}</span><span style="text-transform:none">· ${rp(total)}</span>` : '<span>Selesai · Simpan</span>');
   el.cartbar.hidden = !count || state.manage;
   el.cbCount.textContent = `${count} barang`;
   el.cbTotal.textContent = rp(total);
@@ -1974,6 +2070,97 @@ function setPaid(v) {
   const total = cartTotals().total;
   el.quick.querySelectorAll('[data-pay]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.pay === v)));
   updateChange(total);
+}
+
+/* ================= QRIS & Transfer ================= */
+const METHOD_LABEL = { tunai: 'Tunai', qris: 'QRIS', transfer: 'Transfer' };
+const dlgPay = $('#dlg-pay');
+function qrisSrc() { const q = state.pay.qris || ''; return /^https:\/\/drive\.google\.com\/thumbnail/.test(q) ? q.replace(/sz=w\d+/, 'sz=w1000') : q; }
+function bankReady() { return !!(state.pay.no && state.pay.no.trim()); }
+function bankCardHTML() {
+  const p = state.pay;
+  return `<div class="bank-card"><span class="bank">${esc(p.bank || 'Rekening')}</span><span class="acc">${esc(p.no)}</span>${p.holder ? `<span class="holder">a.n. ${esc(p.holder)}</span>` : ''}</div>`;
+}
+function setMethod(m) {
+  if (!METHOD_LABEL[m]) m = 'tunai';
+  state.method = m;
+  $('#paymeth').querySelectorAll('[data-m]').forEach(b => b.setAttribute('aria-checked', String(b.dataset.m === m)));
+  $('#pay-cash').hidden = m !== 'tunai';
+  renderCart();
+}
+function renderPayAlt(total) {
+  const box = $('#pay-alt'), m = state.method;
+  box.hidden = m === 'tunai';
+  $('#pay-cash').hidden = m !== 'tunai';
+  if (m === 'tunai') { box.innerHTML = ''; return; }
+  let h = '';
+  if (m === 'qris') {
+    h = state.pay.qris
+      ? `<div class="pa-row"><button type="button" class="qris-thumb" data-pa="show" aria-label="Perbesar QRIS"><img src="${esc(qrisSrc())}" alt="QRIS ${esc(state.storeName)}"></button>
+          <div class="pa-text"><b>Pembeli scan QRIS ${total ? rp(total) : ''}</b><span>Cek notifikasi uang masuk di HP toko dulu, baru tekan “Lunas”.</span></div></div>
+         <button type="button" class="btn primary sm" data-pa="show">Tampilkan QRIS ke pembeli</button>`
+      : `<p class="note"><b>Belum ada gambar QRIS.</b> Upload foto/gambar QRIS toko sekali saja, nanti muncul di sini untuk semua kasir.</p><button type="button" class="btn primary sm" data-pa="setup">Upload QRIS di Setelan</button>`;
+  } else {
+    h = bankReady()
+      ? `${bankCardHTML()}<div class="row-btns"><button type="button" class="btn ghost sm" data-pa="copy">${ICON.copy}Salin no. rekening</button><button type="button" class="btn primary sm" data-pa="show">Tampilkan ke pembeli</button></div>
+         <p class="note">Cek mutasi / notifikasi uang masuk ${total ? rp(total) : ''} dulu, baru tekan “Lunas”.</p>`
+      : `<p class="note"><b>Nomor rekening belum diisi.</b> Isi nama bank, nomor rekening, dan atas nama di Setelan.</p><button type="button" class="btn primary sm" data-pa="setup">Isi rekening di Setelan</button>`;
+  }
+  box.innerHTML = h;
+}
+function openPayShow() {
+  const { total } = cartTotals(); if (!total) return;
+  const m = state.method;
+  $('#pay-title').textContent = m === 'qris' ? 'Bayar pakai QRIS' : 'Bayar transfer';
+  let h = `<div class="pay-show"><span class="ps-store">${esc(state.storeName)}</span><span class="label">Total bayar</span><span class="ps-total">${rp(total)}</span>`;
+  if (m === 'qris') h += `<img class="ps-qr" src="${esc(qrisSrc())}" alt="QRIS ${esc(state.storeName)}"><p class="note">Scan pakai aplikasi bank / e-wallet apa saja (GoPay, OVO, DANA, ShopeePay, m-banking). Masukkan nominal <b>${rp(total)}</b>.</p>`;
+  else h += bankCardHTML() + `<p class="note">Transfer tepat <b>${rp(total)}</b>, lalu tunjukkan bukti transfer ke kasir.</p>`;
+  h += `</div>`;
+  $('#pay-body').innerHTML = h;
+  dlgPay.showModal();
+}
+$('#paymeth').addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (b) setMethod(b.dataset.m); });
+$('#paymeth').addEventListener('keydown', e => {
+  if (!/Arrow(Left|Right)/.test(e.key)) return;
+  const order = ['tunai', 'qris', 'transfer'], i = order.indexOf(state.method);
+  const n = order[(i + (e.key === 'ArrowRight' ? 1 : 2)) % 3]; setMethod(n);
+  $('#paymeth').querySelector(`[data-m="${n}"]`).focus(); e.preventDefault();
+});
+$('#pay-alt').addEventListener('click', async e => {
+  const b = e.target.closest('[data-pa]'); if (!b) return;
+  const a = b.dataset.pa;
+  if (a === 'show') openPayShow();
+  else if (a === 'setup') { closeCart(); dlgSettings.showModal(); renderSettings(); setTimeout(() => { const s = $('#st-pay'); if (s) s.scrollIntoView({ block: 'start' }); }, 50); }
+  else if (a === 'copy') {
+    try { await navigator.clipboard.writeText(state.pay.no.replace(/\s+/g, '')); toast('Nomor rekening disalin.'); } catch (x) { toast('Tidak bisa menyalin di sini.', 'err'); }
+  }
+});
+$('#pay-done').addEventListener('click', () => { dlgPay.close(); finishSale(); });
+function savePayInfo() {
+  LS.set(K.pay, state.pay);
+  const info = { bank: state.pay.bank, no: state.pay.no, holder: state.pay.holder };
+  syncQueue('pay', { op: 'pay', info });
+  dbReady.then(d => { if (d && state.mode !== 'local') return queueWrite('settings/pay', () => withRetry(() => d.doc('settings/pay').set(info))); }).catch(onWriteError);
+  renderCart();
+}
+function savePayQris(data) {
+  state.pay.qris = data || ''; LS.set(K.pay, state.pay);
+  syncQueue('qris', { op: 'qris', data: data || '' });
+  dbReady.then(d => { if (d && state.mode !== 'local') return queueWrite('settings/qris', () => withRetry(() => d.doc('settings/qris').set({ data: data || '' }))); }).catch(onWriteError);
+  renderCart(); renderSettings();
+}
+// Gambar QRIS dikecilkan secukupnya (tetap tajam untuk discan), tanpa dipotong.
+async function fileToQris(file) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('gambar')); i.src = url; });
+    const k = Math.min(1, 1000 / Math.max(img.naturalWidth, img.naturalHeight));
+    const w = Math.round(img.naturalWidth * k), h = Math.round(img.naturalHeight * k);
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, w, h);
+    g.imageSmoothingQuality = 'high'; g.drawImage(img, 0, 0, w, h);
+    return c.toDataURL('image/jpeg', 0.9);
+  } finally { URL.revokeObjectURL(url); }
 }
 
 /* Keranjang di HP: panel geser dari bawah */
@@ -2028,16 +2215,20 @@ async function deleteSale(sale) {
 function finishSale() {
   const { lines, total } = cartTotals();
   if (!lines.length) return;
-  const paid = state.paid || total;
+  const method = state.method;
+  if (method === 'qris' && !state.pay.qris) { toast('Upload gambar QRIS dulu di Setelan, atau pilih Tunai.', 'err'); return; }
+  if (method === 'transfer' && !bankReady()) { toast('Isi nomor rekening dulu di Setelan, atau pilih Tunai.', 'err'); return; }
+  const paid = method === 'tunai' ? (state.paid || total) : total;
   if (paid < total) { toast(`Uang diterima kurang ${rp(total - paid)}.`, 'err'); el.paid.focus(); return; }
   const now = new Date();
   const sale = {
     id: now.getTime().toString(36) + Math.random().toString(36).slice(2, 6),
     at: now.toISOString(), date: dateStr(now),
     items: lines.map(l => ({ name: l.name, unit: l.unit, price: l.price, qty: l.qty })),
-    total, paid, change: paid - total,
+    total, paid, change: paid - total, method,
   };
   state.cart.clear(); saveCart(); setPaid(0);
+  if (method !== 'tunai') setMethod('tunai');
   closeCart(); renderList(true); renderCart();
   showReceipt(sale, false);
   if (settings.autoPrint && printerUsable()) printSale(sale);
@@ -2068,8 +2259,14 @@ function receiptLines(sale, W = 32) {
   }
   out.push({ t: line });
   lr('TOTAL', fmtN(sale.total)).forEach(t => out.push({ t, bold: true }));
-  lr('Tunai', fmtN(sale.paid)).forEach(t => out.push({ t }));
-  lr('Kembali', fmtN(sale.change)).forEach(t => out.push({ t }));
+  const m = sale.method || 'tunai';
+  if (m === 'tunai') {
+    lr('Tunai', fmtN(sale.paid)).forEach(t => out.push({ t }));
+    lr('Kembali', fmtN(sale.change)).forEach(t => out.push({ t }));
+  } else {
+    lr('Bayar', METHOD_LABEL[m] || m).forEach(t => out.push({ t }));
+    lr('Status', 'LUNAS').forEach(t => out.push({ t }));
+  }
   out.push({ t: line });
   String(settings.footer || '').split('\n').filter(Boolean).forEach(f => wrap(f).forEach(t => out.push({ t, c: true })));
   return out;
@@ -2082,8 +2279,16 @@ function receiptText(sale, W = 32) {
 }
 function showReceipt(sale, fromHistory) {
   $('#r-title').textContent = fromHistory ? 'Struk transaksi' : 'Transaksi tersimpan';
-  $('#r-change').textContent = sale.change ? rp(sale.change) : 'Uang pas';
-  $('#r-meta').textContent = `Total ${rp(sale.total)} · Tunai ${rp(sale.paid)}`;
+  const m = sale.method || 'tunai';
+  if (m === 'tunai') {
+    $('#r-change-label').textContent = 'Kembalian';
+    $('#r-change').textContent = sale.change ? rp(sale.change) : 'Uang pas';
+    $('#r-meta').textContent = `Total ${rp(sale.total)} · Tunai ${rp(sale.paid)}`;
+  } else {
+    $('#r-change-label').textContent = 'Dibayar lewat ' + METHOD_LABEL[m];
+    $('#r-change').textContent = 'Lunas';
+    $('#r-meta').textContent = `Total ${rp(sale.total)} · ${METHOD_LABEL[m]}`;
+  }
   $('#r-text').value = receiptText(sale);
   const nb = $('#r-new'); nb.textContent = fromHistory ? 'Tutup' : 'Transaksi baru';
   nb.className = fromHistory ? 'btn ghost' : 'btn go';
@@ -2127,10 +2332,14 @@ function renderHistory() {
   }
   const top = [...agg.values()].sort((a, b) => b.qty - a.qty || b.rev - a.rev).slice(0, 5);
   const dLabel = new Date(hist.date + 'T12:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const byM = { tunai: 0, qris: 0, transfer: 0 };
+  for (const v of sales) byM[METHOD_LABEL[v.method] ? v.method : 'tunai'] += Number(v.total) || 0;
   let h = `<div class="stats">
     <div class="stat big"><span class="label">Omzet · ${esc(dLabel)}</span><b>${rp(omzet)}</b></div>
     <div class="stat"><span class="label">Transaksi</span><b>${sales.length}</b></div>
     <div class="stat"><span class="label">Barang terjual</span><b>${fmtN(nItems)}</b></div>
+    ${byM.qris || byM.transfer ? `<div class="stat pm"><span class="label">Uang tunai (laci)</span><b>${rp(byM.tunai)}</b></div>
+    <div class="stat pm"><span class="label">QRIS + Transfer</span><b>${rp(byM.qris + byM.transfer)}</b></div>` : ''}
   </div>`;
   if (!cloudOn()) h += `<p class="note">Riwayat ini tersimpan di perangkat ini saja.</p>`;
   if (top.length) h += `<div><h3 class="sub-title">Paling laku</h3><ol class="top-list">${top.map(t => `<li><span>${esc(t.k)}</span><b class="num">× ${fmtN(t.qty)}</b></li>`).join('')}</ol></div>`;
@@ -2146,10 +2355,10 @@ function saleHTML(s) {
   const time = t.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
   const items = s.items || [];
   const summary = items.map(i => `${i.name} ×${i.qty}`).join(', ');
-  return `<details class="sale" data-sid="${esc(s.id)}"><summary><span class="sale-time">${time}</span><span class="sale-sum">${esc(summary)}</span><span class="sale-total">${rp(s.total)}</span></summary>
+  return `<details class="sale" data-sid="${esc(s.id)}"><summary><span class="sale-time">${time}</span><span class="sale-sum">${esc(summary)}</span><span class="sale-total">${s.method && s.method !== 'tunai' ? `<span class="pay-badge ${s.method === 'qris' ? 'qris' : ''}">${esc(METHOD_LABEL[s.method] || s.method)}</span> ` : ''}${rp(s.total)}</span></summary>
     <div class="sale-body">
       ${items.map(i => `<div class="sale-line"><span>${esc(i.name)} <small>(${esc(i.unit)})</small><br><small class="num">${i.qty} × ${rp(i.price)}</small></span><b class="num">${rp(i.qty * i.price)}</b></div>`).join('')}
-      <div class="sale-line"><small class="num">Tunai ${rp(s.paid)} · Kembali ${rp(s.change)}</small></div>
+      <div class="sale-line"><small class="num">${!s.method || s.method === 'tunai' ? `Tunai ${rp(s.paid)} · Kembali ${rp(s.change)}` : `Dibayar lewat ${METHOD_LABEL[s.method] || s.method} · Lunas`}</small></div>
       <div class="sale-actions">
         <button type="button" class="btn ghost sm" data-hact="receipt" data-sid="${esc(s.id)}">Lihat struk</button>
         ${!IN_CLAUDE ? `<button type="button" class="btn ghost sm" data-hact="print" data-sid="${esc(s.id)}">${ICON.printer}Cetak</button>` : ''}
@@ -2630,7 +2839,8 @@ function syncQueue(key, op) { if (window.__swSync && window.__swSync.on) window.
       while (S.outbox.length) {
         // Foto dikirim satu per satu (ukurannya besar); sisanya dikelompokkan.
         const first = S.outbox[0];
-        const group = first.op === 'img' ? [first] : S.outbox.filter(o => o.op !== 'img').slice(0, 150);
+        const big = o => o.op === 'img' || o.op === 'qris';
+        const group = big(first) ? [first] : S.outbox.filter(o => !big(o)).slice(0, 150);
         const sent = group.map(o => ({ key: o.key, t: o.t }));
         const j = await api('POST', { action: 'batch', ops: group });
         S.outbox = S.outbox.filter(o => !sent.some(s => s.key === o.key && s.t === o.t));
@@ -2640,6 +2850,7 @@ function syncQueue(key, op) { if (window.__swSync && window.__swSync.on) window.
           setImageLocal(pid, url || null);
           (url ? IDB.put(pid, url) : IDB.del(pid)).catch(() => {});
         }
+        if (typeof j.qris === 'string' && !pendingKey('qris')) { state.pay.qris = j.qris; LS.set(K.pay, state.pay); renderCart(); }
         saveOut(); renderStatus();
       }
       setState('ok');
@@ -2694,6 +2905,8 @@ function syncQueue(key, op) { if (window.__swSync && window.__swSync.on) window.
         state.products.forEach(p => S.outbox.push({ key: 'p:' + p.id, t: Date.now(), op: 'putProduct', id: p.id, p: body(p) }));
         S.outbox.push({ key: 'cats', t: Date.now(), op: 'cats', list: state.cats });
         S.outbox.push({ key: 'store', t: Date.now(), op: 'store', name: state.storeName });
+        if (bankReady()) S.outbox.push({ key: 'pay', t: Date.now(), op: 'pay', info: { bank: state.pay.bank, no: state.pay.no, holder: state.pay.holder } });
+        if (/^data:/.test(state.pay.qris)) S.outbox.push({ key: 'qris', t: Date.now(), op: 'qris', data: state.pay.qris });
         for (const [pid, data] of images) if (/^data:/.test(data)) S.outbox.push({ key: 'img:' + pid, t: Date.now(), op: 'img', pid, data });
         saveOut();
         toast(`Mengunggah ${state.products.length} barang ke Google Sheets…`);
@@ -2701,6 +2914,13 @@ function syncQueue(key, op) { if (window.__swSync && window.__swSync.on) window.
         let changed = applyProducts(j.products || [], j.full, j.count);
         if (j.cats && !pendingKey('cats')) { const list = cleanCats(j.cats); if (list) { state.cats = list; LS.set(K.cats, list); ensureCat(); changed = true; } }
         if (j.store && !pendingKey('store') && j.store !== state.storeName) { state.storeName = j.store; LS.set(K.name, j.store); renderHeader(); }
+        let payCh = false;
+        if (j.pay && typeof j.pay === 'object' && !pendingKey('pay')) { Object.assign(state.pay, { bank: String(j.pay.bank || ''), no: String(j.pay.no || ''), holder: String(j.pay.holder || '') }); payCh = true; }
+        if (typeof j.qris === 'string' && !pendingKey('qris')) {
+          if (!j.qris && /^data:/.test(state.pay.qris) && j.full) { S.outbox.push({ key: 'qris', t: Date.now(), op: 'qris', data: state.pay.qris }); saveOut(); }
+          else if (j.qris !== state.pay.qris) { state.pay.qris = j.qris; payCh = true; }
+        }
+        if (payCh) { LS.set(K.pay, state.pay); renderCart(); const a = document.activeElement; if (!(a && a.tagName === 'INPUT' && a.closest('#st-body'))) renderSettings(); }
         if (changed) { renderChips(); renderList(); renderCart(); if (dlgProd.open) renderProfile(); }
       }
       S.srvSales[state.today] = j.salesToday || [];
@@ -3000,7 +3220,9 @@ async function nativeDetector() {
   try {
     const fm = await window.BarcodeDetector.getSupportedFormats();
     if (!fm || !fm.length) return null;
-    return new window.BarcodeDetector({ formats: fm });
+    const want = ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39', 'itf', 'codabar', 'qr_code'];
+    const use = fm.filter(f => want.includes(f));
+    return new window.BarcodeDetector({ formats: use.length ? use : fm });
   } catch (e) { return null; }
 }
 function openScan(opts) {
@@ -3071,6 +3293,8 @@ function showScanDialog(floating) {
   dlgScan.classList.toggle('floating', floating);
   const mini = settings.scanMini != null ? settings.scanMini : window.innerWidth < 640;
   dlgScan.classList.toggle('mini', floating && !!mini);
+  if (settings.scanW) dlgScan.style.setProperty('--fw', settings.scanW + 'px');
+  if (settings.scanWMini) dlgScan.style.setProperty('--fwm', settings.scanWMini + 'px');
   $('#sc-mini').hidden = !floating;
   $('#sc-float-hint').hidden = !floating || !!settings.scanHintSeen;
   renderMiniBtn();
@@ -3087,7 +3311,7 @@ function renderMiniBtn() {
 function placeFloat(x, y) {
   if (!dlgScan.classList.contains('floating')) return;
   const r = dlgScan.getBoundingClientRect();
-  const w = r.width || 380, h = r.height || 300;
+  const w = r.width || settings.scanW || 380, h = r.height || 300;
   const pos = settings.scanPos || null;
   if (x == null) {
     if (pos) { x = pos.x; y = pos.y; }
@@ -3128,6 +3352,33 @@ function placeFloat(x, y) {
   head.addEventListener('pointerup', end);
   head.addEventListener('pointercancel', end);
   window.addEventListener('resize', () => { if (dlgScan.open) placeFloat(); });
+  // Ubah ukuran: tarik pojok kanan bawah.
+  const rs = $('#sc-rs');
+  let rz = null;
+  rs.addEventListener('pointerdown', e => {
+    if (!dlgScan.classList.contains('floating') || e.button > 0) return;
+    const r = dlgScan.getBoundingClientRect();
+    rz = { id: e.pointerId, x: e.clientX, w: r.width, left: r.left };
+    rs.setPointerCapture(e.pointerId); dlgScan.classList.add('resizing'); e.preventDefault();
+  });
+  rs.addEventListener('pointermove', e => {
+    if (!rz || e.pointerId !== rz.id) return;
+    const mini = dlgScan.classList.contains('mini');
+    const w = Math.round(Math.max(mini ? 220 : 280, Math.min(window.innerWidth - 16, rz.w + e.clientX - rz.x)));
+    dlgScan.style.setProperty(mini ? '--fwm' : '--fw', w + 'px');
+    // Mentok di kanan layar: jendela bergeser ke kiri supaya tetap bisa diperbesar.
+    placeFloat(Math.min(rz.left, window.innerWidth - w - 8), dlgScan.getBoundingClientRect().top);
+  });
+  const rsEnd = e => {
+    if (!rz || e.pointerId !== rz.id) return;
+    rz = null; dlgScan.classList.remove('resizing');
+    const r = dlgScan.getBoundingClientRect();
+    if (dlgScan.classList.contains('mini')) settings.scanWMini = Math.round(r.width); else settings.scanW = Math.round(r.width);
+    settings.scanPos = { x: Math.round(r.left), y: Math.round(r.top) };
+    saveSettings(); placeFloat();
+  };
+  rs.addEventListener('pointerup', rsEnd);
+  rs.addEventListener('pointercancel', rsEnd);
   $('#sc-mini').addEventListener('click', () => {
     const mini = !dlgScan.classList.contains('mini');
     dlgScan.classList.toggle('mini', mini);
@@ -3173,19 +3424,40 @@ function onScannedFind(code) {
     return; }
   beep(); showUnknown(code);
 }
+// Barcode angka (EAN/UPC/ITF) punya digit cek: kode yang salah baca ditolak.
+function validCode(c) {
+  c = String(c || '').trim();
+  if (c.length < 4) return false;
+  if (!/^\d+$/.test(c)) return true;
+  if (c.length === 12 || c.length === 13 || c.length === 14) {
+    let sum = 0;
+    for (let i = c.length - 2, w = 3; i >= 0; i--, w = 4 - w) sum += Number(c[i]) * w;
+    return (10 - sum % 10) % 10 === Number(c[c.length - 1]);
+  }
+  return true;
+}
+function zxingReader(Z) {
+  const F = Z.BarcodeFormat, hints = new Map();
+  hints.set(Z.DecodeHintType.POSSIBLE_FORMATS, [F.EAN_13, F.EAN_8, F.UPC_A, F.UPC_E, F.CODE_128, F.CODE_39, F.ITF, F.CODABAR, F.QR_CODE]);
+  // Catatan: TRY_HARDER justru membuat pembaca 1D ZXing-js gagal, jadi tidak dipakai.
+  const r = new Z.MultiFormatReader(); r.setHints(hints);
+  return r;
+}
 let camGen = 0;
 async function startCamera() {
   stopCamera();
   const gen = ++camGen;
-  const v = $('#sc-video');
+  const v = $('#sc-video'), box = $('#sc-cam-box');
   const facing = settings.camFacing === 'user' ? 'user' : 'environment';
+  // Resolusi tinggi + fokus otomatis terus-menerus = garis barcode lebih tajam.
+  const hi = { width: { ideal: 1920 }, height: { ideal: 1080 }, advanced: [{ focusMode: 'continuous' }] };
   let st;
   try {
     try {
-      st = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: facing }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
+      st = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: facing }, ...hi }, audio: false });
     } catch (e1) {
       // Perangkat yang hanya punya satu kamera: pakai kamera yang ada.
-      st = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: facing } }, audio: false });
+      st = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: facing }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
     }
   } catch (e) {
     if (gen === camGen) $('#sc-status').textContent = 'Kamera tidak bisa dibuka (izin ditolak atau tidak ada kamera). Pakai “Foto barcode” atau ketik kodenya.';
@@ -3196,52 +3468,81 @@ async function startCamera() {
   scanCtx.stream = st;
   dlgScan.classList.add('cam-on');
   const track = scanCtx.stream.getVideoTracks()[0];
+  scanCtx.track = track; scanCtx.torch = false;
+  let caps = {};
+  try { caps = (track && track.getCapabilities && track.getCapabilities()) || {}; } catch (e) {}
+  if (Array.isArray(caps.focusMode) && caps.focusMode.includes('continuous')) { track.applyConstraints({ advanced: [{ focusMode: 'continuous' }] }).catch(() => {}); }
+  const tb = $('#sc-torch'); tb.hidden = !caps.torch; tb.setAttribute('aria-pressed', 'false');
   const actual = (track && track.getSettings && track.getSettings().facingMode) || facing;
   v.classList.toggle('mirror', actual === 'user');
-  v.srcObject = scanCtx.stream; v.hidden = false;
+  v.srcObject = scanCtx.stream; box.hidden = false;
   try { await v.play(); } catch (e) {}
+  if (gen !== camGen) return;
   const det = await nativeDetector();
-  if (det) {
-    const tick = async () => {
-      if (!scanCtx.stream || gen !== camGen) return;
-      try {
-        const r = await det.detect(v);
-        if (gen !== camGen) return;
-        if (r && r.length) {
-          const c = r[0].rawValue;
-          if (scanCtx.loop) { scanCtx.onCode && scanCtx.onCode(c, true); }
-          else { stopCamera(); scanCtx.onCode && scanCtx.onCode(c, true); return; }
-        }
-      } catch (e) {}
-      scanCtx.timer = setTimeout(tick, 220);
-    };
-    tick();
-    return;
+  let Z = null, zr = null;
+  if (!det) {
+    try { Z = await loadZxing(); zr = zxingReader(Z); }
+    catch (e) { if (gen === camGen) $('#sc-status').textContent = 'Pembaca barcode gagal dimuat (cek internet). Ketik kodenya di bawah.'; return; }
+    if (gen !== camGen) return;
   }
-  try {
-    const Z = await loadZxing();
+  // Hanya area di dalam bingkai yang dibaca: lebih cepat & tidak salah baca barcode lain di sekitarnya.
+  const cv = document.createElement('canvas');
+  const g = cv.getContext('2d', { willReadFrequently: true });
+  let cand = '', candN = 0, candAt = 0, flip = 0;
+  const tick = async () => {
     if (!scanCtx.stream || gen !== camGen) return;
-    scanCtx.reader = new Z.BrowserMultiFormatReader();
-    scanCtx.reader.decodeFromStream(scanCtx.stream, v, (res) => {
-      if (res && scanCtx.stream && gen === camGen) {
-        const c = res.getText();
-        if (scanCtx.loop) { scanCtx.onCode && scanCtx.onCode(c, true); }
-        else { stopCamera(); scanCtx.onCode && scanCtx.onCode(c, true); }
+    let code = null;
+    try {
+      const vw = v.videoWidth, vh = v.videoHeight;
+      if (v.readyState >= 2 && vw) {
+        // Bergantian: area bingkai saja, lalu seluruh gambar (barcode yang agak keluar bingkai tetap terbaca).
+        const full = (flip++ % 3) === 2;
+        const cw = full ? vw : Math.round(vw * 0.86 / 2) * 2, ch = full ? vh : Math.round(vh * 0.62 / 2) * 2;
+        const k = Math.min(1, 1280 / cw);
+        const W = Math.round(cw * k), H = Math.round(ch * k);
+        if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+        g.drawImage(v, Math.round((vw - cw) / 2), Math.round((vh - ch) / 2), cw, ch, 0, 0, W, H);
+        if (det) {
+          const r = await det.detect(cv);
+          if (r && r.length) code = String(r.slice().sort((a, b) => (b.boundingBox ? b.boundingBox.width : 0) - (a.boundingBox ? a.boundingBox.width : 0))[0].rawValue || '');
+        } else {
+          try { code = zr.decodeWithState(new Z.BinaryBitmap(new Z.HybridBinarizer(new Z.HTMLCanvasElementLuminanceSource(cv)))).getText(); } catch (e) { code = null; }
+        }
       }
-    });
-  } catch (e) {
-    $('#sc-status').textContent = 'Pembaca barcode gagal dimuat (cek internet). Ketik kodenya di bawah.';
-  }
+    } catch (e) { code = null; }
+    if (gen !== camGen) return;
+    if (code && validCode(code)) {
+      // Kode baru diterima setelah terbaca sama 2x berturut-turut → hampir tidak pernah salah baca.
+      const now = Date.now();
+      if (code === cand && now - candAt < 1000) candN++; else { cand = code; candN = 1; }
+      candAt = now;
+      if (candN >= 2) {
+        candN = 0; cand = '';
+        box.classList.remove('hit'); void box.offsetWidth; box.classList.add('hit');
+        setTimeout(() => box.classList.remove('hit'), 450);
+        if (scanCtx.loop) { scanCtx.onCode && scanCtx.onCode(code, true); }
+        else { stopCamera(); scanCtx.onCode && scanCtx.onCode(code, true); return; }
+      }
+    }
+    scanCtx.timer = setTimeout(tick, det ? 80 : 120);
+  };
+  tick();
 }
 function stopCamera() {
   camGen++;
   dlgScan.classList.remove('cam-on');
   clearTimeout(scanCtx.timer); scanCtx.timer = null;
-  try { scanCtx.reader && scanCtx.reader.reset(); } catch (e) {}
-  scanCtx.reader = null;
+  scanCtx.reader = null; scanCtx.track = null;
   if (scanCtx.stream) { scanCtx.stream.getTracks().forEach(t => t.stop()); scanCtx.stream = null; }
-  const v = $('#sc-video'); v.hidden = true; v.srcObject = null;
+  const v = $('#sc-video'); v.srcObject = null;
+  $('#sc-cam-box').hidden = true; $('#sc-torch').hidden = true;
 }
+$('#sc-torch').addEventListener('click', async () => {
+  const t = scanCtx.track; if (!t) return;
+  const on = !scanCtx.torch;
+  try { await t.applyConstraints({ advanced: [{ torch: on }] }); scanCtx.torch = on; } catch (e) { toast('Senter tidak bisa dinyalakan di kamera ini.', 'err'); }
+  $('#sc-torch').setAttribute('aria-pressed', String(scanCtx.torch));
+});
 async function decodeImageFile(file) {
   const det = await nativeDetector();
   if (det) {
@@ -3251,8 +3552,15 @@ async function decodeImageFile(file) {
   const url = URL.createObjectURL(file);
   try {
     const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
-    const r = await new Z.BrowserMultiFormatReader().decodeFromImageElement(img);
-    return r.getText();
+    const zr = zxingReader(Z);
+    // Coba beberapa ukuran: foto HP sering terlalu besar / barcode terlalu kecil.
+    for (const max of [1600, 1000, 2400]) {
+      const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      try { const t = zr.decodeWithState(new Z.BinaryBitmap(new Z.HybridBinarizer(new Z.HTMLCanvasElementLuminanceSource(c)))).getText(); if (validCode(t)) return t; } catch (e) {}
+    }
+    throw new Error('notfound');
   } finally { URL.revokeObjectURL(url); }
 }
 dlgScan.addEventListener('close', () => { if (dlgScan.open) return; stopCamera(); scanCtx.onCode = null; });
@@ -3455,6 +3763,19 @@ function renderSettings() {
       <div class="row-btns"><button type="button" class="btn primary sm" id="st-sync">${sy && sy.on ? 'Sinkron sekarang' : 'Sambungkan'}</button>${sy && sy.on ? '<button type="button" class="btn ghost sm" id="st-unsync">Putuskan</button>' : ''}</div>
     </section>`;
   }
+  {
+    const p = state.pay;
+    h += `<section class="set-sec" id="st-pay"><h3 class="sub-title">QRIS &amp; Transfer</h3>
+      <p class="note">Dipakai di keranjang saat memilih cara bayar <b>QRIS</b> atau <b>Transfer</b>. ${!IN_CLAUDE && !(window.__swSync && window.__swSync.on) ? 'Sambungkan Google Sheets (di bawah) supaya QRIS & rekening ini muncul di semua perangkat.' : 'Tersimpan untuk semua perangkat yang tersambung.'}</p>
+      <div class="qris-set">${p.qris ? `<span class="qris-thumb"><img src="${esc(qrisSrc())}" alt="QRIS toko"></span>` : '<span class="qris-empty">Belum ada QRIS</span>'}
+        <div class="row-btns"><label class="btn primary sm" for="st-qris-file" tabindex="0">${ICON.camera}${p.qris ? 'Ganti gambar QRIS' : 'Upload gambar QRIS'}</label><input type="file" id="st-qris-file" accept="image/*" hidden>
+        ${p.qris ? '<button type="button" class="btn danger sm" id="st-qris-del">Hapus QRIS</button>' : ''}</div></div>
+      <p class="note">Pakai foto/screenshot QRIS dari aplikasi merchant (mis. QRIS BRI, GoPay Merchant, DANA Bisnis). Pastikan kotak QR terlihat jelas dan tidak terpotong.</p>
+      <label class="field" for="st-bank">Nama bank / e-wallet<input id="st-bank" maxlength="30" placeholder="mis. BRI, BCA, DANA" value="${esc(p.bank)}"></label>
+      <label class="field" for="st-accno">Nomor rekening / nomor HP<input id="st-accno" maxlength="30" inputmode="numeric" placeholder="mis. 0123 01 000123 30 1" value="${esc(p.no)}"></label>
+      <label class="field" for="st-holder">Atas nama<input id="st-holder" maxlength="40" placeholder="mis. Swarning" value="${esc(p.holder)}"></label>
+    </section>`;
+  }
   h += `<section class="set-sec"><h3 class="sub-title">Toko</h3><div class="row-btns"><button type="button" class="btn ghost sm" id="st-store">Ganti nama toko</button></div></section>`;
   $('#st-body').innerHTML = h;
 }
@@ -3466,7 +3787,7 @@ async function flushPending() {
 }
 $('#btn-settings').addEventListener('click', () => { pendingPrint = null; dlgSettings.showModal(); renderSettings(); });
 dlgSettings.addEventListener('close', () => { pendingPrint = null; });
-$('#st-body').addEventListener('change', e => {
+$('#st-body').addEventListener('change', async e => {
   const t = e.target;
   if (t.name === 'prn') {
     settings.printer = t.value; prn.ch = null; saveSettings(); renderSettings();
@@ -3479,7 +3800,18 @@ $('#st-body').addEventListener('change', e => {
   else if (t.id === 'st-beep') { settings.beep = t.checked; saveSettings(); if (t.checked) beep(); }
   else if (t.id === 'st-footer') { settings.footer = t.value.trim(); saveSettings(); }
   else if (t.id === 'st-baud') { settings.baud = parseNum(t.value) || 9600; saveSettings(); }
+  else if (t.id === 'st-bank' || t.id === 'st-accno' || t.id === 'st-holder') {
+    const k = { 'st-bank': 'bank', 'st-accno': 'no', 'st-holder': 'holder' }[t.id];
+    state.pay[k] = t.value.trim(); savePayInfo(); toast('Info transfer disimpan.');
+  }
+  else if (t.id === 'st-qris-file') {
+    const file = t.files && t.files[0]; t.value = '';
+    if (!file) return;
+    try { savePayQris(await fileToQris(file)); toast('Gambar QRIS disimpan.'); }
+    catch (x) { toast('Gambar tidak bisa dibaca. Coba foto/screenshot lain.', 'err'); }
+  }
 });
+$('#st-body').addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('label[for="st-qris-file"]')) { e.preventDefault(); $('#st-qris-file').click(); } });
 $('#st-body').addEventListener('click', async e => {
   const w = e.target.closest('[data-w]');
   if (w) { settings.width = Number(w.dataset.w); saveSettings(); renderSettings(); return; }
@@ -3504,6 +3836,10 @@ $('#st-body').addEventListener('click', async e => {
     settings.apiUrl = ''; settings.apiPin = ''; saveSettings();
     renderSettings(); renderStatus(); toast('Sinkron Google Sheets diputuskan. Data tetap ada di perangkat ini.');
     return;
+  }
+  if (b.id === 'st-qris-del') {
+    if (b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = 'Yakin hapus? Tekan lagi'; setTimeout(() => { if (b.isConnected) { b.dataset.armed = ''; b.textContent = 'Hapus QRIS'; } }, 4000); return; }
+    savePayQris(''); toast('Gambar QRIS dihapus.'); return;
   }
   if (b.id === 'st-test') printTest();
   else if (b.id === 'st-store') { dlgSettings.close(); $('#mb-store').click(); }
